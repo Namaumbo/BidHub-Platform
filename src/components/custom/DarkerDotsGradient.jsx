@@ -1,9 +1,8 @@
 
 
-const ColorOneGradient = ({ children }) => {
+const DarkerDotsGradient = ({ children }) => {
     return (
         <div className="min-h-screen w-full bg-white relative">
-        {/* Noise Texture (Darker Dots) Background */}
         <div
           className="absolute inset-0 z-0"
           style={{
@@ -21,4 +20,4 @@ const ColorOneGradient = ({ children }) => {
     )
 }
 
-export default ColorOneGradient
+export default DarkerDotsGradient

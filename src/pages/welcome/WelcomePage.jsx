@@ -16,7 +16,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import ColorOneGradient from "@/components/custom/ColorOneGradient"
+import DarkerDotsGradient from "@/components/custom/DarkerDotsGradient"
 export default function WelcomePage({ username, onLogout }) {
     const buyerTasks = [
         { title: "Review electrical repair bids", due: "Due today", status: "high" },
@@ -38,7 +38,7 @@ export default function WelcomePage({ username, onLogout }) {
     ]
 
     return (
-        <ColorOneGradient>
+        <DarkerDotsGradient>
             <main className=" p-3 md:p-6">
                 <section className=" flex w-full overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-lg md:min-h-[calc(100vh-3rem)]">
                     <aside className="hidden w-[230px] flex-col bg-amber-50/70 p-4 lg:flex">
@@ -236,7 +236,7 @@ export default function WelcomePage({ username, onLogout }) {
                     </div>
                 </section>
             </main>
-        </ColorOneGradient>
+        </DarkerDotsGradient>
 
     )
 }
