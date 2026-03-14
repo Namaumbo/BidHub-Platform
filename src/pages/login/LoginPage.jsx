@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { ShieldCheck } from "lucide-react"
+import { Navigate, useNavigate } from "react-router-dom"
 import BoxGradient from "@/components/custom/BoxGradient"
 import AuthService from "@/core/services/auth/AuthService"
 import AuthTabs from "@/features/auth/components/AuthTabs"
@@ -7,8 +8,15 @@ import AuthForm from "@/features/auth/components/AuthForm"
 import AuthCarouselPanel from "@/features/auth/components/AuthCarouselPanel"
 import useAuthCarousel from "@/features/auth/hooks/useAuthCarousel"
 import { authCarouselMessages } from "@/features/auth/constants/authCarouselMessages"
+import { useAuth } from "@/context/AuthContext"
 
-function LoginPage({ onLoginSuccess }) {
+function LoginPage() {
+    const { login, isAuthenticated } = useAuth()
+    const navigate = useNavigate()
+
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />
+    }
     const [activeTab, setActiveTab] = useState("signin")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
@@ -26,7 +34,8 @@ function LoginPage({ onLoginSuccess }) {
                     username: data.username,
                     password: data.password,
                 })
-                onLoginSuccess?.(data.username)
+                login(data.username)
+                navigate("/dashboard", { replace: true })
             } else {
                 await AuthService.signUp({
                     fullName: data.fullName,

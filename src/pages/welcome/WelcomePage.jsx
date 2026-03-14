@@ -14,10 +14,20 @@ import {
     Star,
     Wallet,
 } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import DarkerDotsGradient from "@/components/custom/DarkerDotsGradient"
-export default function WelcomePage({ username, onLogout }) {
+import { useAuth } from "@/context/AuthContext"
+
+export default function WelcomePage() {
+    const { username, logout } = useAuth()
+    const navigate = useNavigate()
+
+    const handleLogout = () => {
+        logout()
+        navigate("/login", { replace: true })
+    }
     const buyerTasks = [
         { title: "Review electrical repair bids", due: "Due today", status: "high" },
         { title: "Approve milestone payment - office painting", due: "Due in 2 days", status: "medium" },
@@ -48,10 +58,10 @@ export default function WelcomePage({ username, onLogout }) {
                         </div>
 
                         <nav className="space-y-1">
-                            <button type="button" className="flex w-full items-center gap-2 rounded-lg bg-amber-400 px-3 py-2 text-left text-sm font-medium text-slate-900">
+                            <Link to="/dashboard" className="flex w-full items-center gap-2 rounded-lg bg-amber-400 px-3 py-2 text-left text-sm font-medium text-slate-900">
                                 <LayoutDashboard className="size-4" />
                                 Dashboard
-                            </button>
+                            </Link>
                             <button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-amber-100">
                                 <BriefcaseBusiness className="size-4" />
                                 My Requirements
@@ -68,10 +78,10 @@ export default function WelcomePage({ username, onLogout }) {
                                 <Wallet className="size-4" />
                                 Payments
                             </button>
-                            <button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-amber-100">
+                            <Link to="/reviews" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-amber-100">
                                 <Star className="size-4" />
                                 Reviews
-                            </button>
+                            </Link>
                         </nav>
 
                         <div className="mt-auto rounded-xl border border-amber-200 bg-white p-3">
@@ -82,7 +92,7 @@ export default function WelcomePage({ username, onLogout }) {
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={onLogout}
+                                onClick={handleLogout}
                                 className="mt-3 h-8 w-full justify-start gap-2 border-slate-300"
                             >
                                 <LogOut className="size-4" />
