@@ -110,6 +110,9 @@ function LoginPage() {
                 aria-label="Promotional background image"
             />
         </div>
+
+
+        
     )
 }
 
