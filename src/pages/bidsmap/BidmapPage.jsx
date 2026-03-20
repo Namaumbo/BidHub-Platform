@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { BriefcaseBusiness, Globe, List, LocateFixed, MapPin, Search, SlidersHorizontal } from "lucide-react"
-import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet"
+import { Circle, MapContainer, Marker, TileLayer, useMap } from "react-leaflet"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
@@ -14,7 +14,7 @@ const requirements = [
         location: "San Francisco, CA (2.4 miles)",
         due: "Due in 5 days",
         budgetLabel: "$1.2k - $2.5k",
-        coordinates: [-15.7850, 35.0085],
+        coordinates: [-15.787519, 35.008686],
     },
     {
         id: "2",
@@ -24,7 +24,7 @@ const requirements = [
         location: "Palo Alto, CA (12.1 miles)",
         due: "Urgent",
         budgetLabel: "$300 - $500",
-        coordinates: [-15.7906, 35.0073],
+        coordinates: [-15.802376, 35.034319],
     },
     {
         id: "3",
@@ -34,17 +34,17 @@ const requirements = [
         location: "Oakland, CA (5.8 miles)",
         due: "Due in 14 days",
         budgetLabel: "$5,000+",
-        coordinates: [-15.6785, 34.9737],
+        coordinates: [-15.787363, 35.010407],
     },
     {
         id: "4",
         category: "Writing",
-        title: "Technical Documentation for API",
+        title: "Hi-Tech Electronics",
         description: "Seeking a technical writer to document our new REST API. Familiarity with Swagger/OpenAPI is required.",
         location: "Berkeley, CA (8.1 miles)",
         due: "Due in 2 days",
         budgetLabel: "$50 - $100/hr",
-        coordinates: [37.8715, -122.273],
+        coordinates: [-15.791540, 35.018511],
     },
 ]
 
@@ -75,6 +75,21 @@ const createPriceIcon = (label, isSelected) =>
         iconAnchor: [45, 14],
     })
 
+/** Blue dot + ring — clearly distinct from budget pill markers */
+const userLocationIcon = L.divIcon({
+    className: "",
+    html: `<div style="
+        width:16px;
+        height:16px;
+        background:#2563eb;
+        border:3px solid #ffffff;
+        border-radius:50%;
+        box-shadow:0 0 0 2px rgba(37,99,235,0.35),0 2px 8px rgba(15,23,42,0.25);
+    "></div>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
+})
+
 const SelectedRequirementFlyTo = ({ selectedRequirement }) => {
     const map = useMap()
 
@@ -91,10 +106,77 @@ const SelectedRequirementFlyTo = ({ selectedRequirement }) => {
 const BidmapPage = () => {
     const [selectedId, setSelectedId] = useState(requirements[0].id)
     const [mapInstance, setMapInstance] = useState(null)
+    /** Current device position from Geolocation API — [lat, lng] */
+    const [myPosition, setMyPosition] = useState(null)
+    const [myAccuracyM, setMyAccuracyM] = useState(null)
+    const [geoDenied, setGeoDenied] = useState(false)
+    const watchIdRef = useRef(null)
+    const geoSupported = typeof navigator !== "undefined" && "geolocation" in navigator
+
     const selectedRequirement = useMemo(
         () => requirements.find((item) => item.id === selectedId) ?? requirements[0],
         [selectedId]
     )
+
+    useEffect(() => {
+        if (!geoSupported) {
+            setGeoDenied(true)
+            return
+        }
+
+        const onSuccess = (pos) => {
+            setGeoDenied(false)
+            setMyPosition([pos.coords.latitude, pos.coords.longitude])
+            setMyAccuracyM(
+                typeof pos.coords.accuracy === "number" && pos.coords.accuracy > 0
+                    ? pos.coords.accuracy
+                    : null
+            )
+        }
+
+        const onError = () => {
+            setGeoDenied(true)
+            setMyPosition(null)
+            setMyAccuracyM(null)
+        }
+
+        watchIdRef.current = navigator.geolocation.watchPosition(onSuccess, onError, {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0,
+        })
+
+        return () => {
+            if (watchIdRef.current !== null) {
+                navigator.geolocation.clearWatch(watchIdRef.current)
+            }
+        }
+    }, [geoSupported])
+
+    const flyToMyLocation = () => {
+        if (!geoSupported || !mapInstance) return
+
+        if (myPosition) {
+            mapInstance.flyTo(myPosition, Math.max(mapInstance.getZoom(), 14), { duration: 0.6 })
+            return
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const latLng = [pos.coords.latitude, pos.coords.longitude]
+                setMyPosition(latLng)
+                setMyAccuracyM(
+                    typeof pos.coords.accuracy === "number" && pos.coords.accuracy > 0
+                        ? pos.coords.accuracy
+                        : null
+                )
+                setGeoDenied(false)
+                mapInstance.flyTo(latLng, Math.max(mapInstance.getZoom(), 14), { duration: 0.6 })
+            },
+            () => setGeoDenied(true),
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        )
+    }
 
     return (
         <div className="w-full p-4 md:p-6">
@@ -246,6 +328,28 @@ const BidmapPage = () => {
                                     />
                                 )
                             })}
+
+                            {myPosition && myAccuracyM != null && myAccuracyM < 5000 && (
+                                <Circle
+                                    center={myPosition}
+                                    radius={myAccuracyM}
+                                    pathOptions={{
+                                        color: "#2563eb",
+                                        weight: 1,
+                                        fillColor: "#2563eb",
+                                        fillOpacity: 0.12,
+                                    }}
+                                />
+                            )}
+
+                            {myPosition && (
+                                <Marker
+                                    position={myPosition}
+                                    icon={userLocationIcon}
+                                    zIndexOffset={2000}
+                                    interactive={false}
+                                />
+                            )}
                         </MapContainer>
 
                         <div className="absolute left-1/2 top-5 z-10 -translate-x-1/2">
@@ -260,6 +364,16 @@ const BidmapPage = () => {
                         </div>
 
                         <div className="absolute bottom-4 right-4 z-10 flex flex-col gap-2">
+                            <button
+                                type="button"
+                                onClick={flyToMyLocation}
+                                title={geoDenied ? "Location unavailable — check browser permissions" : "Center map on my location"}
+                                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-[#0b4a74] shadow-sm hover:bg-slate-50 disabled:opacity-50"
+                                aria-label="My location"
+                                disabled={!geoSupported}
+                            >
+                                <LocateFixed className="h-4 w-4" />
+                            </button>
                             <button
                                 type="button"
                                 onClick={() => mapInstance?.zoomIn()}
@@ -278,12 +392,28 @@ const BidmapPage = () => {
                             </button>
                         </div>
 
-                        <div className="absolute bottom-4 left-4 z-10 rounded-lg border border-slate-200 bg-white/90 px-3 py-2 text-xs text-slate-600 shadow-sm backdrop-blur">
+                        <div className="absolute bottom-4 left-4 z-10 max-w-[min(100%,280px)] rounded-lg border border-slate-200 bg-white/90 px-3 py-2 text-xs text-slate-600 shadow-sm backdrop-blur">
                             <p className="font-semibold text-slate-700">{selectedRequirement.title}</p>
                             <p className="mt-0.5 inline-flex items-center gap-1">
                                 <Globe className="h-3.5 w-3.5" />
                                 {selectedRequirement.location}
                             </p>
+                            {myPosition && (
+                                <p className="mt-2 flex items-center gap-1 border-t border-slate-100 pt-2 text-[11px] text-slate-500">
+                                    <span className="inline-block h-2 w-2 shrink-0 rounded-full bg-blue-600 ring-2 ring-blue-200" />
+                                    You are here (blue dot)
+                                </p>
+                            )}
+                            {myPosition && (
+                                <p className="mt-1 text-[11px] text-slate-500">
+                                    {myPosition[0].toFixed(6)}, {myPosition[1].toFixed(6)}
+                                </p>
+                            )}
+                            {geoDenied && !myPosition && (
+                                <p className="mt-2 border-t border-slate-100 pt-2 text-[11px] text-amber-700">
+                                    Enable location in your browser to see where you are on the map.
+                                </p>
+                            )}
                         </div>
                     </section>
                 </div>
