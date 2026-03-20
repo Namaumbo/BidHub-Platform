@@ -33,7 +33,7 @@ const BidCard = ({ bid }) => {
             </p>
             <div className="flex items-center justify-between border-t border-slate-100 pt-4">
                 <span className="text-xs text-slate-500">Delivery in {bid.deliverytime} days</span>
-                <button className="rounded-md bg-[#0b4a74] px-3 py-2 text-sm font-semibold text-white hover:bg-[#083754]">
+                <button className="rounded-md bg-[#0b68a7] px-3 py-2 text-sm font-semibold text-white hover:bg-[#083754]">
                     Shortlist Bid
                 </button>
             </div>

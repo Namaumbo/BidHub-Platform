@@ -10,7 +10,7 @@ const RequirementTable = () => {
     ];
 
     return (
-        <section className="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+        <section className="rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
                 <div>
                     <h2 className="text-lg font-semibold text-slate-900">Active Requirements</h2>
@@ -36,8 +36,10 @@ const RequirementTable = () => {
                             <span className={`rounded-full px-3 py-1 text-[11px] font-bold ring-1 ${item.statusClass}`}>
                                 {item.status}
                             </span>
-                            <button className="rounded-lg bg-[#0b4a74] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#083754]">
-                                Review
+                            <button
+                                className="rounded-lg border border-[#0b4a74]/30 bg-[#0b4a74]/5 px-3 py-2 text-sm font-semibold text-[#0b4a74] hover:bg-[#0b4a74]/10"
+
+                            >                                Review
                             </button>
                         </div>
                     </div>
