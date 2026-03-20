@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom"
+import { MapPin } from "lucide-react"
 
 const linkBase =
     "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors"
@@ -73,6 +74,19 @@ const Sidebar = () => {
                         />
                     </svg>
                     Bids
+                </NavLink>
+
+                <NavLink
+                    to="/bids-map"
+                    data-purpose="nav-link"
+                    className={({ isActive }) =>
+                        `${linkBase} ${isActive ? linkActive : linkInactive}`
+                    }
+                >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <MapPin className="h-5 w-5" />
+                    </svg>
+                Bids Map 
                 </NavLink>
 
                 <NavLink
