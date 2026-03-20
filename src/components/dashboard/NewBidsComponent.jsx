@@ -1,5 +1,6 @@
 import BidCard from "@/features/dashboard/components/BidCard";
 import bids from "@/core/data/bids.json";
+import { Link } from "react-router-dom";
 
 
 const NewBidsComponent = () => {
@@ -14,9 +15,11 @@ const NewBidsComponent = () => {
                     <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-bold text-rose-700">
                         3 need attention
                     </span>
-                    <button className="cursor-pointer rounded-md bg-[#0b4a74] px-4 py-2 text-xs font-semibold text-white hover:bg-[#083754]">
-                        View All
-                    </button>
+                    <Link to="/bids">
+                        <button className="cursor-pointer rounded-md bg-[#0b4a74] px-4 py-2 text-xs font-semibold text-white hover:bg-[#083754]">
+                            View All
+                        </button>
+                    </Link>
                 </div>
             </div>
             <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
