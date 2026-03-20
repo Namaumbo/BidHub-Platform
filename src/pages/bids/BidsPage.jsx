@@ -91,6 +91,7 @@ const BidsPage = () => {
                 </nav>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-0">
+                    {/*-------------= Bids List =---------*/}
                     <div className="h-fit rounded-xl border border-slate-200 bg-white p-6 shadow-sm ring-1 ring-slate-100 lg:rounded-r-none lg:border-r-0 md:p-8">
                         <div className="mb-6 flex items-center gap-2">
                             <h1 className="text-xl font-bold text-slate-900 md:text-2xl">Bids</h1>
@@ -98,6 +99,7 @@ const BidsPage = () => {
                                 {orderItems.length} items
                             </span>
                         </div>
+
 
                         <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-3">
                             <ul className="space-y-4">
@@ -108,11 +110,10 @@ const BidsPage = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setSelectedId(item.id)}
-                                                className={`flex w-full gap-4 rounded-xl border p-3 pr-10 text-left ring-1 transition-all ${
-                                                    isSelected
+                                                className={`flex w-full gap-4 rounded-xl border p-3 pr-10 text-left ring-1 transition-all ${isSelected
                                                         ? "border-[#0b4a74] bg-white shadow-md ring-[#0b4a74]/20"
                                                         : "border-slate-100 bg-white ring-slate-100 hover:border-[#0b4a74]/30 hover:shadow-sm"
-                                                }`}
+                                                    }`}
                                             >
                                                 <img
                                                     src={item.image}
@@ -169,7 +170,7 @@ const BidsPage = () => {
                                     <p className="mt-1 text-xs text-slate-500">Immersive VR for PS5</p>
                                     <div className="mt-2 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                                         <span className="text-sm font-bold text-red-600">
-                                            {formatMoney(449.99)}
+                                            {formatMoney(124.99)}
                                         </span>
                                         <span className="text-xs text-slate-400 line-through">
                                             {formatMoney(549.99)}
@@ -185,8 +186,9 @@ const BidsPage = () => {
                             </div>
                         </div>
                     </div>
+                    {/*-------------= Bids Details =---------*/}
 
-                    <div className="min-w-0 rounded-xl border border-slate-200 bg-linear-to-b from-[#0b4a74]/6 to-white p-6 shadow-sm ring-1 ring-slate-100 lg:rounded-l-none lg:border-l-0 md:p-8">
+                    <div className="min-w-0 ml-4 bg-linear-to-b from-[#0b4a74]/3 to-white p-6 shadow-sm ring-1 ring-slate-100 lg:rounded-l-none lg:border-l-0 md:p-8">
                         <div className="border-b border-slate-100 pb-4">
                             <h2 className="text-center text-2xl font-bold text-slate-900">Bid Details</h2>
                             {selected && (
@@ -205,7 +207,7 @@ const BidsPage = () => {
                                 )}
                             </h3>
                             {selected ? (
-                            <ProductImageComponent images={selected.images} alt={selected.name} />
+                                <ProductImageComponent images={selected.images} alt={selected.name} />
                             ) : (
                                 <p className="text-center text-sm text-slate-500">
                                     Select a bid on the left to see images.
