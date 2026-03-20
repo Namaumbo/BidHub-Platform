@@ -86,7 +86,7 @@ export default function ProductImageComponent({ images, alt }) {
                         <img
                             src={currentImage}
                             alt={alt ? `${alt} ${activeIndex + 1}` : `Product ${activeIndex + 1}`}
-                            className="aspect-square w-full object-cover transition duration-150"
+                            className="aspect-square w-full object-cover transition duration-150 cursor-zoom-in"
                             style={{
                                 transform: isHoverZooming ? "scale(1.9)" : "scale(1)",
                                 transformOrigin: zoomOrigin,
