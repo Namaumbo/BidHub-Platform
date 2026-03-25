@@ -1,4 +1,6 @@
-
+import { StatusTagComponent } from "../../features/posts/components/StatusTagCompoment"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 
 export function PostCardComponent({ post }) {
     const isCompleted = post.status === "completed"
@@ -17,7 +19,7 @@ export function PostCardComponent({ post }) {
 
             <div className="min-w-0 flex-1 space-y-3">
                 <div className="flex flex-wrap items-center gap-2 gap-y-2">
-                    <StatusTag status={post.status} />
+                    <StatusTagComponent status={post.status} />
                     <span className="text-xs text-slate-500">Post ID: #{post.id}</span>
                 </div>
                 <h2 className="text-xl font-bold tracking-tight text-slate-900 md:text-2xl">{post.title}</h2>

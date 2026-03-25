@@ -13,7 +13,6 @@ import {
   UploadCloud,
   X,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 const commodityCatalog = {
   "Grains & Cereals": {
