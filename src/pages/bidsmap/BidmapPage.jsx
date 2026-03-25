@@ -150,6 +150,7 @@ const BidmapPage = () => {
     const [myAccuracyM, setMyAccuracyM] = useState(null)
     const [geoDenied, setGeoDenied] = useState(false)
     const watchIdRef = useRef(null)
+    const hasAutoCenteredOnUserRef = useRef(false)
     const geoSupported = typeof navigator !== "undefined" && "geolocation" in navigator
 
     const filteredRequirements = useMemo(() => {
@@ -257,6 +258,12 @@ const BidmapPage = () => {
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
         )
     }
+
+    useEffect(() => {
+        if (!mapInstance || !myPosition || hasAutoCenteredOnUserRef.current) return
+        mapInstance.flyTo(myPosition, Math.max(mapInstance.getZoom(), 14), { duration: 0.6 })
+        hasAutoCenteredOnUserRef.current = true
+    }, [mapInstance, myPosition])
 
     const applyAreaFilterFromMap = () => {
         if (!mapInstance) return
