@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import { MapPin } from "lucide-react"
+import { MapPin, Package } from "lucide-react"
 
 const linkBase =
     "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors"
@@ -38,6 +38,18 @@ const Sidebar = () => {
                         />
                     </svg>
                     Dashboard
+                </NavLink>
+
+                <NavLink
+                    to="/post-requirement"
+                    end
+                    data-purpose="nav-link"
+                    className={({ isActive }) =>
+                        `${linkBase} ${isActive ? linkActive : linkInactive}`
+                    }
+                >
+                   <Package className="h-5 w-5" />
+                    Post Requirement
                 </NavLink>
 
                 <NavLink
