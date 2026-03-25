@@ -1,5 +1,18 @@
-import { useEffect, useMemo, useState } from "react"
-import { CheckCircle2, ChevronDown, Info, MapPin, Package, Save, ShieldCheck, Truck } from "lucide-react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import {
+  CheckCircle2,
+  ChevronDown,
+  FileText,
+  GalleryHorizontal,
+  Info,
+  MapPin,
+  Package,
+  Save,
+  ShieldCheck,
+  Truck,
+  UploadCloud,
+  X,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const commodityCatalog = {
@@ -40,6 +53,10 @@ const MyPostsPage = () => {
   const [transportMin, setTransportMin] = useState("")
   const [transportMax, setTransportMax] = useState("")
   const [specs, setSpecs] = useState("")
+  const [attachments, setAttachments] = useState([])
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null)
+  const attachmentsInputRef = useRef(null)
+  const imageObjectUrlRef = useRef(null)
 
   const availableTypes = useMemo(
     () => (commodityGroup ? commodityCatalog[commodityGroup]?.types ?? [] : []),
@@ -74,6 +91,53 @@ const MyPostsPage = () => {
     )
   }, [commodityGroup, commodityType, unit, quantity, deliveryLocation, specs])
 
+  useEffect(() => {
+    return () => {
+      if (imageObjectUrlRef.current) {
+        URL.revokeObjectURL(imageObjectUrlRef.current)
+      }
+    }
+  }, [])
+
+  const clearAttachments = () => {
+    setAttachments([])
+    setImagePreviewUrl(null)
+    if (imageObjectUrlRef.current) {
+      URL.revokeObjectURL(imageObjectUrlRef.current)
+      imageObjectUrlRef.current = null
+    }
+    if (attachmentsInputRef.current) attachmentsInputRef.current.value = ""
+  }
+
+  const handleAttachmentsChange = (event) => {
+    const files = Array.from(event.target.files ?? [])
+    const maxBytes = 5 * 1024 * 1024
+
+    const normalized = files
+      .filter((f) => f.size <= maxBytes)
+      .filter((f) => {
+        const name = (f.name ?? "").toLowerCase()
+        return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".pdf")
+      })
+
+    setAttachments(normalized)
+
+    const firstImage = normalized.find((f) => (f.type ?? "").startsWith("image/")) ?? normalized.find((f) => /(\.png|\.jpe?g)$/i.test(f.name))
+
+    if (imageObjectUrlRef.current) {
+      URL.revokeObjectURL(imageObjectUrlRef.current)
+      imageObjectUrlRef.current = null
+    }
+
+    if (firstImage) {
+      const url = URL.createObjectURL(firstImage)
+      imageObjectUrlRef.current = url
+      setImagePreviewUrl(url)
+    } else {
+      setImagePreviewUrl(null)
+    }
+  }
+
   return (
     <div className="w-full p-4 md:p-6">
       <div className="mx-auto">
@@ -99,12 +163,7 @@ const MyPostsPage = () => {
                   <div className="space-y-3">
                     <div>
                       <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                        Commodity Category<Button
-                          variant="outline"
-                          className="w-fit p-4"
-                        >
-                          Post Requirement
-                        </Button>
+                        Commodity Category <span className="text-red-500">*</span>
                       </label>
                       <div className="relative mt-2">
                         <select
@@ -127,7 +186,7 @@ const MyPostsPage = () => {
 
                     <div>
                       <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                        Commodity Type
+                        Commodity Type <span className="text-red-500">*</span>
                       </label>
                       <div className="relative mt-2">
                         <select
@@ -150,7 +209,7 @@ const MyPostsPage = () => {
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px]">
                     <div>
                       <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                        Quantity
+                        Quantity <span className="text-red-500">*</span>
                       </label>
                       <input
                         value={quantity}
@@ -163,7 +222,7 @@ const MyPostsPage = () => {
                     </div>
                     <div>
                       <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                        Unit
+                        Unit <span className="text-red-500">*</span>
                       </label>
                       <div className="relative mt-2">
                         <select
@@ -210,7 +269,7 @@ const MyPostsPage = () => {
 
                   <div>
                     <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                      Transport Price Range (MWK)
+                      Transport Price Range (MWK)  <span className="text-red-500">*</span>
                     </label>
                     <div className="mt-2 grid grid-cols-2 gap-3">
                       <input
@@ -261,39 +320,72 @@ const MyPostsPage = () => {
 
                 <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
                   <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
-                    <ShieldCheck className="h-4 w-4 text-[#0b4a74]" />
+                    <GalleryHorizontal className="h-4 w-4 text-[#0b4a74]" />
                     <h2 className="text-sm font-bold text-slate-900">Pictures &amp; Documents (Optional)</h2>
                   </div>
                 {/* Image/document upload (Optional) */}
                 <div className="px-4 py-4">
-                  <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 block mb-2">
-                    Upload Images/Documents
-                    <span className="ml-1 text-xs text-slate-400">(JPG, PNG, or PDF, max 5MB each)</span>
-                  </label>
                   <input
+                    ref={attachmentsInputRef}
+                    id="attachments"
                     type="file"
                     accept=".jpg,.jpeg,.png,.pdf"
                     multiple
-                    className="block w-full text-sm text-slate-700
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-slate-100 file:text-slate-700
-                      hover:file:bg-slate-200
-                      focus:outline-none focus:ring-2 focus:ring-[#0b4a74]/15 focus:border-[#0b4a74]/40
-                    "
-                    // Note: Implement onChange handler to handle file state as needed
+                    onChange={handleAttachmentsChange}
+                    className="sr-only"
                   />
-                  {/* 
-                    Optionally, display previews or file names here if managing file state.
-                  */}
+
+                  <div className="mb-3">
+                    <label htmlFor="attachments" className="cursor-pointer">
+                      <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center hover:border-[#0b4a74]/30 hover:bg-white transition">
+                        <UploadCloud className="h-5 w-5 text-[#0b4a74]" />
+                        <p className="mt-2 text-sm font-semibold text-slate-700">Click to upload</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          JPG, PNG, or PDF (max 5MB each)
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+
+                  {imagePreviewUrl ? (
+                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                      <img src={imagePreviewUrl} alt="Attachment preview" className="h-56 w-full object-cover" />
+                    </div>
+                  ) : attachments.length > 0 ? (
+                    <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-3">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-5 w-5 text-slate-500" />
+                        <div>
+                          <p className="text-xs font-semibold text-slate-800">{attachments[0]?.name ?? "Document"}</p>
+                          <p className="text-[11px] text-slate-500">
+                            {attachments.length} file{attachments.length === 1 ? "" : "s"} selected
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {attachments.length > 0 && (
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <p className="text-xs text-slate-500">{attachments.length} file{attachments.length === 1 ? "" : "s"} selected</p>
+                      <button
+                        type="button"
+                        onClick={clearAttachments}
+                        className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                        Remove
+                      </button>
+                    </div>
+                  )}
+
                   <p className="mt-2 text-xs text-slate-500">
                     Attach relevant documents such as product photos, quality certificates, or test results.
                   </p>
                 </div>
 
                 </section>
-                
+
                 <button
                   type="button"
                   disabled={!canPublish}
