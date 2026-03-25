@@ -85,10 +85,10 @@ const PostRequirementPage = () => {
       Boolean(commodityType) &&
       Number(quantity) > 0 &&
       Boolean(unit) &&
-      Boolean(deliveryLocation.trim()) &&
-      Boolean(specs.trim())
+      Boolean(deliveryLocation.trim()) 
+ 
     )
-  }, [commodityGroup, commodityType, unit, quantity, deliveryLocation, specs])
+  }, [commodityGroup, commodityType, unit, quantity, deliveryLocation])
 
   useEffect(() => {
     return () => {
