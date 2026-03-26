@@ -1,4 +1,4 @@
-import { StatusTagComponent } from "../../features/posts/components/StatusTagCompoment"
+import { StatusTagComponent } from "@/features/posts/components/StatusTagComponent"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
