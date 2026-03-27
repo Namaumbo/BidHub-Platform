@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom"
+import { LogOut } from "lucide-react"
+import { NavLink, useNavigate } from "react-router-dom"
 import { getNavItemsByRole } from "@/core/config/navigationByRole"
 import { useAuth } from "@/context/AuthContext"
 
@@ -8,8 +9,15 @@ const linkInactive = "text-slate-600 hover:bg-slate-50 hover:text-[#0b4a74]"
 const linkActive = "text-[#0b4a74] bg-[#0b4a74]/10"
 
 const Sidebar = () => {
-    const { role } = useAuth()
+    const navigate = useNavigate()
+    const { role, username, logout } = useAuth()
     const navItems = getNavItemsByRole(role)
+    const roleLabel = `${role.charAt(0).toUpperCase()}${role.slice(1)} Account`
+
+    const handleLogout = () => {
+        logout()
+        navigate("/login", { replace: true })
+    }
 
     return (
         <aside
@@ -56,10 +64,18 @@ const Sidebar = () => {
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE2t6-f_lulDXFiMNUCaJELRZgrsQBzDRKxDBN7TDEhpZPird4fxjoJ5jZFmu9cLteikIDlj-iKIKgsMlpKRwiJV0l4bNn2f4ISIG5gQBXuNj83T37zu99TSK_ySwUQraeGsq6XXRlU9FiUcunu-oisTiXPIwlQ2OSQdqSpgjTlPWhlrlI_zYUVidgnuFsaq_5l4GhR23cBccC7uawZzSbDxnIVKAl4knlW4fzC1Ok3RjVPTRkscV0xENlmdsYPi7DXExb6pzUJVQ"
                     />
                     <div className="overflow-hidden">
-                        <p className="truncate text-sm font-semibold">Alex Thompson</p>
-                        <p className="truncate text-xs text-slate-500">Buyer Account</p>
+                        <p className="truncate text-sm font-semibold">{username || "User"}</p>
+                        <p className="truncate text-xs text-slate-500">{roleLabel}</p>
                     </div>
                 </div>
+                <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900"
+                >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                </button>
             </div>
         </aside>
     )
