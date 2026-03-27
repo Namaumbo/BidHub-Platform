@@ -9,6 +9,7 @@ import BidsPage from "@/pages/bids/BidsPage"
 import MyPostsPage from "@/pages/posts/MyPostsPage"
 import MessagesPage from "@/pages/messages/MessagesPage"
 import BidmapPage from "@/pages/bidsmap/BidmapPage"
+import PostRequirementPage from "@/pages/posts/PostRequirementPage"
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/reviews" element={<ReviewsPage />} />
           <Route path="/bids" element={<BidsPage />} />
           <Route path="/bids-map" element={<BidmapPage />} />
+          <Route path="/post-requirement" element={<PostRequirementPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Route>
