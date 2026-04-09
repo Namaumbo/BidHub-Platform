@@ -1,18 +1,24 @@
 import { createContext, useContext, useState } from "react"
-import { DEFAULT_ROLE } from "@/core/constants/roles"
+import { DEFAULT_ROLE, normalizeRole } from "@/core/constants/roles"
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-    //TODO: to use sessision based auth, we can use the sessionStorage instead of localStorage
+    // later to use the session storage
     const [username, setUsername] = useState(() => localStorage.getItem("username") || "")
-    const [role, setRole] = useState(() => localStorage.getItem("role") || DEFAULT_ROLE)
+    const [role, setRole] = useState(() => normalizeRole(localStorage.getItem("role")))
 
-    const login = (name, userRole = DEFAULT_ROLE) => {
+    /**
+     * Called after a successful sign-in.
+     * The role MUST come from the API response — never from user input.
+     */
+    const login = (name, apiRole) => {
+        console.log("apiRole", apiRole)
+        const normalized = normalizeRole(apiRole)
         setUsername(name)
-        setRole(userRole)
+        setRole(normalized)
         localStorage.setItem("username", name)
-        localStorage.setItem("role", userRole)
+        localStorage.setItem("role", normalized)
     }
 
     const logout = () => {
