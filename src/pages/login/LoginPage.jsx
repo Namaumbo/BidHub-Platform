@@ -9,14 +9,20 @@ import AuthCarouselPanel from "@/features/auth/components/AuthCarouselPanel"
 import useAuthCarousel from "@/features/auth/hooks/useAuthCarousel"
 import { authCarouselMessages } from "@/features/auth/constants/authCarouselMessages"
 import { useAuth } from "@/context/AuthContext"
+import { getDashboardPathByRole } from "@/core/constants/roles"
 
 function LoginPage() {
-    const { login, isAuthenticated } = useAuth()
+
+
+    // ofcoz this will be the session storage later
+    const { login, isAuthenticated, role } = useAuth()
     const navigate = useNavigate()
 
+    // if in localStorage isAuthenticated is true, then redirect to the dashboard
     if (isAuthenticated) {
-        return <Navigate to="/dashboard" replace />
+        return <Navigate to={getDashboardPathByRole(role)} replace />
     }
+
     const [activeTab, setActiveTab] = useState("signin")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
@@ -29,13 +35,13 @@ function LoginPage() {
         setIsSubmitting(true)
         try {
             if (mode === "signin") {
-               
-                await AuthService.signIn({
+                const response = await AuthService.signIn({
                     username: data.username,
                     password: data.password,
                 })
-                login(data.username)
-                navigate("/dashboard", { replace: true })
+                const user_role = response?.data?.user?.role
+                login(data.username, user_role)
+                navigate(getDashboardPathByRole(user_role), { replace: true })
             } else {
                 await AuthService.signUp({
                     fullName: data.fullName,
@@ -58,7 +64,7 @@ function LoginPage() {
                 <BoxGradient>
                     <div className="relative z-10 flex min-h-screen items-center justify-center bg-white/50 px-3 py-6 md:px-6 md:py-8">
                         <div className="mx-auto w-full max-w-4xl p-2">
-                            <div className="grid min-h-[640px] grid-cols-1 gap-2 rounded-[1.3rem]  p-2 lg:grid-cols-2">
+                            <div className="grid min-h-[640px] grid-cols-1 gap-2 rounded-[1.3rem] p-2 lg:grid-cols-2">
                                 <section className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-8 md:px-8">
                                     <div className="w-full max-w-md">
                                         <div className="mb-8 flex items-center gap-2 text-sm font-semibold text-teal-700">
@@ -110,9 +116,6 @@ function LoginPage() {
                 aria-label="Promotional background image"
             />
         </div>
-
-
-        
     )
 }
 

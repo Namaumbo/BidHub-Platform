@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Building2, Clock, Mail, MapPin, PackageOpen, ShieldCheck, Star, User, X } from "lucide-react"
-import SupplierDetailsComponent from "../../features/bids/components/SupplierDetailsComponent"
-import formatMoney from "../../core/utils/FormatMoney"
-import ProductImageComponent from "../../features/bids/components/ProductImageComponent"
+import SupplierDetailsComponent from "../../../features/bids/components/SupplierDetailsComponent"
+import formatMoney from "../../../core/utils/FormatMoney"
+import ProductImageComponent from "../../../features/bids/components/ProductImageComponent"
 
 const orderItems = [
     {
