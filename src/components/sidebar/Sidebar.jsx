@@ -2,6 +2,7 @@ import { LogOut } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { getNavItemsByRole } from "@/core/config/navigationByRole"
 import { useAuth } from "@/context/AuthContext"
+import { getDashboardPathByRole } from "@/core/constants/roles"
 
 const linkBase =
     "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors"
@@ -13,6 +14,7 @@ const Sidebar = () => {
     const { role, username, logout } = useAuth()
     const navItems = getNavItemsByRole(role)
     const roleLabel = `${role.charAt(0).toUpperCase()}${role.slice(1)} Account`
+    const dashboardPath = getDashboardPathByRole(role)
 
     const handleLogout = () => {
         logout()
@@ -25,8 +27,8 @@ const Sidebar = () => {
             data-purpose="sidebar-navigation"
         >
             <div className="border-b border-slate-100 p-6">
-                <NavLink to="/dashboard" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0b4a74]">
+                <NavLink to={dashboardPath} className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--admin-primary,#0b4a74)]">
                         <span className="font-bold text-white">B</span>
                     </div>
                     <span className="text-xl font-bold tracking-tight text-slate-800">BidMarket</span>
@@ -39,7 +41,7 @@ const Sidebar = () => {
                         <NavLink
                             key={item.to}
                             to={item.to}
-                            end={item.to === "/dashboard" || item.to === "/post-requirement"}
+                            end
                             data-purpose="nav-link"
                             className={({ isActive }) =>
                                 `${linkBase} ${isActive ? linkActive : linkInactive}`

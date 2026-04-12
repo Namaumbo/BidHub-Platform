@@ -1,9 +1,12 @@
 import BidCard from "@/features/dashboard/components/BidCard";
 import bids from "@/core/data/bids.json";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { getPathForRole } from "@/core/constants/roles";
 
 
 const NewBidsComponent = () => {
+    const { role } = useAuth()
     return (
         <section className="mb-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -15,7 +18,7 @@ const NewBidsComponent = () => {
                     <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-bold text-rose-700">
                         3 need attention
                     </span>
-                    <Link to="/bids">
+                    <Link to={getPathForRole(role, "bids")}>
                         <button className="cursor-pointer rounded-md bg-[#0b4a74] px-4 py-2 text-xs font-semibold text-white hover:bg-[#083754]">
                             View All
                         </button>

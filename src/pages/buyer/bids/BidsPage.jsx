@@ -4,6 +4,8 @@ import { Building2, Clock, Mail, MapPin, PackageOpen, ShieldCheck, Star, User, X
 import SupplierDetailsComponent from "../../../features/bids/components/SupplierDetailsComponent"
 import formatMoney from "../../../core/utils/FormatMoney"
 import ProductImageComponent from "../../../features/bids/components/ProductImageComponent"
+import { useAuth } from "@/context/AuthContext"
+import { getDashboardPathByRole } from "@/core/constants/roles"
 
 const orderItems = [
     {
@@ -76,6 +78,7 @@ const orderItems = [
 
 
 const BidsPage = () => {
+    const { role } = useAuth()
     const [selectedId, setSelectedId] = useState(orderItems[0]?.id ?? null)
     const selected = orderItems.find((item) => item.id === selectedId)
 
@@ -83,7 +86,7 @@ const BidsPage = () => {
         <div className="w-full px-4 py-6 md:px-6">
             <div className="mx-auto ">
                 <nav className="mb-6 text-sm text-slate-500">
-                    <Link to="/dashboard" className="hover:text-[#0b4a74]">
+                    <Link to={getDashboardPathByRole(role)} className="hover:text-[#0b4a74]">
                         Dashboard
                     </Link>
                     <span className="mx-2">&gt;</span>
