@@ -11,9 +11,9 @@ import BidmapPage from "@/pages/buyer/bidsmap/BidmapPage"
 import PostRequirementPage from "@/pages/buyer/posts/PostRequirementPage"
 import { ROLES } from "@/core/constants/roles"
 import SellPage from "./pages/bidder/sell/SellPage"
-import RequestsPage from "./pages/bidder/request/RequestsPage"
 import MessagesPage from "./pages/bidder/messages/MessagesPage"
 import BidderDashboardPage from "./pages/bidder/dashboard/DashboardPage"
+import SellerMyPostsPage from "./pages/bidder/posts/MyPostsPage"
 
 export default function App() {
   return (
@@ -43,7 +43,7 @@ export default function App() {
 
           <Route element={<RoleRoute allowedRoles={[ROLES.SELLER]} />}>
             <Route path="/seller/dashboard" element={<BidderDashboardPage />} />
-            <Route path="/seller/my-posts" element={<RequestsPage />} />
+            <Route path="/seller/my-posts" element={<SellerMyPostsPage />} />
             <Route path="/seller/sell-requirement" element={<SellPage />} />
             <Route path="/seller/messages" element={<MessagesPage />} />
           </Route>
