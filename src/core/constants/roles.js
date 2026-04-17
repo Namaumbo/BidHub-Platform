@@ -11,7 +11,6 @@ export const DEFAULT_ROLE = ROLES.BUYER
  * Treats "bidder" as an alias for "seller" since our db is not atomic.
  */
 export function normalizeRole(rawRole) {
-console.log(rawRole)
   const value = String(rawRole || "").toLowerCase().trim()
   if (value === ROLES.ADMIN) return ROLES.ADMIN
   if (value === ROLES.BUYER) return ROLES.BUYER
@@ -21,7 +20,6 @@ console.log(rawRole)
 
 /** Returns the correct dashboard path for a given role. */
 export function getDashboardPathByRole(role) {
-  console.log(role)
   const normalized = normalizeRole(role)
   if (normalized === ROLES.ADMIN) return "/admin/dashboard"
   if (normalized === ROLES.SELLER) return "/seller/dashboard"

@@ -2,6 +2,8 @@ import { LogOut } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { getNavItemsByRole } from "@/core/config/navigationByRole"
 import { useAuth } from "@/context/AuthContext"
+import { getDashboardPathByRole, normalizeRole } from "@/core/constants/roles"
+
 
 const linkBase =
     "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors"
@@ -11,8 +13,10 @@ const linkActive = "text-[#0b4a74] bg-[#0b4a74]/10"
 const Sidebar = () => {
     const navigate = useNavigate()
     const { role, username, logout } = useAuth()
-    const navItems = getNavItemsByRole(role)
-    const roleLabel = `${role.charAt(0).toUpperCase()}${role.slice(1)} Account`
+    const currentRole = normalizeRole(role)
+    const navItems = getNavItemsByRole(currentRole)
+    const dashboardPath = getDashboardPathByRole(currentRole)
+    const roleLabel = `${currentRole.charAt(0).toUpperCase()}${currentRole.slice(1)} Account`
 
     const handleLogout = () => {
         logout()
@@ -25,7 +29,7 @@ const Sidebar = () => {
             data-purpose="sidebar-navigation"
         >
             <div className="border-b border-slate-100 p-6">
-                <NavLink to="/dashboard" className="flex items-center gap-2">
+                <NavLink to={dashboardPath} className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0b4a74]">
                         <span className="font-bold text-white">B</span>
                     </div>
@@ -39,7 +43,7 @@ const Sidebar = () => {
                         <NavLink
                             key={item.to}
                             to={item.to}
-                            end={item.to === "/dashboard" || item.to === "/post-requirement"}
+                            end={item.to.endsWith("dashboard") || item.to.endsWith("post-requirement")}
                             data-purpose="nav-link"
                             className={({ isActive }) =>
                                 `${linkBase} ${isActive ? linkActive : linkInactive}`

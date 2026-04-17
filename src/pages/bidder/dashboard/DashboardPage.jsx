@@ -1,6 +1,6 @@
 
 
-const DashboardPage = () => {
+const BidderDashboardPage = () => {
     return (
         <div>
             <h1>Welcome to the Bidder Dashboard</h1>
@@ -8,4 +8,4 @@ const DashboardPage = () => {
     )
 }
 
-export default DashboardPage
+export default BidderDashboardPage

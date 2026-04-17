@@ -13,7 +13,6 @@ export function AuthProvider({ children }) {
      * The role MUST come from the API response — never from user input.
      */
     const login = (name, apiRole) => {
-        console.log("apiRole", apiRole)
         const normalized = normalizeRole(apiRole)
         setUsername(name)
         setRole(normalized)
