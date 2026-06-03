@@ -4,7 +4,7 @@
 const ActiveRequirements = () => {
     return (
         <div>
-            <h2 className="text-2xl font-bold">Active Requirements</h2>
+            <h2 className="text-2xl font-bold">Actiequirements</h2>
         </div>
     )
 }

@@ -1,41 +1,67 @@
+import { Clock, MapPin, Star, Heart } from "lucide-react"
+
 const BidCard = ({ bid }) => {
-    const amount = Number(bid.proposedsum).toLocaleString();
-    const matchScore = Math.min(98, Math.round((Number(bid.rating) / 5) * 100 + 8));
+    const amount = Number(bid.proposedsum).toLocaleString()
+
     return (
-        <article className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#0b4a74]/30 hover:shadow-lg">
-            <div className="mb-4 flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                    <img alt="Seller" className="h-12 w-12 rounded-xl object-cover ring-2 ring-slate-100"
-                            src={bid.profilepic} />
-                    <div>
-                        <h4 className="font-bold text-slate-900">{bid.fullname}</h4>
-                        <div className="flex items-center text-xs font-semibold text-amber-500">
-                            <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20">
-                                <path
-                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                                </path>
-                            </svg>
-                            <span className="ml-1">{bid.rating} (215 reviews)</span>
-                        </div>
-                    </div>
-                </div>
-                <div className="text-right">
-                    <p className="text-xl font-bold text-[#0b4a74]">${amount}</p>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Starting At</p>
-                </div>
-            </div>
-            <div className="mb-4 flex items-center justify-between rounded-lg bg-[#0b4a74]/10 px-3 py-2">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#0b4a74]">AI Match Score</p>
-                <p className="text-lg font-extrabold text-[#0b4a74]">{matchScore}%</p>
-            </div>
-            <p className="mb-4 line-clamp-2 text-sm italic text-slate-600">
-                {bid.summary}
-            </p>
-            <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-                <span className="text-xs text-slate-500">Delivery in {bid.deliverytime} days</span>
-                <button className="rounded-md bg-[#0b68a7] px-3 py-2 text-sm font-semibold text-white hover:bg-[#083754]">
-                    Shortlist Bid
+        <article className="bg-white rounded-2xl overflow-hidden ring-1 ring-slate-200 shadow-sm active:scale-[0.98] transition-transform">
+            {/* Image / visual area */}
+            <div className="relative h-36 bg-gradient-to-br from-[#0b4a74]/10 to-[#0b4a74]/20 flex items-center justify-center">
+                <img
+                    alt={bid.fullname}
+                    className="h-16 w-16 rounded-2xl object-cover ring-4 ring-white shadow-md"
+                    src={bid.profilepic}
+                />
+                <span className="absolute top-2.5 left-2.5 bg-[#0b4a74] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    Verified
+                </span>
+                <button className="absolute top-2.5 right-2.5 h-7 w-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                    <Heart className="h-3.5 w-3.5 text-slate-400" />
                 </button>
+            </div>
+
+            {/* Info */}
+            <div className="p-3">
+                <p className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 min-h-[2.5rem]">
+                    {bid.fullname}
+                </p>
+                <p className="text-base font-extrabold text-[#0b4a74] mt-1.5">
+                    MWK {amount}
+                </p>
+
+                <div className="mt-1.5 flex items-center gap-1 flex-wrap">
+                    <Star className="h-3 w-3 text-amber-400 fill-amber-400 flex-shrink-0" />
+                    <span className="text-[11px] text-slate-600 font-medium">{bid.rating}</span>
+                    {bid.location && (
+                        <>
+                            <span className="text-slate-300 text-xs">·</span>
+                            <MapPin className="h-2.5 w-2.5 text-slate-400 flex-shrink-0" />
+                            <span className="text-[11px] text-slate-500">{bid.location}</span>
+                        </>
+                    )}
+                </div>
+
+                <div className="mt-1 flex items-center gap-1 text-slate-400">
+                    <Clock className="h-2.5 w-2.5 flex-shrink-0" />
+                    <span className="text-[10px]">
+                        Delivers in {bid.deliverytime} {bid.deliverytime === 1 ? "day" : "days"}
+                    </span>
+                </div>
+
+                {bid.summary && (
+                    <p className="mt-2 text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        {bid.summary}
+                    </p>
+                )}
+
+                <div className="mt-3 flex gap-2">
+                    <button className="flex-1 text-xs font-semibold text-[#0b4a74] border border-[#0b4a74]/30 py-2 rounded-xl hover:bg-[#0b4a74]/5 active:scale-95 transition-all">
+                        Message
+                    </button>
+                    <button className="flex-1 text-xs font-bold text-white bg-[#0b4a74] py-2 rounded-xl hover:bg-[#083754] active:scale-95 transition-all">
+                        Accept Offer
+                    </button>
+                </div>
             </div>
         </article>
     )
