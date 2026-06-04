@@ -4,7 +4,7 @@ import ReviewsPage from "@/pages/buyer/reviews/ReviewsPage"
 import ProtectedRoute from "@/router/ProtectedRoute"
 import RoleRoute from "@/router/RoleRoute"
 import AppLayout from "@/components/layout/AppLayout"
-import DashboardPage from "@/pages/buyer/dashboard/DashboardPage"
+import BuyerDashboardPage from "@/pages/buyer/dashboard/DashboardPage"
 import BidsPage from "@/pages/buyer/bids/BidsPage"
 import MyPostsPage from "@/pages/buyer/posts/MyPostsPage"
 import BidmapPage from "@/pages/buyer/bidsmap/BidmapPage"
@@ -27,11 +27,11 @@ export default function App() {
           {/* <Route path="/dashboard" element={<RoleDashboardRedirect />} /> */}
 
           <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN]} />}>
-            <Route path="/admin/dashboard" element={<DashboardPage />} />
+            {/* <Route path="/admin/dashboard" element={<DashboardPage />} /> */}
           </Route>
 
           <Route element={<RoleRoute allowedRoles={[ROLES.BUYER]} />}>
-            <Route path="/buyer/dashboard" element={<DashboardPage />} />
+            <Route path="/buyer/dashboard" element={<BuyerDashboardPage />} />
             <Route path="/buyer/my-posts" element={<MyPostsPage />} />
             <Route path="/buyer/post-requirement" element={<PostRequirementPage />} />
             <Route path="/buyer/bids" element={<BidsPage />} />

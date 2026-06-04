@@ -41,6 +41,9 @@ function LoginPage() {
                 })
                 const user_role = response?.data?.user?.role
                 login(data.username, user_role)
+
+                console.log(user_role)
+
                 navigate(getDashboardPathByRole(user_role), { replace: true })
             } else {
                 await AuthService.signUp({

@@ -1,4 +1,6 @@
+import { Fragment, useState } from "react"
 import { Link } from "react-router-dom"
+import { cn } from "@/lib/utils"
 import {
     Building2,
     Truck,
@@ -14,7 +16,12 @@ import {
     Star,
     Clock,
     Package,
+    Scale,
+    ShieldCheck,
 } from "lucide-react"
+import useAuthCarousel from "@/features/auth/hooks/useAuthCarousel"
+import StarRating from "@/features/dashboards/components/StarRating"
+import OfferCard from "@/features/dashboards/components/OfferCard"
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -39,7 +46,7 @@ const latestOffers = [
         rating: 4.5,
         reviews: 42,
         isNew: true,
-        icon: Building2,
+        Icon: Building2,
         gradient: "from-orange-100 to-orange-200",
         iconColor: "text-orange-400",
         deliveryDays: 3,
@@ -53,7 +60,7 @@ const latestOffers = [
         rating: 4.8,
         reviews: 67,
         isNew: true,
-        icon: Briefcase,
+        Icon: Briefcase,
         gradient: "from-purple-100 to-purple-200",
         iconColor: "text-purple-400",
         deliveryDays: 5,
@@ -67,7 +74,7 @@ const latestOffers = [
         rating: 4.2,
         reviews: 28,
         isNew: false,
-        icon: Truck,
+        Icon: Truck,
         gradient: "from-blue-100 to-blue-200",
         iconColor: "text-blue-400",
         deliveryDays: 1,
@@ -81,7 +88,7 @@ const latestOffers = [
         rating: 4.6,
         reviews: 91,
         isNew: true,
-        icon: ShoppingBasket,
+        Icon: ShoppingBasket,
         gradient: "from-green-100 to-green-200",
         iconColor: "text-green-400",
         deliveryDays: 2,
@@ -94,58 +101,126 @@ const myPosts = [
     { id: 3, title: "Transport — LLW to BT", offers: 8, status: "reviewing", category: "Transport" },
 ]
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
+const heroSlides = [
+    {
+        id: "post",
+        badge: "Free to post",
+        titleLines: ["Post What You Need,", "Get the Best Price"],
+        description: "Suppliers across Malawi will send you their best offers.",
+        cta: "Post Now — It's Free",
+        ctaTo: "/buyer/post-requirement",
+        icon: Package,
+    },
+    {
+        id: "compare",
+        badge: "Save more",
+        titleLines: ["Compare Offers,", "Pick the Best Deal"],
+        description: "Review prices, delivery times, and ratings from multiple suppliers in one place.",
+        cta: "Browse Offers",
+        ctaTo: "/buyer/bids",
+        icon: Scale,
+    },
+    {
+        id: "verified",
+        badge: "Trusted suppliers",
+        titleLines: ["Verified Sellers,", "Across Malawi"],
+        description: "Buy with confidence from local businesses rated by buyers like you.",
+        cta: "Start Posting",
+        ctaTo: "/buyer/post-requirement",
+        icon: ShieldCheck,
+    },
+]
 
-const OfferCard = ({ offer }) => {
-    const Icon = offer.icon
+const followerProducts = [
+    {
+        id: 1,
+        title: "Mountain Bike Pro 29\" — Matte Black Limited Edition...",
+        image: "/Bike.png",
+        price: 450000,
+        rating: 4.5,
+        reviews: 1200,
+    },
+    {
+        id: 2,
+        title: "Iphone 15 Pro Max — 256GB — Matte Black...",
+        image: "/iphone.png",
+        price: 320000,
+        rating: 4.8,
+        reviews: 670, 
+    },
+    {
+        id: 3,
+        title: "Portland Cement OPC 42.5 — 200 Bags Bulk Pack...",
+        image: null,
+        icon: Building2,
+        price: 850000,
+        rating: 4.5,
+        reviews: 420,
+    },
+    {
+        id: 4,
+        title: "Maize Flour (Ufa) — 50kg Bags × 100 Wholesale...",
+        image: null,
+        icon: ShoppingBasket,
+        price: 420000,
+        rating: 4.6,
+        reviews: 910,
+    },
+]
+
+const ProductListingCard = ({ product }) => {
+    const [imageFailed, setImageFailed] = useState(false)
+    const FallbackIcon = product.icon
+    const showImage = product.image && !imageFailed
+
     return (
-        <article className="bg-white rounded-2xl overflow-hidden ring-1 ring-slate-200 shadow-sm active:scale-[0.98] transition-transform">
-            {/* Image area */}
-            <div className={`relative h-32 bg-gradient-to-br ${offer.gradient} flex items-center justify-center`}>
-                <Icon className={`h-14 w-14 ${offer.iconColor} opacity-50`} />
-                <span
-                    className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        offer.isNew
-                            ? "bg-[#0b4a74] text-white"
-                            : "bg-amber-100 text-amber-700"
-                    }`}
+        <article className="w-[168px] shrink-0 snap-start sm:w-[180px]">
+            <div className="relative flex aspect-square items-center justify-center rounded-2xl bg-[#F2F3F7] p-5">
+                {showImage ? (
+                    <img
+                        src={product.image}
+                        alt={product.title}
+                        className="max-h-full max-w-full object-contain"
+                        onError={() => setImageFailed(true)}
+                    />
+                ) : FallbackIcon ? (
+                    <FallbackIcon className="h-20 w-20 text-slate-300" strokeWidth={1.25} />
+                ) : (
+                    <Package className="h-20 w-20 text-slate-300" strokeWidth={1.25} />
+                )}
+                <button
+                    type="button"
+                    aria-label="Add to favourites"
+                    className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#E4E6EC] shadow-sm transition-colors hover:bg-[#d8dbe3]"
                 >
-                    {offer.isNew ? "New" : "Used"}
-                </span>
-                <button className="absolute top-2 right-2 h-7 w-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
-                    <Heart className="h-3.5 w-3.5 text-slate-400" />
+                    <Heart className="h-4 w-4 text-white" strokeWidth={2} />
                 </button>
             </div>
 
-            {/* Info */}
-            <div className="p-3">
-                <p className="text-xs font-semibold text-slate-800 leading-snug line-clamp-2 min-h-[2.5rem]">
-                    {offer.title}
-                </p>
-                <p className="text-sm font-extrabold text-[#0b4a74] mt-1.5">
-                    MWK {offer.price.toLocaleString()}
-                </p>
-                <div className="mt-1.5 flex items-center gap-1 flex-wrap">
-                    <Star className="h-3 w-3 text-amber-400 fill-amber-400 flex-shrink-0" />
-                    <span className="text-[11px] text-slate-500">{offer.rating}</span>
-                    <span className="text-slate-300 text-xs">·</span>
-                    <MapPin className="h-2.5 w-2.5 text-slate-400 flex-shrink-0" />
-                    <span className="text-[11px] text-slate-500 truncate">{offer.location}</span>
-                </div>
-                <div className="mt-1 flex items-center gap-1 text-slate-400">
-                    <Clock className="h-2.5 w-2.5 flex-shrink-0" />
-                    <span className="text-[10px]">Delivers in {offer.deliveryDays} {offer.deliveryDays === 1 ? "day" : "days"}</span>
-                </div>
-            </div>
+            <h3 className="mt-3 line-clamp-2 text-sm font-semibold leading-snug text-slate-700">
+                {product.title}
+            </h3>
+
+            <StarRating rating={product.rating} reviews={product.reviews} />
+
+            <p className="mt-2 leading-none">
+                <span className="text-lg font-bold text-slate-900">
+                    {product.price.toLocaleString()}
+                </span>
+                <span className="ml-1 text-sm font-medium text-slate-600">MWK</span>
+            </p>
         </article>
     )
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
 
-const DashboardPage = () => {
+const BuyerDashboardPage = () => {
+    const { activeSlide, setActiveSlide } = useAuthCarousel(heroSlides.length, 6000)
+    const slide = heroSlides[activeSlide]
+    const SlideIcon = slide.icon
+
     return (
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto mt-10 m-5">
 
             {/* ── Hero Banner — full bleed on mobile ── */}
             <div className="relative -mx-4 md:mx-0 md:rounded-2xl overflow-hidden bg-[#0b4a74] px-5 py-7 md:p-8 mb-5">
@@ -155,36 +230,63 @@ const DashboardPage = () => {
                 <div className="pointer-events-none absolute right-20 top-4 h-12 w-12 rounded-full bg-white/8" />
 
                 <div className="relative flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                        <span className="inline-block bg-white/15 text-white text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide mb-2">
-                            Free to post
-                        </span>
-                        <h2 className="text-white text-xl font-extrabold leading-snug md:text-2xl">
-                            Post What You Need,<br />
-                            Get the Best Price
-                        </h2>
-                        <p className="text-[#a8d4ef] text-sm mt-1.5 leading-relaxed max-w-xs">
-                            Suppliers across Malawi will send you their best offers.
-                        </p>
-                        <Link to="/buyer/post-requirement">
-                            <button className="mt-4 bg-white text-[#0b4a74] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-slate-100 active:scale-95 transition-all shadow-sm">
-                                Post Now — It's Free
-                            </button>
-                        </Link>
+                    <div
+                        className="flex-1 min-h-[168px] sm:min-h-[152px]"
+                        aria-live="polite"
+                        aria-atomic="true"
+                    >
+                        <div
+                            key={slide.id}
+                            className="animate-in fade-in duration-500"
+                        >
+                            <span className="inline-block bg-white/15 text-white text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide mb-2">
+                                {slide.badge}
+                            </span>
+                            <h2 className="text-white text-xl font-extrabold leading-snug md:text-2xl">
+                                {slide.titleLines.map((line, index) => (
+                                    <Fragment key={line}>
+                                        {index > 0 && <br />}
+                                        {line}
+                                    </Fragment>
+                                ))}
+                            </h2>
+                            <p className="text-[#a8d4ef] text-sm mt-1.5 leading-relaxed max-w-xs">
+                                {slide.description}
+                            </p>
+                            <Link to={slide.ctaTo}>
+                                <button className="mt-4 bg-white text-[#0b4a74] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-slate-100 active:scale-95 transition-all shadow-sm">
+                                    {slide.cta}
+                                </button>
+                            </Link>
+                        </div>
                     </div>
                     {/* Visual block (web) */}
                     <div className="hidden sm:flex flex-col items-center justify-center flex-shrink-0">
-                        <div className="h-24 w-24 rounded-3xl bg-white/10 flex items-center justify-center">
-                            <Package className="h-12 w-12 text-white/80" />
+                        <div
+                            key={slide.id}
+                            className="h-24 w-24 rounded-3xl bg-white/10 flex items-center justify-center animate-in fade-in duration-500"
+                        >
+                            <SlideIcon className="h-12 w-12 text-white/80" />
                         </div>
                     </div>
                 </div>
 
-                {/* Dot indicators (carousel feel) */}
-                <div className="flex gap-1.5 mt-4">
-                    <div className="h-1.5 w-5 rounded-full bg-white" />
-                    <div className="h-1.5 w-1.5 rounded-full bg-white/30" />
-                    <div className="h-1.5 w-1.5 rounded-full bg-white/30" />
+                {/* Dot indicators */}
+                <div className="flex gap-1.5 mt-4" role="tablist" aria-label="Hero carousel">
+                    {heroSlides.map((item, index) => (
+                        <button
+                            key={item.id}
+                            type="button"
+                            role="tab"
+                            aria-selected={activeSlide === index}
+                            aria-label={`Show slide ${index + 1}: ${item.titleLines.join(" ")}`}
+                            onClick={() => setActiveSlide(index)}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${activeSlide === index
+                                ? "w-5 bg-white"
+                                : "w-1.5 bg-white/30 hover:bg-white/50"
+                                }`}
+                        />
+                    ))}
                 </div>
             </div>
 
@@ -272,11 +374,10 @@ const DashboardPage = () => {
                                     </div>
                                     <div className="flex items-center gap-2 flex-shrink-0">
                                         <span
-                                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${
-                                                post.status === "open"
-                                                    ? "bg-emerald-100 text-emerald-700"
-                                                    : "bg-amber-100 text-amber-700"
-                                            }`}
+                                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${post.status === "open"
+                                                ? "bg-emerald-100 text-emerald-700"
+                                                : "bg-amber-100 text-amber-700"
+                                                }`}
                                         >
                                             {post.status}
                                         </span>
@@ -285,6 +386,28 @@ const DashboardPage = () => {
                                         </Link>
                                     </div>
                                 </div>
+                            ))}
+                        </div>
+
+
+                    </section>
+                    <section className="mb-6 mt-10">
+                        <div className="mb-3">
+                            <h2 className="text-base font-bold text-slate-900">Followers posts</h2>
+                            <p className="mt-0.5 text-xs text-slate-500">
+                                Your favourites are selling — shop their listings
+                            </p>
+                        </div>
+
+                        <div
+                            className={cn(
+                                "flex gap-4 overflow-x-auto pb-2",
+                                "snap-x snap-mandatory scroll-smooth",
+                                "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                            )}
+                        >
+                            {followerProducts.map((product) => (
+                                <ProductListingCard key={product.id} product={product} />
                             ))}
                         </div>
                     </section>
@@ -313,11 +436,10 @@ const DashboardPage = () => {
                                         </p>
                                     </div>
                                     <span
-                                        className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                                            post.status === "open"
-                                                ? "bg-emerald-100 text-emerald-700"
-                                                : "bg-amber-100 text-amber-700"
-                                        }`}
+                                        className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${post.status === "open"
+                                            ? "bg-emerald-100 text-emerald-700"
+                                            : "bg-amber-100 text-amber-700"
+                                            }`}
                                     >
                                         {post.status}
                                     </span>
@@ -382,4 +504,4 @@ const DashboardPage = () => {
     )
 }
 
-export default DashboardPage
+export default BuyerDashboardPage
