@@ -13,6 +13,11 @@ import { normalizeRole } from "@/core/constants/roles"
 const ROLE_NAV_ITEMS = Object.freeze({
   [ROLES.BUYER]: [
     {
+      to: "/buyer/dashboard",
+      label: "Home",
+      icon: Home,
+    },
+    {
       to: "/buyer/post-requirement",
       label: "Post Requirement",
       icon: Package,

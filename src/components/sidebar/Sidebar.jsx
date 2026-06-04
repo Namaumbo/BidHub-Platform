@@ -4,11 +4,18 @@ import { getNavItemsByRole } from "@/core/config/navigationByRole"
 import { useAuth } from "@/context/AuthContext"
 import { getDashboardPathByRole, normalizeRole } from "@/core/constants/roles"
 
-
 const linkBase =
-    "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors"
-const linkInactive = "text-slate-600 hover:bg-slate-50 hover:text-[#0b4a74]"
-const linkActive = "text-[#0b4a74] bg-[#0b4a74]/10"
+    "flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors text-[13px]"
+const linkInactive = "text-white/80 hover:bg-white/10 hover:text-white"
+const linkActive = "bg-white text-[#0f6e56] font-semibold"
+
+const getInitials = (name) => {
+    if (!name) return "U"
+    const parts = name.trim().split(" ")
+    return parts.length >= 2
+        ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+        : parts[0].slice(0, 2).toUpperCase()
+}
 
 const Sidebar = () => {
     const navigate = useNavigate()
@@ -17,6 +24,7 @@ const Sidebar = () => {
     const navItems = getNavItemsByRole(currentRole)
     const dashboardPath = getDashboardPathByRole(currentRole)
     const roleLabel = `${currentRole.charAt(0).toUpperCase()}${currentRole.slice(1)} Account`
+    const initials = getInitials(username)
 
     const handleLogout = () => {
         logout()
@@ -25,18 +33,21 @@ const Sidebar = () => {
 
     return (
         <aside
-            className="hidden h-screen w-64 flex-col border-r border-slate-200 bg-white md:flex sticky top-0"
+            className="hidden h-screen w-60 flex-col bg-[#0f6e56] md:flex sticky top-0"
             data-purpose="sidebar-navigation"
         >
-            <div className="border-b border-slate-100 p-6">
-                <NavLink to={dashboardPath} className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0b4a74]">
-                        <span className="font-bold text-white">B</span>
+            {/* Logo */}
+            <div className="px-5 py-5 border-b border-white/10">
+                <NavLink to={dashboardPath} className="flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+                        <span className="font-extrabold text-white text-sm">B</span>
                     </div>
-                    <span className="text-xl font-bold tracking-tight text-slate-800">BidMarket</span>
+                    <span className="text-[17px] font-extrabold tracking-tight text-white">BidHub</span>
                 </NavLink>
             </div>
-            <nav className="flex-1 space-y-1 overflow-y-auto p-4">
+
+            {/* Nav items */}
+            <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
                 {navItems.map((item) => {
                     const Icon = item.icon
                     return (
@@ -49,10 +60,10 @@ const Sidebar = () => {
                                 `${linkBase} ${isActive ? linkActive : linkInactive}`
                             }
                         >
-                            <Icon className="h-5 w-5" />
-                            {item.label}
+                            <Icon className="h-[18px] w-[18px] shrink-0" />
+                            <span className="flex-1">{item.label}</span>
                             {item.badgeCount ? (
-                                <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-xs text-white">
+                                <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
                                     {item.badgeCount}
                                 </span>
                             ) : null}
@@ -60,24 +71,24 @@ const Sidebar = () => {
                     )
                 })}
             </nav>
-            <div className="border-t border-slate-100 p-4">
-                <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-2" data-purpose="user-footer-card">
-                    <img
-                        alt="User"
-                        className="h-10 w-10 rounded-full border border-white"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE2t6-f_lulDXFiMNUCaJELRZgrsQBzDRKxDBN7TDEhpZPird4fxjoJ5jZFmu9cLteikIDlj-iKIKgsMlpKRwiJV0l4bNn2f4ISIG5gQBXuNj83T37zu99TSK_ySwUQraeGsq6XXRlU9FiUcunu-oisTiXPIwlQ2OSQdqSpgjTlPWhlrlI_zYUVidgnuFsaq_5l4GhR23cBccC7uawZzSbDxnIVKAl4knlW4fzC1Ok3RjVPTRkscV0xENlmdsYPi7DXExb6pzUJVQ"
-                    />
+
+            {/* User footer */}
+            <div className="border-t border-white/10 px-4 py-4" data-purpose="user-footer-card">
+                <div className="flex items-center gap-3 mb-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 text-white text-[13px] font-bold">
+                        {initials}
+                    </div>
                     <div className="overflow-hidden">
-                        <p className="truncate text-sm font-semibold">{username || "User"}</p>
-                        <p className="truncate text-xs text-slate-500">{roleLabel}</p>
+                        <p className="truncate text-[13px] font-semibold text-white">{username || "User"}</p>
+                        <p className="truncate text-[11px] text-white/60">{roleLabel}</p>
                     </div>
                 </div>
                 <button
                     type="button"
                     onClick={handleLogout}
-                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 px-3 py-2 text-[12px] font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                 >
-                    <LogOut className="h-4 w-4" />
+                    <LogOut className="h-3.5 w-3.5" />
                     Logout
                 </button>
             </div>

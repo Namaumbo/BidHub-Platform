@@ -33,32 +33,32 @@ const TopHeader = () => {
                             type="text"
                         />
                     </label>
-                    <button className="h-10 w-10 rounded-xl bg-[#0b4a74] flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <button className="h-10 w-10 rounded-xl bg-[#0EA432] flex items-center justify-center shrink-0">
                         <SlidersHorizontal className="h-4 w-4 text-white" />
                     </button>
                 </div>
             </header>
 
             {/* ── Desktop header ── */}
-            <header className="hidden md:flex sticky top-0 z-40 w-full items-center justify-between border-b border-slate-200 bg-white px-6 py-3 lg:px-8">
+            <header className="hidden md:flex sticky top-0 z-40 w-full items-center justify-between border-b border-slate-100 bg-white px-6 py-3 lg:px-8">
                 <label className="relative flex items-center">
                     <SearchIcon className="absolute left-3 text-slate-400 h-4 w-4" />
                     <input
-                        className="w-64 lg:w-96 rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-4 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0b4a74]/30 transition-all"
+                        className="w-64 lg:w-80 rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-4 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0EA432]/30 transition-all"
                         placeholder="Search suppliers, categories, locations..."
                         type="text"
                     />
                 </label>
 
                 <div className="flex items-center gap-3">
-                    <button className="hidden sm:flex items-center gap-2 rounded-xl bg-[#0b4a74] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#083754] transition-colors shadow-sm">
+                    <button className="hidden sm:flex items-center gap-2 rounded-xl bg-[#0EA432] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#0b8f2b] transition-colors">
                         + Post Requirement
                     </button>
-                    <button className="relative h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
-                        <BellIcon className="h-4.5 w-4.5" />
+                    <button className="relative h-9 w-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                        <BellIcon className="h-4 w-4" />
                         <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500" />
                     </button>
-                    <div className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-[#0b4a74]/20 cursor-pointer">
+                    <div className="h-8 w-8 rounded-full overflow-hidden ring-2 ring-[#0EA432]/25 cursor-pointer">
                         <img
                             className="h-full w-full object-cover"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuALw2V8slUgbFR7vy4iV909JrD2vrI-VzKIqrBW3UdYdFQbTsd94CYn2yGqJhsdUfyiTrQmacH6fL9tyxJeQB2wH1U0pDWSBeHZ9XHNoU9eFqqbkVpWdSHX3Ekm_TKpUqCIvicqKsu8aKryrJQA61_uX5qMlzqmZPW7bCZv1IbD4yp_bOPz0ibjXDLAuy-dXmx-EcPw4m4bgLTE2DdI3dz7ZzwHbGfSVGMFYfOPvdQd4T_gqHDY3PGh831-_25UFXNhxMaYdoKOYgk"

@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import {
@@ -13,10 +13,8 @@ import {
     ChevronRight,
     Heart,
     Package,
-    Scale,
-    ShieldCheck,
+    Search,
 } from "lucide-react"
-import useAuthCarousel from "@/features/auth/hooks/useAuthCarousel"
 import StarRating from "@/features/dashboards/components/StarRating"
 import OfferCard from "@/features/dashboards/components/OfferCard"
 
@@ -100,37 +98,13 @@ const myPosts = [
     { id: 3, title: "Transport — LLW to BT", offers: 8, status: "reviewing", category: "Transport" },
 ]
 
-const heroSlides = [
-    {
-        id: "post",
-        badge: "Free listing",
-        titleLines: ["Get Free Listing"],
-        description: "Register today and get your free listing.",
-        cta: "View offer",
-        ctaTo: "/buyer/post-requirement",
-        icon: Package,
-        image: "/Bag.png",
-    },
-    {
-        id: "compare",
-        badge: "Fast response",
-        titleLines: ["Connect Faster,", "Close Better Deals"],
-        description: "Reach more suppliers quickly and compare offers with confidence.",
-        cta: "View offer",
-        ctaTo: "/buyer/bids",
-        icon: Scale,
-        image: "/hand.webp",
-    },
-    {
-        id: "verified",
-        badge: "Trusted delivery",
-        titleLines: ["Find Reliable", "Transport Options"],
-        description: "Book trusted vehicle options for your delivery and logistics needs.",
-        cta: "View offer",
-        ctaTo: "/buyer/post-requirement",
-        icon: ShieldCheck,
-        image: "/car.png",
-    },
+const heroCategories = [
+    { label: "Building", to: "/buyer/bids" },
+    { label: "Transport", to: "/buyer/bids" },
+    { label: "Groceries", to: "/buyer/bids" },
+    { label: "Office", to: "/buyer/bids" },
+    { label: "Agriculture", to: "/buyer/bids" },
+    { label: "Medical", to: "/buyer/bids" },
 ]
 
 const followerProducts = [
@@ -218,90 +192,39 @@ const ProductListingCard = ({ product }) => {
 
 
 const BuyerDashboardPage = () => {
-    const { activeSlide, setActiveSlide } = useAuthCarousel(heroSlides.length, 6000)
-    const slide = heroSlides[activeSlide]
-    const SlideIcon = slide.icon
-
     return (
-        <div className="max-w-7xl mx-auto mt-10 m-5">
+        <div className="max-w-7xl mx-auto m-5 mt-8">
 
-            {/* ── Hero Banner — full bleed on mobile ── */}
-            <div className="relative -mx-4 mb-5 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl md:p-8">
-                {/* Decorative circles */}
-                <div className="pointer-events-none absolute -right-14 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-[#ebf9e5]" />
-                <div className="pointer-events-none absolute right-16 top-8 h-24 w-24 rounded-full bg-[#f1fbe8]" />
-                <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#f3fee8]" />
+            {/* ── Hero — Search Section ── */}
+            <section className="mb-8 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-10 text-center">
+                <h1 className="text-[26px] font-bold text-slate-900 leading-tight mb-6">
+                    Find what you need, fast.
+                </h1>
 
-                <div className="relative flex items-center justify-between gap-4">
-                    <div
-                        className="flex-1 min-h-[168px] sm:min-h-[152px]"
-                        aria-live="polite"
-                        aria-atomic="true"
-                    >
-                        <div
-                            key={slide.id}
-                            className="animate-in fade-in duration-500"
-                        >
-                            <span className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
-                                {slide.badge}
-                            </span>
-                            <h2 className="text-xl font-extrabold leading-snug text-[#129a2f] md:text-2xl">
-                                {slide.titleLines.map((line, index) => (
-                                    <Fragment key={line}>
-                                        {index > 0 && <br />}
-                                        {line}
-                                    </Fragment>
-                                ))}
-                            </h2>
-                            <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-slate-700">
-                                {slide.description}
-                            </p>
-                            <Link to={slide.ctaTo}>
-                                <button className="mt-4 rounded-full bg-[#0ea432] px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#0b8f2b] active:scale-95">
-                                    {slide.cta}
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
-                    {/* Visual block (web) */}
-                    <div className="hidden shrink-0 sm:flex">
-                        <div
-                            key={slide.id}
-                            className="relative flex h-44 w-[220px] items-center justify-center animate-in fade-in duration-500"
-                        >
-                            {slide.image ? (
-                                <img
-                                    src={slide.image}
-                                    alt={slide.titleLines.join(" ")}
-                                    className="relative z-10 h-full w-full object-contain"
-                                />
-                            ) : (
-                                <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-[#ddf3d1]">
-                                    <SlideIcon className="h-12 w-12 text-[#149330]" />
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                {/* Search bar — 52px pill */}
+                <div className="relative max-w-2xl mx-auto mb-6 flex items-center">
+                    <Search className="absolute left-5 h-[18px] w-[18px] text-slate-400 pointer-events-none" />
+                    <input
+                        className="w-full h-[52px] rounded-full border border-slate-200 bg-white pl-12 pr-36 text-[14px] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0f6e56]/25 transition-all"
+                        placeholder="Search suppliers, categories, locations..."
+                        type="text"
+                    />
+                    <button className="absolute right-1.5 h-[40px] rounded-full bg-[#0f6e56] px-6 text-[13px] font-bold text-white hover:bg-[#0b5a47] transition-colors">
+                        Search
+                    </button>
                 </div>
 
-                {/* Dot indicators */}
-                <div className="flex gap-1.5 mt-4" role="tablist" aria-label="Hero carousel">
-                    {heroSlides.map((item, index) => (
-                        <button
-                            key={item.id}
-                            type="button"
-                            role="tab"
-                            aria-selected={activeSlide === index}
-                            aria-label={`Show slide ${index + 1}: ${item.titleLines.join(" ")}`}
-                            onClick={() => setActiveSlide(index)}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${activeSlide === index
-                                ? "w-6 bg-[#129a2f]"
-                                : "w-2 bg-[#cfd8cb] hover:bg-[#b8c5b2]"
-                                }`}
-                        />
+                {/* Category quick-link pills — outlined teal */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                    {heroCategories.map((cat) => (
+                        <Link key={cat.label} to={cat.to}>
+                            <span className="inline-block rounded-full border border-[#0f6e56] px-4 py-1.5 text-[13px] font-medium text-[#0f6e56] bg-white hover:bg-[#0f6e56] hover:text-white transition-colors cursor-pointer">
+                                {cat.label}
+                            </span>
+                        </Link>
                     ))}
                 </div>
-            </div>
+            </section>
 
             {/* ── Main layout: single col mobile, 2-col on lg+ ── */}
             <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6 xl:grid-cols-[1fr_320px]">
@@ -312,8 +235,8 @@ const BuyerDashboardPage = () => {
                     {/* ── Categories ── */}
                     <section className="mb-6">
                         <div className="flex items-center justify-between mb-3">
-                            <h2 className="text-base font-bold text-slate-900">Browse by Category</h2>
-                            <Link to="/buyer/bids" className="flex items-center gap-0.5 text-sm font-semibold text-[#0b4a74] hover:underline">
+                            <h2 className="text-[20px] font-medium text-slate-900">Browse by Category</h2>
+                            <Link to="/buyer/bids" className="flex items-center gap-0.5 text-[13px] font-semibold text-[#0EA432] hover:underline">
                                 See All <ChevronRight className="h-3.5 w-3.5" />
                             </Link>
                         </div>
@@ -342,14 +265,14 @@ const BuyerDashboardPage = () => {
                     <section className="mb-6">
                         <div className="flex items-center justify-between mb-3">
                             <div>
-                                <h2 className="text-base font-bold text-slate-900">Latest Offers For You</h2>
-                                <p className="text-xs text-slate-500 mt-0.5">
+                                <h2 className="text-[20px] font-medium text-slate-900">Latest Offers For You</h2>
+                                <p className="text-[13px] text-slate-500 mt-0.5">
                                     Suppliers ready to deliver in Malawi
                                 </p>
                             </div>
                             <Link
                                 to="/buyer/bids"
-                                className="flex items-center gap-0.5 text-sm font-semibold text-[#0b4a74] hover:underline flex-shrink-0"
+                                className="flex items-center gap-0.5 text-[13px] font-semibold text-[#0EA432] hover:underline shrink-0"
                             >
                                 See All <ChevronRight className="h-3.5 w-3.5" />
                             </Link>
@@ -365,10 +288,10 @@ const BuyerDashboardPage = () => {
                     {/* ── My Active Posts — mobile only (short) ── */}
                     <section className="mb-6 lg:hidden">
                         <div className="flex items-center justify-between mb-3">
-                            <h2 className="text-base font-bold text-slate-900">My Active Posts</h2>
+                            <h2 className="text-[20px] font-medium text-slate-900">My Active Posts</h2>
                             <Link
                                 to="/buyer/my-posts"
-                                className="text-sm font-semibold text-[#0b4a74] hover:underline"
+                                className="text-[13px] font-semibold text-[#0EA432] hover:underline"
                             >
                                 See All
                             </Link>
@@ -377,22 +300,22 @@ const BuyerDashboardPage = () => {
                             {myPosts.map((post) => (
                                 <div
                                     key={post.id}
-                                    className="bg-white rounded-2xl p-4 ring-1 ring-slate-200 shadow-sm flex items-center justify-between gap-3"
+                                    className="bg-white rounded-2xl p-4 ring-1 ring-slate-200 flex items-center justify-between gap-3"
                                 >
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-slate-800 truncate">{post.title}</p>
-                                        <p className="text-xs text-slate-500 mt-0.5">
-                                            <span className="font-bold text-[#0b4a74]">{post.offers}</span> offers · {post.category}
+                                        <p className="text-[15px] font-medium text-slate-800 truncate">{post.title}</p>
+                                        <p className="text-[12px] text-slate-400 mt-0.5">
+                                            <span className="font-semibold text-[#0EA432]">{post.offers}</span> offers · {post.category}
                                         </p>
                                     </div>
-                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                    <div className="flex items-center gap-2 shrink-0">
                                         <span
                                             className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${post.status === "open"
                                                 ? "bg-emerald-100 text-emerald-700"
-                                                : "bg-amber-100 text-amber-700"
+                                                : "bg-blue-100 text-blue-700"
                                                 }`}
                                         >
-                                            {post.status}
+                                            {post.status === "reviewing" ? "Reviewed" : post.status}
                                         </span>
                                         <Link to="/buyer/bids">
                                             <ChevronRight className="h-4 w-4 text-slate-400" />
@@ -404,10 +327,10 @@ const BuyerDashboardPage = () => {
 
 
                     </section>
-                    <section className="mb-6 mt-10">
+                    <section className="mb-6 mt-8">
                         <div className="mb-3">
-                            <h2 className="text-base font-bold text-slate-900">Followers posts</h2>
-                            <p className="mt-0.5 text-xs text-slate-500">
+                            <h2 className="text-[20px] font-medium text-slate-900">Followers posts</h2>
+                            <p className="mt-0.5 text-[13px] text-slate-500">
                                 Your favourites are selling — shop their listings
                             </p>
                         </div>
@@ -430,10 +353,10 @@ const BuyerDashboardPage = () => {
                 <aside className="hidden lg:flex flex-col gap-4 self-start lg:sticky lg:top-4">
 
                     {/* My Active Posts */}
-                    <div className="bg-white rounded-2xl ring-1 ring-slate-200 shadow-sm overflow-hidden">
+                    <div className="bg-white rounded-2xl ring-1 ring-slate-200 overflow-hidden">
                         <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-                            <h3 className="font-bold text-slate-900 text-sm">My Active Posts</h3>
-                            <Link to="/buyer/my-posts" className="text-xs font-semibold text-[#0b4a74] hover:underline">
+                            <h3 className="text-[15px] font-medium text-slate-900">My Active Posts</h3>
+                            <Link to="/buyer/my-posts" className="text-[12px] font-semibold text-[#0EA432] hover:underline">
                                 See All
                             </Link>
                         </div>
@@ -441,27 +364,27 @@ const BuyerDashboardPage = () => {
                             {myPosts.map((post) => (
                                 <div key={post.id} className="flex items-center gap-3 px-4 py-3">
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-slate-800 leading-snug truncate">
+                                        <p className="text-[13px] font-medium text-slate-800 leading-snug truncate">
                                             {post.title}
                                         </p>
-                                        <p className="text-xs text-slate-500 mt-0.5">
-                                            <span className="font-bold text-[#0b4a74]">{post.offers}</span> offers received
+                                        <p className="text-[12px] text-slate-400 mt-0.5">
+                                            <span className="font-semibold text-[#0EA432]">{post.offers}</span> offers received
                                         </p>
                                     </div>
                                     <span
-                                        className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${post.status === "open"
+                                        className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${post.status === "open"
                                             ? "bg-emerald-100 text-emerald-700"
-                                            : "bg-amber-100 text-amber-700"
+                                            : "bg-blue-100 text-blue-700"
                                             }`}
                                     >
-                                        {post.status}
+                                        {post.status === "reviewing" ? "Reviewed" : post.status}
                                     </span>
                                 </div>
                             ))}
                         </div>
                         <div className="px-4 py-3 border-t border-slate-100">
                             <Link to="/buyer/post-requirement">
-                                <button className="w-full flex items-center justify-center gap-1.5 bg-[#0b4a74] text-white text-sm font-bold py-2.5 rounded-xl hover:bg-[#083754] transition-colors">
+                                <button className="w-full flex items-center justify-center gap-1.5 bg-[#0EA432] text-white text-[13px] font-bold py-2.5 rounded-xl hover:bg-[#0b8f2b] transition-colors">
                                     + Post New Requirement
                                 </button>
                             </Link>
@@ -475,41 +398,38 @@ const BuyerDashboardPage = () => {
                             { label: "Offers", value: "16" },
                             { label: "MWK Saved", value: "1.2M" },
                         ].map((s) => (
-                            <div key={s.label} className="bg-white rounded-2xl p-3 text-center ring-1 ring-slate-200 shadow-sm">
-                                <p className="text-lg font-extrabold text-[#0b4a74]">{s.value}</p>
-                                <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{s.label}</p>
+                            <div key={s.label} className="bg-white rounded-xl p-3 text-center ring-1 ring-slate-200">
+                                <p className="text-[15px] font-bold text-[#0EA432]">{s.value}</p>
+                                <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">{s.label}</p>
                             </div>
                         ))}
                     </div>
 
-                    {/* How it works */}
-                    <div className="bg-white rounded-2xl p-4 ring-1 ring-slate-200 shadow-sm">
-                        <h3 className="font-bold text-slate-900 text-sm mb-3">How BidHub Works</h3>
-                        <div className="space-y-3.5">
+                    {/* How BidHub Works */}
+                    <div className="bg-white rounded-2xl p-4 ring-1 ring-slate-200">
+                        <h3 className="text-[15px] font-medium text-slate-900 mb-4">How BidHub Works</h3>
+                        <div>
                             {[
                                 { n: "1", t: "Post what you need", d: "Tell us what to buy — we send it to suppliers." },
                                 { n: "2", t: "Suppliers send offers", d: "Receive price quotes from verified local sellers." },
                                 { n: "3", t: "Pick the best price", d: "Compare and choose who to buy from." },
-                            ].map((s) => (
+                            ].map((s, i, arr) => (
                                 <div key={s.n} className="flex gap-3">
-                                    <div className="flex-shrink-0 h-7 w-7 rounded-full bg-[#0b4a74] flex items-center justify-center">
-                                        <span className="text-white text-[11px] font-bold">{s.n}</span>
+                                    <div className="flex flex-col items-center">
+                                        <div className="shrink-0 h-7 w-7 rounded-full bg-[#0EA432] flex items-center justify-center">
+                                            <span className="text-white text-[11px] font-bold">{s.n}</span>
+                                        </div>
+                                        {i < arr.length - 1 && (
+                                            <div className="w-px flex-1 border-l-2 border-dashed border-[#0EA432]/25 my-1" style={{ minHeight: "28px" }} />
+                                        )}
                                     </div>
-                                    <div>
-                                        <p className="font-semibold text-slate-800 text-xs">{s.t}</p>
-                                        <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{s.d}</p>
+                                    <div className={i < arr.length - 1 ? "pb-4" : ""}>
+                                        <p className="text-[13px] font-medium text-slate-800">{s.t}</p>
+                                        <p className="text-[12px] text-slate-500 mt-0.5 leading-relaxed">{s.d}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    </div>
-
-                    {/* Tip */}
-                    <div className="bg-[#0b4a74]/8 rounded-2xl p-4 ring-1 ring-[#0b4a74]/15">
-                        <p className="text-[11px] font-bold text-[#0b4a74] uppercase tracking-wide">Tip</p>
-                        <p className="mt-1.5 text-sm text-[#0b4a74]/90 leading-relaxed">
-                            Add photos and detailed measurements when posting — you will get faster and better offers from suppliers.
-                        </p>
                     </div>
                 </aside>
             </div>

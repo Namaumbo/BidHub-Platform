@@ -83,8 +83,14 @@ const postedRequirements = [
 
 const statusStyles = {
   open: "bg-emerald-100 text-emerald-700",
-  reviewing: "bg-amber-100 text-amber-700",
-  completed: "bg-slate-200 text-slate-700",
+  reviewing: "bg-blue-100 text-blue-700",
+  completed: "bg-slate-100 text-slate-600",
+}
+
+const statusLabel = {
+  open: "Open",
+  reviewing: "Reviewed",
+  completed: "Completed",
 }
 
 const MyPostsPage = () => {
@@ -99,55 +105,41 @@ const MyPostsPage = () => {
   }
 
   return (
-    <div className="mx-auto mt-10 max-w-7xl m-5">
-      <section className="relative mb-5 overflow-hidden rounded-2xl border border-[#e5f2dd] bg-[#f9fff6]  p-5">
-        <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#0b4a74]/10" />
-        <div className="pointer-events-none absolute right-24 top-8 h-14 w-14 rounded-full bg-[#0b4a74]/10" />
-        <div className="relative flex items-start justify-between gap-4">
-          <div>
-            <p className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
-              Buyer workspace
-            </p>
-            <h1 className="text-xl font-extrabold leading-snug text-[#129a2f] md:text-2xl">My Posted Requirements</h1>
-            <p className="mt-1 text-sm text-slate-600">
-              Professional overview of all requirements you have posted so far.
-            </p>
-          </div>
-          <div className="p-3 sm:block">
-            <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/shopping-cart-loaded.png" alt="shopping-cart-loaded" />
-          </div>
+    <div className="mx-auto max-w-7xl m-5 mt-8">
+
+      {/* Page header */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-[20px] font-medium text-slate-900">My Posted Requirements</h1>
+          <p className="mt-1 text-[13px] text-slate-500">
+            Professional overview of all requirements you have posted so far.
+          </p>
         </div>
-      </section>
+        <Link
+          to="/buyer/post-requirement"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#0EA432] px-4 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#0b8f2b]"
+        >
+          <PackagePlus className="h-4 w-4" />
+          Post New
+        </Link>
+      </div>
 
-      {/* <div className="mb-5 grid grid-cols-2 gap-2.5 md:grid-cols-4">
-        {[
-          { label: "Total Posts", value: stats.total },
-          { label: "Open", value: stats.open },
-          { label: "Reviewing", value: stats.reviewing },
-          { label: "Total Offers", value: stats.offers },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-2xl bg-white p-3 text-center shadow-sm ring-1 ring-slate-200">
-            <p className="text-lg font-extrabold text-[#0b4a74]">{stat.value}</p>
-            <p className="text-[11px] font-medium text-slate-500">{stat.label}</p>
-          </div>
-        ))}
-      </div> */}
-
-      <section className="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      {/* Market price marquee */}
+      <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-4 py-3">
-          <h2 className="text-sm font-bold text-slate-900">Low Price Marquee by Your Categories</h2>
-          <p className="mt-0.5 text-xs text-slate-500">
-            Market highlights based on categories from your requirements.
+          <h2 className="text-[13px] font-medium text-slate-900">Market Prices — Your Categories</h2>
+          <p className="mt-0.5 text-[12px] text-slate-400">
+            Current low price highlights based on your posted categories.
           </p>
         </div>
         <marquee behavior="scroll" direction="left" scrollamount="6" className="py-3">
           <div className="inline-flex items-center gap-6 px-4">
             {selectedCategoryPrices.map((item) => (
               <span key={`${item.category}-${item.commodity}`} className="inline-flex items-center gap-2 whitespace-nowrap">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden />
-                <span className="text-xs font-bold uppercase tracking-wide text-slate-700">{item.category}:</span>
-                <span className="text-xs font-semibold text-slate-800">{item.commodity}</span>
-                <span className="text-xs font-extrabold text-[#0b4a74]">{item.price}</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#0EA432]" aria-hidden />
+                <span className="text-[12px] font-bold uppercase tracking-wide text-slate-600">{item.category}:</span>
+                <span className="text-[12px] font-medium text-slate-700">{item.commodity}</span>
+                <span className="text-[12px] font-bold text-[#0EA432]">{item.price}</span>
               </span>
             ))}
           </div>
@@ -155,63 +147,53 @@ const MyPostsPage = () => {
       </section>
 
       <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6 xl:grid-cols-[1fr_320px]">
+
+        {/* ── Requirement list ── */}
         <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-bold text-slate-900">Requirement List</h2>
-            <Link
-              to="/buyer/post-requirement"
-              className="inline-flex items-center gap-1 rounded-xl bg-[#0b4a74] px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-[#083754]"
-            >
-              <PackagePlus className="h-3.5 w-3.5" />
-              Post New Requirement
-            </Link>
-          </div>
+          <h2 className="text-[20px] font-medium text-slate-900 mb-4">Requirement List</h2>
 
           <div className="space-y-3">
             {postedRequirements.map((post) => (
               <article
                 key={post.id}
-                className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-all hover:shadow-md"
+                className="rounded-2xl bg-white p-4 ring-1 ring-slate-200 transition-all hover:ring-[#0EA432] hover:ring-2"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-700">{post.id}</span>
+                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-600">{post.id}</span>
                     <span
-                      className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${statusStyles[post.status]}`}
+                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusStyles[post.status]}`}
                     >
-                      {post.status}
+                      {statusLabel[post.status]}
                     </span>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+                  <span className="inline-flex items-center gap-1 text-[12px] text-slate-400">
                     <CalendarDays className="h-3.5 w-3.5" />
                     Posted {post.postedAt}
                   </span>
                 </div>
 
-                <h3 className="mt-2 text-sm font-bold text-slate-900 sm:text-base">{post.title}</h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600 sm:text-sm">{post.description}</p>
+                <h3 className="mt-2 text-[15px] font-medium text-slate-900">{post.title}</h3>
+                <p className="mt-1 text-[13px] leading-relaxed text-slate-500">{post.description}</p>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                  <div className="rounded-xl bg-slate-50 px-2.5 py-2">
-                    <p className="font-semibold text-slate-500">Category</p>
-                    <p className="mt-0.5 font-bold text-slate-800">{post.category}</p>
-                  </div>
-                  <div className="rounded-xl bg-slate-50 px-2.5 py-2">
-                    <p className="font-semibold text-slate-500">Quantity</p>
-                    <p className="mt-0.5 font-bold text-slate-800">{post.quantity} {post.unit}</p>
-                  </div>
-                  <div className="rounded-xl bg-slate-50 px-2.5 py-2">
-                    <p className="font-semibold text-slate-500">Budget Range</p>
-                    <p className="mt-0.5 font-bold text-slate-800">{post.budgetRange}</p>
-                  </div>
-                  <div className="rounded-xl bg-slate-50 px-2.5 py-2">
-                    <p className="font-semibold text-slate-500">Offers Received</p>
-                    <p className="mt-0.5 font-bold text-[#0b4a74]">{post.offersCount}</p>
-                  </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {[
+                    { label: "Category", value: post.category },
+                    { label: "Quantity", value: `${post.quantity} ${post.unit}` },
+                    { label: "Budget Range", value: post.budgetRange },
+                    { label: "Offers Received", value: post.offersCount, highlight: true },
+                  ].map((field) => (
+                    <div key={field.label} className="rounded-xl bg-slate-50 px-2.5 py-2">
+                      <p className="text-[11px] font-medium text-slate-400">{field.label}</p>
+                      <p className={`mt-0.5 text-[13px] font-bold ${field.highlight ? "text-[#0EA432]" : "text-slate-800"}`}>
+                        {field.value}
+                      </p>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
-                  <div className="flex items-center gap-3 text-xs text-slate-500">
+                  <div className="flex items-center gap-3 text-[12px] text-slate-400">
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5" />
                       {post.location}
@@ -224,14 +206,14 @@ const MyPostsPage = () => {
                   <div className="flex items-center gap-2">
                     <Link
                       to="/buyer/bids"
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       View Offers
                       <ChevronRight className="h-3.5 w-3.5" />
                     </Link>
                     <Link
                       to="/buyer/post-requirement"
-                      className="inline-flex items-center gap-1 rounded-lg bg-[#0b4a74]/10 px-2.5 py-1.5 text-xs font-semibold text-[#0b4a74] hover:bg-[#0b4a74]/15"
+                      className="inline-flex items-center gap-1 rounded-lg bg-[#0EA432]/10 px-2.5 py-1.5 text-[12px] font-semibold text-[#0EA432] hover:bg-[#0EA432]/15 transition-colors"
                     >
                       Duplicate
                     </Link>
@@ -242,42 +224,81 @@ const MyPostsPage = () => {
           </div>
         </section>
 
-        <aside className="mt-4 space-y-4 lg:mt-0 lg:sticky lg:top-4 lg:self-start">
-          <section className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-            <h3 className="text-sm font-bold text-slate-900">Category Focus</h3>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {selectedCategories.map((category) => (
-                <span
-                  key={category}
-                  className="rounded-full bg-[#0b4a74]/10 px-2.5 py-1 text-[11px] font-semibold text-[#0b4a74]"
-                >
-                  {category}
-                </span>
+        {/* ── Right panel ── */}
+        <aside className="mt-6 space-y-4 lg:mt-0 lg:sticky lg:top-4 lg:self-start">
+
+          {/* My Active Posts summary */}
+          <section className="rounded-2xl bg-white ring-1 ring-slate-200 overflow-hidden">
+            <div className="border-b border-slate-100 px-4 py-3 flex items-center justify-between">
+              <h3 className="text-[15px] font-medium text-slate-900">My Active Posts</h3>
+              <span className="text-[12px] text-slate-400">{stats.open} open</span>
+            </div>
+            <div className="divide-y divide-slate-50">
+              {postedRequirements.filter(p => p.status !== "completed").map((post) => (
+                <div key={post.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-slate-800 truncate leading-snug">{post.title}</p>
+                    <p className="text-[12px] text-slate-400 mt-0.5">
+                      <span className="font-semibold text-[#0EA432]">{post.offersCount}</span> offers received
+                    </p>
+                  </div>
+                  <span className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${statusStyles[post.status]}`}>
+                    {statusLabel[post.status]}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="px-4 py-3 border-t border-slate-100">
+              <Link to="/buyer/post-requirement">
+                <button className="w-full flex items-center justify-center gap-1.5 bg-[#0EA432] text-white text-[13px] font-bold py-2.5 rounded-xl hover:bg-[#0b8f2b] transition-colors">
+                  + Post New Requirement
+                </button>
+              </Link>
+            </div>
+          </section>
+
+          {/* How BidHub Works */}
+          <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+            <h3 className="text-[15px] font-medium text-slate-900 mb-4">How BidHub Works</h3>
+            <div>
+              {[
+                { n: "1", t: "Post what you need", d: "Tell us what to buy — we send it to suppliers." },
+                { n: "2", t: "Suppliers send offers", d: "Receive price quotes from verified local sellers." },
+                { n: "3", t: "Pick the best price", d: "Compare and choose who to buy from." },
+              ].map((step, i, arr) => (
+                <div key={step.n} className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="h-7 w-7 shrink-0 rounded-full bg-[#0EA432] flex items-center justify-center">
+                      <span className="text-white text-[11px] font-bold">{step.n}</span>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <div className="w-px border-l-2 border-dashed border-[#0EA432]/25 my-1" style={{ minHeight: "28px" }} />
+                    )}
+                  </div>
+                  <div className={i < arr.length - 1 ? "pb-4" : ""}>
+                    <p className="text-[13px] font-medium text-slate-800">{step.t}</p>
+                    <p className="text-[12px] text-slate-400 mt-0.5 leading-relaxed">{step.d}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
 
-          <section className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-            <h3 className="text-sm font-bold text-slate-900">Tips for Better Offers</h3>
-            <div className="mt-3 space-y-3">
+          {/* Tips */}
+          <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+            <h3 className="text-[15px] font-medium text-slate-900 mb-3">Tips for Better Offers</h3>
+            <div className="space-y-2.5">
               {[
                 "Add exact delivery location and preferred timeline.",
                 "Include product grade/specification to avoid low-quality quotes.",
                 "Attach photos or documents to improve supplier trust.",
               ].map((tip) => (
                 <div key={tip} className="flex items-start gap-2">
-                  <Scale className="mt-0.5 h-3.5 w-3.5 text-[#0b4a74]" />
-                  <p className="text-xs text-slate-600">{tip}</p>
+                  <Scale className="mt-0.5 h-3.5 w-3.5 text-[#0EA432] shrink-0" />
+                  <p className="text-[13px] text-slate-500">{tip}</p>
                 </div>
               ))}
             </div>
-          </section>
-
-          <section className="rounded-2xl bg-[#0b4a74]/8 p-4 ring-1 ring-[#0b4a74]/15">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-[#0b4a74]">Performance</p>
-            <p className="mt-1 text-sm text-[#0b4a74]/90">
-              Requirements with complete details receive offers up to 2x faster.
-            </p>
           </section>
         </aside>
       </div>
