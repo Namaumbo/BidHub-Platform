@@ -159,6 +159,8 @@ const PostRequirementPage = () => {
         </div>
       </section>
 
+      
+
       <div className="lg:grid lg:grid-cols-[1fr_310px] lg:gap-6 xl:grid-cols-[1fr_330px]">
         <div className="space-y-4">
           <section className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
