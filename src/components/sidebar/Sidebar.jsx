@@ -25,7 +25,7 @@ const Sidebar = () => {
 
     return (
         <aside
-            className="hidden h-screen w-64 flex-col border-r border-slate-200 bg-white md:flex"
+            className="hidden h-screen w-64 flex-col border-r border-slate-200 bg-white md:flex sticky top-0"
             data-purpose="sidebar-navigation"
         >
             <div className="border-b border-slate-100 p-6">

@@ -104,30 +104,33 @@ const myPosts = [
 const heroSlides = [
     {
         id: "post",
-        badge: "Free to post",
-        titleLines: ["Post What You Need,", "Get the Best Price"],
-        description: "Suppliers across Malawi will send you their best offers.",
-        cta: "Post Now — It's Free",
+        badge: "Free listing",
+        titleLines: ["Get Free Listing"],
+        description: "Register today and get your free listing.",
+        cta: "View offer",
         ctaTo: "/buyer/post-requirement",
         icon: Package,
+        image: "/Bag.png",
     },
     {
         id: "compare",
-        badge: "Save more",
-        titleLines: ["Compare Offers,", "Pick the Best Deal"],
-        description: "Review prices, delivery times, and ratings from multiple suppliers in one place.",
-        cta: "Browse Offers",
+        badge: "Fast response",
+        titleLines: ["Connect Faster,", "Close Better Deals"],
+        description: "Reach more suppliers quickly and compare offers with confidence.",
+        cta: "View offer",
         ctaTo: "/buyer/bids",
         icon: Scale,
+        image: "/hand.webp",
     },
     {
         id: "verified",
-        badge: "Trusted suppliers",
-        titleLines: ["Verified Sellers,", "Across Malawi"],
-        description: "Buy with confidence from local businesses rated by buyers like you.",
-        cta: "Start Posting",
+        badge: "Trusted delivery",
+        titleLines: ["Find Reliable", "Transport Options"],
+        description: "Book trusted vehicle options for your delivery and logistics needs.",
+        cta: "View offer",
         ctaTo: "/buyer/post-requirement",
         icon: ShieldCheck,
+        image: "/car.png",
     },
 ]
 
@@ -223,11 +226,11 @@ const BuyerDashboardPage = () => {
         <div className="max-w-7xl mx-auto mt-10 m-5">
 
             {/* ── Hero Banner — full bleed on mobile ── */}
-            <div className="relative -mx-4 md:mx-0 md:rounded-2xl overflow-hidden bg-[#0b4a74] px-5 py-7 md:p-8 mb-5">
+            <div className="relative -mx-4 mb-5 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl md:p-8">
                 {/* Decorative circles */}
-                <div className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 rounded-full bg-white/5" />
-                <div className="pointer-events-none absolute -right-2 bottom-0 h-24 w-24 rounded-full bg-white/5" />
-                <div className="pointer-events-none absolute right-20 top-4 h-12 w-12 rounded-full bg-white/8" />
+                <div className="pointer-events-none absolute -right-14 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-[#ebf9e5]" />
+                <div className="pointer-events-none absolute right-16 top-8 h-24 w-24 rounded-full bg-[#f1fbe8]" />
+                <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#f3fee8]" />
 
                 <div className="relative flex items-center justify-between gap-4">
                     <div
@@ -239,10 +242,10 @@ const BuyerDashboardPage = () => {
                             key={slide.id}
                             className="animate-in fade-in duration-500"
                         >
-                            <span className="inline-block bg-white/15 text-white text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide mb-2">
+                            <span className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
                                 {slide.badge}
                             </span>
-                            <h2 className="text-white text-xl font-extrabold leading-snug md:text-2xl">
+                            <h2 className="text-xl font-extrabold leading-snug text-[#129a2f] md:text-2xl">
                                 {slide.titleLines.map((line, index) => (
                                     <Fragment key={line}>
                                         {index > 0 && <br />}
@@ -250,23 +253,33 @@ const BuyerDashboardPage = () => {
                                     </Fragment>
                                 ))}
                             </h2>
-                            <p className="text-[#a8d4ef] text-sm mt-1.5 leading-relaxed max-w-xs">
+                            <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-slate-700">
                                 {slide.description}
                             </p>
                             <Link to={slide.ctaTo}>
-                                <button className="mt-4 bg-white text-[#0b4a74] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-slate-100 active:scale-95 transition-all shadow-sm">
+                                <button className="mt-4 rounded-full bg-[#0ea432] px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#0b8f2b] active:scale-95">
                                     {slide.cta}
                                 </button>
                             </Link>
                         </div>
                     </div>
                     {/* Visual block (web) */}
-                    <div className="hidden sm:flex flex-col items-center justify-center flex-shrink-0">
+                    <div className="hidden shrink-0 sm:flex">
                         <div
                             key={slide.id}
-                            className="h-24 w-24 rounded-3xl bg-white/10 flex items-center justify-center animate-in fade-in duration-500"
+                            className="relative flex h-44 w-[220px] items-center justify-center animate-in fade-in duration-500"
                         >
-                            <SlideIcon className="h-12 w-12 text-white/80" />
+                            {slide.image ? (
+                                <img
+                                    src={slide.image}
+                                    alt={slide.titleLines.join(" ")}
+                                    className="relative z-10 h-full w-full object-contain"
+                                />
+                            ) : (
+                                <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-[#ddf3d1]">
+                                    <SlideIcon className="h-12 w-12 text-[#149330]" />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -282,8 +295,8 @@ const BuyerDashboardPage = () => {
                             aria-label={`Show slide ${index + 1}: ${item.titleLines.join(" ")}`}
                             onClick={() => setActiveSlide(index)}
                             className={`h-1.5 rounded-full transition-all duration-300 ${activeSlide === index
-                                ? "w-5 bg-white"
-                                : "w-1.5 bg-white/30 hover:bg-white/50"
+                                ? "w-6 bg-[#129a2f]"
+                                : "w-2 bg-[#cfd8cb] hover:bg-[#b8c5b2]"
                                 }`}
                         />
                     ))}
