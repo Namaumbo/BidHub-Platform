@@ -122,7 +122,7 @@ const followerProducts = [
         image: "/iphone.png",
         price: 320000,
         rating: 4.8,
-        reviews: 670, 
+        reviews: 670,
     },
     {
         id: 3,
@@ -196,35 +196,84 @@ const BuyerDashboardPage = () => {
         <div className="max-w-7xl mx-auto m-5 mt-8">
 
             {/* ── Hero — Search Section ── */}
-            <section className="mb-8 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-10 text-center">
-                <h1 className="text-[26px] font-bold text-slate-900 leading-tight mb-6">
-                    Find what you need, fast.
-                </h1>
+            {/* ── Hero Banner — full bleed on mobile ── */}
+            <div className="relative -mx-4 mb-5 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl md:p-8">
+                {/* Decorative circles */}
+                <div className="pointer-events-none absolute -right-14 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-[#ebf9e5]" />
+                <div className="pointer-events-none absolute right-16 top-8 h-24 w-24 rounded-full bg-[#f1fbe8]" />
+                <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#f3fee8]" />
 
-                {/* Search bar — 52px pill */}
-                <div className="relative max-w-2xl mx-auto mb-6 flex items-center">
-                    <Search className="absolute left-5 h-[18px] w-[18px] text-slate-400 pointer-events-none" />
-                    <input
-                        className="w-full h-[52px] rounded-full border border-slate-200 bg-white pl-12 pr-36 text-[14px] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0f6e56]/25 transition-all"
-                        placeholder="Search suppliers, categories, locations..."
-                        type="text"
-                    />
-                    <button className="absolute right-1.5 h-[40px] rounded-full bg-[#0f6e56] px-6 text-[13px] font-bold text-white hover:bg-[#0b5a47] transition-colors">
-                        Search
-                    </button>
+                <div className="relative flex items-center justify-between gap-4">
+                    <div
+                        className="flex-1 min-h-[168px] sm:min-h-[152px]"
+                        aria-live="polite"
+                        aria-atomic="true"
+                    >
+                        <div
+                            key={slide.id}
+                            className="animate-in fade-in duration-500"
+                        >
+                            <span className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
+                                {slide.badge}
+                            </span>
+                            <h2 className="text-xl font-extrabold leading-snug text-[#129a2f] md:text-2xl">
+                                {slide.titleLines.map((line, index) => (
+                                    <Fragment key={line}>
+                                        {index > 0 && <br />}
+                                        {line}
+                                    </Fragment>
+                                ))}
+                            </h2>
+                            <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-slate-700">
+                                {slide.description}
+                            </p>
+                            <Link to={slide.ctaTo}>
+                                <button className="mt-4 rounded-full bg-[#0ea432] px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#0b8f2b] active:scale-95">
+                                    {slide.cta}
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                    {/* Visual block (web) */}
+                    <div className="hidden shrink-0 sm:flex">
+                        <div
+                            key={slide.id}
+                            className="relative flex h-44 w-[220px] items-center justify-center animate-in fade-in duration-500"
+                        >
+                            {slide.image ? (
+                                <img
+                                    src={slide.image}
+                                    alt={slide.titleLines.join(" ")}
+                                    className="relative z-10 h-full w-full object-contain"
+                                />
+                            ) : (
+                                <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-[#ddf3d1]">
+                                    <SlideIcon className="h-12 w-12 text-[#149330]" />
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
-                {/* Category quick-link pills — outlined teal */}
-                <div className="flex flex-wrap gap-2 justify-center">
-                    {heroCategories.map((cat) => (
-                        <Link key={cat.label} to={cat.to}>
-                            <span className="inline-block rounded-full border border-[#0f6e56] px-4 py-1.5 text-[13px] font-medium text-[#0f6e56] bg-white hover:bg-[#0f6e56] hover:text-white transition-colors cursor-pointer">
-                                {cat.label}
-                            </span>
-                        </Link>
+                {/* Dot indicators */}
+                <div className="flex gap-1.5 mt-4" role="tablist" aria-label="Hero carousel">
+                    {heroSlides.map((item, index) => (
+                        <button
+                            key={item.id}
+                            type="button"
+                            role="tab"
+                            aria-selected={activeSlide === index}
+                            aria-label={`Show slide ${index + 1}: ${item.titleLines.join(" ")}`}
+                            onClick={() => setActiveSlide(index)}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${activeSlide === index
+                                ? "w-6 bg-[#129a2f]"
+                                : "w-2 bg-[#cfd8cb] hover:bg-[#b8c5b2]"
+                                }`}
+                        />
                     ))}
                 </div>
-            </section>
+            </div>
+
 
             {/* ── Main layout: single col mobile, 2-col on lg+ ── */}
             <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6 xl:grid-cols-[1fr_320px]">
