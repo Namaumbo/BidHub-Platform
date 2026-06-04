@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import {
@@ -16,8 +16,8 @@ import {
     Search,
     Scale,
     ShieldCheck,
-    Slide
 } from "lucide-react"
+import useAuthCarousel from "@/features/auth/hooks/useAuthCarousel"
 import StarRating from "@/features/dashboards/components/StarRating"
 import OfferCard from "@/features/dashboards/components/OfferCard"
 
@@ -110,43 +110,6 @@ const heroCategories = [
     { label: "Medical", to: "/buyer/bids" },
 ]
 
-const followerProducts = [
-    {
-        id: 1,
-        title: "Mountain Bike Pro 29\" — Matte Black Limited Edition...",
-        image: "/Bike.png",
-        price: 450000,
-        rating: 4.5,
-        reviews: 1200,
-    },
-    {
-        id: 2,
-        title: "Iphone 15 Pro Max — 256GB — Matte Black...",
-        image: "/iphone.png",
-        price: 320000,
-        rating: 4.8,
-        reviews: 670,
-    },
-    {
-        id: 3,
-        title: "Portland Cement OPC 42.5 — 200 Bags Bulk Pack...",
-        image: null,
-        icon: Building2,
-        price: 850000,
-        rating: 4.5,
-        reviews: 420,
-    },
-    {
-        id: 4,
-        title: "Maize Flour (Ufa) — 50kg Bags × 100 Wholesale...",
-        image: null,
-        icon: ShoppingBasket,
-        price: 420000,
-        rating: 4.6,
-        reviews: 910,
-    },
-]
-
 const heroSlides = [
     {
         id: "post",
@@ -177,6 +140,43 @@ const heroSlides = [
         ctaTo: "/buyer/post-requirement",
         icon: ShieldCheck,
         image: "/car.png",
+    },
+]
+
+const followerProducts = [
+    {
+        id: 1,
+        title: "Mountain Bike Pro 29\" — Matte Black Limited Edition...",
+        image: "/Bike.png",
+        price: 450000,
+        rating: 4.5,
+        reviews: 1200,
+    },
+    {
+        id: 2,
+        title: "Iphone 15 Pro Max — 256GB — Matte Black...",
+        image: "/iphone.png",
+        price: 320000,
+        rating: 4.8,
+        reviews: 670, 
+    },
+    {
+        id: 3,
+        title: "Portland Cement OPC 42.5 — 200 Bags Bulk Pack...",
+        image: null,
+        icon: Building2,
+        price: 850000,
+        rating: 4.5,
+        reviews: 420,
+    },
+    {
+        id: 4,
+        title: "Maize Flour (Ufa) — 50kg Bags × 100 Wholesale...",
+        image: null,
+        icon: ShoppingBasket,
+        price: 420000,
+        rating: 4.6,
+        reviews: 910,
     },
 ]
 
@@ -228,27 +228,23 @@ const ProductListingCard = ({ product }) => {
 
 
 const BuyerDashboardPage = () => {
+    const { activeSlide, setActiveSlide } = useAuthCarousel(heroSlides.length, 6000)
+    const slide = heroSlides[activeSlide]
+    const SlideIcon = slide.icon
+
     return (
         <div className="max-w-7xl mx-auto m-5 mt-8">
 
-            {/* ── Hero — Search Section ── */}
-            {/* ── Hero Banner — full bleed on mobile ── */}
-            <div className="relative -mx-4 mb-5 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl md:p-8">
+            {/* ── Hero Banner carousel ── */}
+            <div className="relative -mx-4 mb-6 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl md:p-8">
                 {/* Decorative circles */}
                 <div className="pointer-events-none absolute -right-14 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-[#ebf9e5]" />
                 <div className="pointer-events-none absolute right-16 top-8 h-24 w-24 rounded-full bg-[#f1fbe8]" />
                 <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#f3fee8]" />
 
                 <div className="relative flex items-center justify-between gap-4">
-                    <div
-                        className="flex-1 min-h-[168px] sm:min-h-[152px]"
-                        aria-live="polite"
-                        aria-atomic="true"
-                    >
-                        <div
-                            key={slide.id}
-                            className="animate-in fade-in duration-500"
-                        >
+                    <div className="flex-1 min-h-[168px] sm:min-h-[152px]" aria-live="polite" aria-atomic="true">
+                        <div key={slide.id} className="animate-in fade-in duration-500">
                             <span className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
                                 {slide.badge}
                             </span>
@@ -264,18 +260,16 @@ const BuyerDashboardPage = () => {
                                 {slide.description}
                             </p>
                             <Link to={slide.ctaTo}>
-                                <button className="mt-4 rounded-full bg-[#0ea432] px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-[#0b8f2b] active:scale-95">
+                                <button className="mt-4 rounded-full bg-[#0EA432] px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#0b8f2b] active:scale-95">
                                     {slide.cta}
                                 </button>
                             </Link>
                         </div>
                     </div>
-                    {/* Visual block (web) */}
+
+                    {/* Slide image */}
                     <div className="hidden shrink-0 sm:flex">
-                        <div
-                            key={slide.id}
-                            className="relative flex h-44 w-[220px] items-center justify-center animate-in fade-in duration-500"
-                        >
+                        <div key={slide.id} className="relative flex h-44 w-[220px] items-center justify-center animate-in fade-in duration-500">
                             {slide.image ? (
                                 <img
                                     src={slide.image}
@@ -292,24 +286,22 @@ const BuyerDashboardPage = () => {
                 </div>
 
                 {/* Dot indicators */}
-                <div className="flex gap-1.5 mt-4" role="tablist" aria-label="Hero carousel">
+                <div className="mt-4 flex gap-1.5" role="tablist" aria-label="Hero carousel">
                     {heroSlides.map((item, index) => (
                         <button
                             key={item.id}
                             type="button"
                             role="tab"
                             aria-selected={activeSlide === index}
-                            aria-label={`Show slide ${index + 1}: ${item.titleLines.join(" ")}`}
+                            aria-label={`Slide ${index + 1}: ${item.titleLines.join(" ")}`}
                             onClick={() => setActiveSlide(index)}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${activeSlide === index
-                                ? "w-6 bg-[#129a2f]"
-                                : "w-2 bg-[#cfd8cb] hover:bg-[#b8c5b2]"
-                                }`}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                                activeSlide === index ? "w-6 bg-[#129a2f]" : "w-2 bg-[#cfd8cb] hover:bg-[#b8c5b2]"
+                            }`}
                         />
                     ))}
                 </div>
             </div>
-
 
             {/* ── Main layout: single col mobile, 2-col on lg+ ── */}
             <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6 xl:grid-cols-[1fr_320px]">
