@@ -203,6 +203,7 @@ const ProductListingCard = ({ product }) => {
                 {product.title}
             </h3>
 
+
             <StarRating rating={product.rating} reviews={product.reviews} />
 
             <p className="mt-2 leading-none">
