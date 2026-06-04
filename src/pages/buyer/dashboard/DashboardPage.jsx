@@ -12,9 +12,6 @@ import {
     Monitor,
     ChevronRight,
     Heart,
-    MapPin,
-    Star,
-    Clock,
     Package,
     Scale,
     ShieldCheck,
@@ -35,6 +32,8 @@ const categories = [
     { label: "Medical", icon: HeartPulse, bg: "bg-red-50", color: "text-red-500", to: "/buyer/bids" },
     { label: "IT & Tech", icon: Monitor, bg: "bg-slate-100", color: "text-slate-500", to: "/buyer/bids" },
 ]
+
+
 
 const latestOffers = [
     {
