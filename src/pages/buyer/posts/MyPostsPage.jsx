@@ -1,4 +1,4 @@
- import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { PostCardComponent } from "@/components/posts/PostCardComponent"
 
 const tickerItems = [
@@ -54,28 +54,25 @@ const OVERVIEW_STATS = { activePosts: 14, pendingOffers: 42 }
 const MyPostsPage = () => {
   return (
     <div className="w-full p-4 md:p-6">
-      <div className="w-full p-4 md:p-6 rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100">
-        <section className="mb-8 flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-xl space-y-3">
+      <div className="mx-auto mt-10 max-w-7xl m-5">
 
-            <h1 className="text-2xl font-extrabold text-slate-900">My Posts</h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Manage your trade posts and track their status.
-            </p>
-          </div>
-
-          <div className="grid w-full max-w-md grid-cols-2 gap-3 sm:gap-4 lg:max-w-sm lg:shrink-0">
-            <div className="rounded-lg border border-sky-100 bg-sky-50/90 p-4 shadow-sm">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-sky-800/80">Active posts</p>
-              <p className="mt-2 text-3xl font-extrabold tabular-nums text-sky-950">{OVERVIEW_STATS.activePosts}</p>
+        <section className="relative mb-5 overflow-hidden rounded-2xl border border-[#e5f2dd] bg-[#f9fff6]  p-5">
+          <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#0b4a74]/10" />
+          <div className="pointer-events-none absolute right-24 top-8 h-14 w-14 rounded-full bg-[#0b4a74]/10" />
+          <div className="relative flex items-start justify-between gap-4">
+            <div>
+              <p className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
+                Buyer workspace
+              </p>
+              <h1 className="text-xl font-extrabold leading-snug text-[#129a2f] md:text-2xl">My posts, waiting for offers</h1>
+              <p className="mt-1 text-sm text-slate-600">
+                Manage your trade posts and track their status.
+              </p>
             </div>
-            <div className="rounded-lg border border-sky-100 bg-sky-50/90 p-4 shadow-sm">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-sky-800/80">Pending offers</p>
-              <p className="mt-2 text-3xl font-extrabold tabular-nums text-sky-950">{OVERVIEW_STATS.pendingOffers}</p>
-            </div>
+            <div className=" p-3 sm:block">
+              <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/shopping-cart-loaded.png" alt="shopping-cart-loaded" />            </div>
           </div>
         </section>
-
 
         {/* makethis a <marquee behavior="" direction=""></marquee> */}
         <div className="mb-8 overflow-hidden rounded-lg border border-slate-200 bg-white py-3 shadow-sm">

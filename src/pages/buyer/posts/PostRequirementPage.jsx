@@ -13,6 +13,7 @@ import {
   UploadCloud,
   X,
 } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 const commodityCatalog = {
   "Grains & Cereals": {
@@ -85,8 +86,8 @@ const PostRequirementPage = () => {
       Boolean(commodityType) &&
       Number(quantity) > 0 &&
       Boolean(unit) &&
-      Boolean(deliveryLocation.trim()) 
- 
+      Boolean(deliveryLocation.trim())
+
     )
   }, [commodityGroup, commodityType, unit, quantity, deliveryLocation])
 
@@ -139,21 +140,21 @@ const PostRequirementPage = () => {
 
   return (
     <div className="mx-auto mt-10 max-w-7xl m-5">
-      <section className="relative mb-5 overflow-hidden rounded-2xl border border-[#0b4a74]/15 bg-[#0b4a74]/8 p-5">
+      <section className="relative mb-5 overflow-hidden rounded-2xl border border-[#e5f2dd] bg-[#f9fff6]  p-5">
         <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#0b4a74]/10" />
         <div className="pointer-events-none absolute right-24 top-8 h-14 w-14 rounded-full bg-[#0b4a74]/10" />
         <div className="relative flex items-start justify-between gap-4">
           <div>
-            <p className="inline-flex rounded-full bg-[#0b4a74]/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#0b4a74]">
+            <p className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
               Buyer workspace
             </p>
-            <h1 className="mt-2 text-2xl font-extrabold text-slate-900">Post New Requirement</h1>
+            <h1 className="text-xl font-extrabold leading-snug text-[#129a2f] md:text-2xl">Thinking it, Buy it</h1>
             <p className="mt-1 text-sm text-slate-600">
               Share what you need and receive offers from verified suppliers across Malawi.
             </p>
           </div>
-          <div className="hidden rounded-2xl bg-white p-3 ring-1 ring-[#0b4a74]/15 sm:block">
-            <Package className="h-7 w-7 text-[#0b4a74]" />
+          <div className=" p-3 sm:block">
+            <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/thinking-face-emoji.png" alt="thinking-face-emoji" />
           </div>
         </div>
       </section>
@@ -218,13 +219,13 @@ const PostRequirementPage = () => {
                   <label className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
                     Quantity <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <Input
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     type="number"
                     min="0"
                     placeholder="0.00"
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-[#0b4a74]/40 focus:ring-2 focus:ring-[#0b4a74]/15"
+                    className="mt-2"
                   />
                 </div>
                 <div>
@@ -264,11 +265,11 @@ const PostRequirementPage = () => {
                 </label>
                 <div className="relative mt-2">
                   <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <input
+                  <Input
                     value={deliveryLocation}
                     onChange={(e) => setDeliveryLocation(e.target.value)}
                     placeholder="e.g. Port of Beira"
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-700 outline-none focus:border-[#0b4a74]/40 focus:ring-2 focus:ring-[#0b4a74]/15"
+                    className="pl-9"
                   />
                 </div>
               </div>
@@ -278,21 +279,19 @@ const PostRequirementPage = () => {
                   Transport Price Range (MWK)
                 </label>
                 <div className="mt-2 grid grid-cols-2 gap-3">
-                  <input
+                  <Input
                     value={transportMin}
                     onChange={(e) => setTransportMin(e.target.value)}
                     type="number"
                     min="0"
                     placeholder="Min"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-[#0b4a74]/40 focus:ring-2 focus:ring-[#0b4a74]/15"
                   />
-                  <input
+                  <Input
                     value={transportMax}
                     onChange={(e) => setTransportMax(e.target.value)}
                     type="number"
                     min="0"
                     placeholder="Max"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-[#0b4a74]/40 focus:ring-2 focus:ring-[#0b4a74]/15"
                   />
                 </div>
                 <p className="mt-2 text-xs text-slate-500">
@@ -329,7 +328,7 @@ const PostRequirementPage = () => {
             </div>
 
             <div className="px-4 py-4">
-              <input
+              <Input
                 ref={attachmentsInputRef}
                 id="attachments"
                 type="file"
