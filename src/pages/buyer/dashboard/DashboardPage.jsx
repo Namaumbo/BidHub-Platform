@@ -14,6 +14,9 @@ import {
     Heart,
     Package,
     Search,
+    Scale,
+    ShieldCheck,
+    Slide
 } from "lucide-react"
 import StarRating from "@/features/dashboards/components/StarRating"
 import OfferCard from "@/features/dashboards/components/OfferCard"
@@ -141,6 +144,39 @@ const followerProducts = [
         price: 420000,
         rating: 4.6,
         reviews: 910,
+    },
+]
+
+const heroSlides = [
+    {
+        id: "post",
+        badge: "Free listing",
+        titleLines: ["Get Free Listing"],
+        description: "Register today and get your free listing.",
+        cta: "View offer",
+        ctaTo: "/buyer/post-requirement",
+        icon: Package,
+        image: "/Bag.png",
+    },
+    {
+        id: "compare",
+        badge: "Fast response",
+        titleLines: ["Connect Faster,", "Close Better Deals"],
+        description: "Reach more suppliers quickly and compare offers with confidence.",
+        cta: "View offer",
+        ctaTo: "/buyer/bids",
+        icon: Scale,
+        image: "/hand.webp",
+    },
+    {
+        id: "verified",
+        badge: "Trusted delivery",
+        titleLines: ["Find Reliable", "Transport Options"],
+        description: "Book trusted vehicle options for your delivery and logistics needs.",
+        cta: "View offer",
+        ctaTo: "/buyer/post-requirement",
+        icon: ShieldCheck,
+        image: "/car.png",
     },
 ]
 
