@@ -1,12 +1,12 @@
 import { Star, MapPin, Clock, Heart } from "lucide-react"
 
 export default function OfferCard({ offer }) {
-    const { Icon, gradient, iconColor, isNew, title, price, rating, reviews, location, deliveryDays } = offer
+    const { Icon, gradient, iconColor, isNew, title, price, rating, reviews, location, deliveryDays, image } = offer
     return (
         <article className="bg-white rounded-2xl overflow-hidden ring-1 ring-slate-200 transition-all hover:ring-[#0EA432] hover:ring-2 active:scale-[0.98]">
             {/* Image area — 160px */}
             <div className={`relative h-40 bg-linear-to-br ${gradient} flex items-center justify-center`}>
-                <Icon className={`h-16 w-16 ${iconColor} opacity-40`} />
+                <img src={image} alt={title} className="h-full w-full object-cover" />
                 <span
                     className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${isNew
                         ? "bg-[#0EA432] text-white"
