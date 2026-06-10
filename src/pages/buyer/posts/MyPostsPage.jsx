@@ -2,10 +2,11 @@ import { Link } from "react-router-dom"
 import {
   CalendarDays,
   ChevronRight,
-  ClipboardList,
   MapPin,
+  MessageCircle,
   PackagePlus,
   Scale,
+  Trash2,
   Truck,
 } from "lucide-react"
 
@@ -31,54 +32,10 @@ const postedRequirements = [
     offersCount: 12,
     postedAt: "2 days ago",
     expectedDelivery: "Within 5 days",
-    description:
-      "Need verified supplier with standard quality certification and split delivery option.",
-  },
-  {
-    id: "REQ-8840",
-    title: "Office Chairs — Mesh Back × 10 Units",
-    category: "Office",
-    quantity: "10",
-    unit: "Units",
-    location: "Mzuzu",
-    budgetRange: "MWK 850,000 - 1,050,000",
-    status: "reviewing",
-    offersCount: 5,
-    postedAt: "5 days ago",
-    expectedDelivery: "Within 7 days",
-    description:
-      "Priority on ergonomic support, warranty period, and delivery to our office location.",
-  },
-  {
-    id: "REQ-7102",
-    title: "5-Ton Truck — Lilongwe to Blantyre",
-    category: "Transport",
-    quantity: "1",
-    unit: "Trip",
-    location: "Lilongwe to Blantyre",
-    budgetRange: "MWK 170,000 - 220,000",
-    status: "completed",
-    offersCount: 8,
-    postedAt: "2 weeks ago",
-    expectedDelivery: "Completed",
-    description:
-      "Requirement fulfilled successfully with on-time pickup and signed delivery confirmation.",
-  },
-  {
-    id: "REQ-6504",
-    title: "Maize Flour (Ufa) — 50kg Bags × 100",
-    category: "Agriculture",
-    quantity: "100",
-    unit: "Bags",
-    location: "Kasungu",
-    budgetRange: "MWK 4,000,000 - 4,400,000",
-    status: "open",
-    offersCount: 9,
-    postedAt: "1 day ago",
-    expectedDelivery: "Within 3 days",
-    description:
-      "Looking for wholesale suppliers with consistent stock and quality assurance documentation.",
-  },
+    description: "Need verified supplier with standard quality certification and split delivery option.",
+    image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=200&h=200&fit=crop",
+    bidSources: { bidhub: 7, whatsapp: 3, facebook: 2 },
+  }
 ]
 
 const statusStyles = {
@@ -125,7 +82,7 @@ const MyPostsPage = () => {
       </div>
 
       {/* Market price marquee */}
-      <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      {/* <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-4 py-3">
           <h2 className="text-[13px] font-medium text-slate-900">Market Prices — Your Categories</h2>
           <p className="mt-0.5 text-[12px] text-slate-400">
@@ -144,78 +101,125 @@ const MyPostsPage = () => {
             ))}
           </div>
         </marquee>
-      </section>
+      </section> */}
 
       <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6 xl:grid-cols-[1fr_320px]">
 
         {/* ── Requirement list ── */}
         <section>
-          <h2 className="text-[20px] font-medium text-slate-900 mb-4">Requirement List</h2>
-
           <div className="space-y-3">
             {postedRequirements.map((post) => (
               <article
                 key={post.id}
-                className="rounded-2xl bg-white p-4 ring-1 ring-slate-200 transition-all hover:ring-[#0EA432] hover:ring-2"
+                className="rounded-2xl bg-white ring-1 ring-slate-200 transition-all hover:ring-[#0EA432] hover:ring-2 overflow-hidden"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-600">{post.id}</span>
+                {/* ── Main row: image + details ── */}
+                <div className="flex gap-0">
+
+                  {/* Thumbnail */}
+                  <div className="relative shrink-0 w-[110px] sm:w-[130px]">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="h-full w-full object-cover"
+                      style={{ minHeight: "130px" }}
+                    />
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusStyles[post.status]}`}
+                      className={`absolute top-2 left-2 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm ${statusStyles[post.status]}`}
                     >
                       {statusLabel[post.status]}
                     </span>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-[12px] text-slate-400">
-                    <CalendarDays className="h-3.5 w-3.5" />
-                    Posted {post.postedAt}
-                  </span>
-                </div>
 
-                <h3 className="mt-2 text-[15px] font-medium text-slate-900">{post.title}</h3>
-                <p className="mt-1 text-[13px] leading-relaxed text-slate-500">{post.description}</p>
+                  {/* Details */}
+                  <div className="flex-1 min-w-0 p-3.5 flex flex-col justify-between">
+                    <div>
+                      {/* Top row */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{post.id}</p>
+                          <h3 className="mt-0.5 text-[14px] font-semibold text-slate-900 leading-snug line-clamp-2">{post.title}</h3>
+                          <p className="mt-0.5 text-[12px] text-slate-500 line-clamp-1">{post.description}</p>
+                        </div>
+                        <button
+                          type="button"
+                          className="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg border border-red-100 bg-red-50 text-red-400 hover:bg-red-100 transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {[
-                    { label: "Category", value: post.category },
-                    { label: "Quantity", value: `${post.quantity} ${post.unit}` },
-                    { label: "Budget Range", value: post.budgetRange },
-                    { label: "Offers Received", value: post.offersCount, highlight: true },
-                  ].map((field) => (
-                    <div key={field.label} className="rounded-xl bg-slate-50 px-2.5 py-2">
-                      <p className="text-[11px] font-medium text-slate-400">{field.label}</p>
-                      <p className={`mt-0.5 text-[13px] font-bold ${field.highlight ? "text-[#0EA432]" : "text-slate-800"}`}>
-                        {field.value}
-                      </p>
+                      {/* Meta chips */}
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
+                          <MapPin className="h-3 w-3 text-[#0EA432]" />
+                          {post.location}
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
+                          <Truck className="h-3 w-3 text-[#0EA432]" />
+                          {post.expectedDelivery}
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
+                          <CalendarDays className="h-3 w-3 text-slate-400" />
+                          {post.postedAt}
+                        </span>
+                      </div>
                     </div>
-                  ))}
+
+                    {/* Budget + bids count */}
+                    <div className="mt-2.5 flex items-end justify-between gap-2">
+                      <div>
+                        <p className="text-[11px] text-slate-400">Budget</p>
+                        <p className="text-[13px] font-bold text-[#0EA432]">{post.budgetRange}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[11px] text-slate-400">Total Bids</p>
+                        <p className="text-[20px] font-extrabold text-slate-900 leading-none">{post.offersCount}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
-                  <div className="flex items-center gap-3 text-[12px] text-slate-400">
-                    <span className="inline-flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {post.location}
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Truck className="h-3.5 w-3.5" />
-                      {post.expectedDelivery}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
+                {/* ── Bid sources strip ── */}
+                <div className="border-t border-slate-100 bg-slate-50 px-4 py-2.5 flex flex-wrap items-center gap-3">
+                  <p className="text-[11px] font-semibold text-slate-500 mr-1">Bids from:</p>
+
+                  {/* BidHub */}
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0EA432]/10 px-2.5 py-1 text-[11px] font-semibold text-[#0EA432]">
+                    <svg className="h-3 w-3" viewBox="0 0 16 16" fill="currentColor">
+                      <circle cx="8" cy="8" r="7" opacity=".2"/><path d="M5 8.5h6M8 5.5v6" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round"/>
+                    </svg>
+                    BidHub · {post.bidSources.bidhub}
+                  </span>
+
+                  {/* WhatsApp */}
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366]/10 px-2.5 py-1 text-[11px] font-semibold text-[#128C7E]">
+                    <MessageCircle className="h-3 w-3" />
+                    WhatsApp · {post.bidSources.whatsapp}
+                  </span>
+
+                  {/* Facebook */}
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1877F2]/10 px-2.5 py-1 text-[11px] font-semibold text-[#1877F2]">
+                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.269h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+                    </svg>
+                    Facebook · {post.bidSources.facebook}
+                  </span>
+
+                  {/* Actions */}
+                  <div className="ml-auto flex items-center gap-2">
                     <Link
                       to="/buyer/bids"
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
                     >
-                      View Offers
-                      <ChevronRight className="h-3.5 w-3.5" />
+                      View Bids
+                      <ChevronRight className="h-3 w-3" />
                     </Link>
                     <Link
                       to="/buyer/post-requirement"
-                      className="inline-flex items-center gap-1 rounded-lg bg-[#0EA432]/10 px-2.5 py-1.5 text-[12px] font-semibold text-[#0EA432] hover:bg-[#0EA432]/15 transition-colors"
+                      className="inline-flex items-center gap-1 rounded-lg bg-[#0EA432] px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-[#0b8f2b] transition-colors"
                     >
-                      Duplicate
+                      Repost
                     </Link>
                   </div>
                 </div>
@@ -254,33 +258,6 @@ const MyPostsPage = () => {
                   + Post New Requirement
                 </button>
               </Link>
-            </div>
-          </section>
-
-          {/* How BidHub Works */}
-          <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
-            <h3 className="text-[15px] font-medium text-slate-900 mb-4">How BidHub Works</h3>
-            <div>
-              {[
-                { n: "1", t: "Post what you need", d: "Tell us what to buy — we send it to suppliers." },
-                { n: "2", t: "Suppliers send offers", d: "Receive price quotes from verified local sellers." },
-                { n: "3", t: "Pick the best price", d: "Compare and choose who to buy from." },
-              ].map((step, i, arr) => (
-                <div key={step.n} className="flex gap-3">
-                  <div className="flex flex-col items-center">
-                    <div className="h-7 w-7 shrink-0 rounded-full bg-[#0EA432] flex items-center justify-center">
-                      <span className="text-white text-[11px] font-bold">{step.n}</span>
-                    </div>
-                    {i < arr.length - 1 && (
-                      <div className="w-px border-l-2 border-dashed border-[#0EA432]/25 my-1" style={{ minHeight: "28px" }} />
-                    )}
-                  </div>
-                  <div className={i < arr.length - 1 ? "pb-4" : ""}>
-                    <p className="text-[13px] font-medium text-slate-800">{step.t}</p>
-                    <p className="text-[12px] text-slate-400 mt-0.5 leading-relaxed">{step.d}</p>
-                  </div>
-                </div>
-              ))}
             </div>
           </section>
 
