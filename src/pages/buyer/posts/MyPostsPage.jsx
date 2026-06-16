@@ -9,6 +9,7 @@ import {
   Trash2,
   Truck,
 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 const commodityLowPrices = [
   { category: "Construction Materials", commodity: "Cement 42.5R", price: "MWK 18,500 / bag" },
@@ -115,22 +116,6 @@ const MyPostsPage = () => {
               >
                 {/* ── Main row: image + details ── */}
                 <div className="flex gap-0">
-
-                  {/* Thumbnail */}
-                  <div className="relative shrink-0 w-[110px] sm:w-[130px]">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="h-full w-full object-cover"
-                      style={{ minHeight: "130px" }}
-                    />
-                    <span
-                      className={`absolute top-2 left-2 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm ${statusStyles[post.status]}`}
-                    >
-                      {statusLabel[post.status]}
-                    </span>
-                  </div>
-
                   {/* Details */}
                   <div className="flex-1 min-w-0 p-3.5 flex flex-col justify-between">
                     <div>
@@ -165,18 +150,6 @@ const MyPostsPage = () => {
                         </span>
                       </div>
                     </div>
-
-                    {/* Budget + bids count */}
-                    <div className="mt-2.5 flex items-end justify-between gap-2">
-                      <div>
-                        <p className="text-[11px] text-slate-400">Budget</p>
-                        <p className="text-[13px] font-bold text-[#0EA432]">{post.budgetRange}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[11px] text-slate-400">Total Bids</p>
-                        <p className="text-[20px] font-extrabold text-slate-900 leading-none">{post.offersCount}</p>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -205,6 +178,12 @@ const MyPostsPage = () => {
                     </svg>
                     Facebook · {post.bidSources.facebook}
                   </span>
+
+                  {post.offersCount > 0 && (
+                    <Badge>
+                      {post.offersCount} offers
+                    </Badge>
+                  )}
 
                   {/* Actions */}
                   <div className="ml-auto flex items-center gap-2">

@@ -1,10 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BriefcaseBusiness, Globe, List, LocateFixed, MapPin, Search, SlidersHorizontal } from "lucide-react"
-import { Circle, MapContainer, Marker, TileLayer, useMap } from "react-leaflet"
-import L from "leaflet"
-import "leaflet/dist/leaflet.css"
+import {
+    Map,
+    MapMarker,
+    MarkerContent,
+    useMap,
+} from "@/components/ui/map"
 
 const DEFAULT_CENTER = [-15.7902, 35.0165]
+const DEFAULT_MAP_PITCH = 60
+const DEFAULT_MAP_BEARING = -20
+const MAP_PROJECTION = { type: "globe" }
+const MAP_STYLES = {
+    light: "https://tiles.openfreemap.org/styles/liberty",
+    dark: "https://tiles.openfreemap.org/styles/liberty",
+}
 
 const requirements = [
     {
@@ -86,50 +96,94 @@ const isInBounds = (coordinates, bounds) =>
     coordinates[1] >= bounds.west &&
     coordinates[1] <= bounds.east
 
-const createPriceIcon = (label, isSelected) =>
-    L.divIcon({
-        className: "",
-        html: `<div style="
-            background:${isSelected ? "#0b4a74" : "#ffffff"};
-            color:${isSelected ? "#ffffff" : "#334155"};
-            border:1px solid ${isSelected ? "rgba(11,74,116,0.25)" : "rgba(148,163,184,0.45)"};
-            border-radius:9999px;
-            padding:6px 10px;
-            font-size:11px;
-            font-weight:700;
-            line-height:1;
-            box-shadow:0 1px 3px rgba(15,23,42,0.15);
-            white-space:nowrap;
-            transform:${isSelected ? "scale(1.05)" : "scale(1)"};
-        ">${label}</div>`,
-        iconSize: [90, 28],
-        iconAnchor: [45, 14],
-    })
+const toMapCenter = ([lat, lng]) => [lng, lat]
 
-/** Blue dot + ring — clearly distinct from budget pill markers */
-const userLocationIcon = L.divIcon({
-    className: "",
-    html: `<div style="
-        width:16px;
-        height:16px;
-        background:#2563eb;
-        border:3px solid #ffffff;
-        border-radius:50%;
-        box-shadow:0 0 0 2px rgba(37,99,235,0.35),0 2px 8px rgba(15,23,42,0.25);
-    "></div>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-})
+const createCircleCoordinates = (longitude, latitude, radiusM, points = 64) => {
+    const coords = []
+    const earthRadiusM = 6378137
+    for (let i = 0; i <= points; i += 1) {
+        const angle = (i / points) * 2 * Math.PI
+        const dx = radiusM * Math.cos(angle)
+        const dy = radiusM * Math.sin(angle)
+        const dLat = (dy / earthRadiusM) * (180 / Math.PI)
+        const dLng = (dx / (earthRadiusM * Math.cos((latitude * Math.PI) / 180))) * (180 / Math.PI)
+        coords.push([longitude + dLng, latitude + dLat])
+    }
+    return coords
+}
 
-const SelectedRequirementFlyTo = ({ selectedRequirement }) => {
-    const map = useMap()
+const MapInstanceCapture = ({ onReady }) => {
+    const { map } = useMap()
 
     useEffect(() => {
-        if (!selectedRequirement?.coordinates) return
-        map.flyTo(selectedRequirement.coordinates, Math.max(map.getZoom(), 10), {
-            duration: 0.5,
+        if (map) onReady(map)
+    }, [map, onReady])
+
+    return null
+}
+
+const SelectedRequirementFlyTo = ({ selectedRequirement }) => {
+    const { map } = useMap()
+
+    useEffect(() => {
+        if (!map || !selectedRequirement?.coordinates) return
+        const [lat, lng] = selectedRequirement.coordinates
+        map.flyTo({
+            center: [lng, lat],
+            zoom: Math.max(map.getZoom(), 10),
+            pitch: DEFAULT_MAP_PITCH,
+            bearing: DEFAULT_MAP_BEARING,
+            duration: 500,
         })
     }, [map, selectedRequirement])
+
+    return null
+}
+
+const UserAccuracyCircle = ({ latitude, longitude, radiusM }) => {
+    const { map, isLoaded } = useMap()
+    const sourceId = "user-accuracy-source"
+    const fillLayerId = "user-accuracy-fill"
+    const lineLayerId = "user-accuracy-line"
+
+    useEffect(() => {
+        if (!isLoaded || !map || radiusM == null || radiusM >= 5000) return
+
+        const ring = createCircleCoordinates(longitude, latitude, radiusM)
+        const data = {
+            type: "Feature",
+            properties: {},
+            geometry: { type: "Polygon", coordinates: [ring] },
+        }
+
+        if (!map.getSource(sourceId)) {
+            map.addSource(sourceId, { type: "geojson", data })
+            map.addLayer({
+                id: fillLayerId,
+                type: "fill",
+                source: sourceId,
+                paint: { "fill-color": "#2563eb", "fill-opacity": 0.12 },
+            })
+            map.addLayer({
+                id: lineLayerId,
+                type: "line",
+                source: sourceId,
+                paint: { "line-color": "#2563eb", "line-width": 1 },
+            })
+        } else {
+            map.getSource(sourceId).setData(data)
+        }
+
+        return () => {
+            try {
+                if (map.getLayer(lineLayerId)) map.removeLayer(lineLayerId)
+                if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId)
+                if (map.getSource(sourceId)) map.removeSource(sourceId)
+            } catch {
+                // ignore cleanup races
+            }
+        }
+    }, [isLoaded, map, latitude, longitude, radiusM])
 
     return null
 }
@@ -152,6 +206,10 @@ const BidmapPage = () => {
     const watchIdRef = useRef(null)
     const hasAutoCenteredOnUserRef = useRef(false)
     const geoSupported = typeof navigator !== "undefined" && "geolocation" in navigator
+
+    const handleMapReady = useCallback((map) => {
+        setMapInstance(map)
+    }, [])
 
     const filteredRequirements = useMemo(() => {
         const normalizedSearch = searchTerm.trim().toLowerCase()
@@ -237,8 +295,18 @@ const BidmapPage = () => {
     const flyToMyLocation = () => {
         if (!geoSupported || !mapInstance) return
 
+        const flyToPosition = ([lat, lng]) => {
+            mapInstance.flyTo({
+                center: [lng, lat],
+                zoom: Math.max(mapInstance.getZoom(), 14),
+                pitch: DEFAULT_MAP_PITCH,
+                bearing: DEFAULT_MAP_BEARING,
+                duration: 600,
+            })
+        }
+
         if (myPosition) {
-            mapInstance.flyTo(myPosition, Math.max(mapInstance.getZoom(), 14), { duration: 0.6 })
+            flyToPosition(myPosition)
             return
         }
 
@@ -252,7 +320,7 @@ const BidmapPage = () => {
                         : null
                 )
                 setGeoDenied(false)
-                mapInstance.flyTo(latLng, Math.max(mapInstance.getZoom(), 14), { duration: 0.6 })
+                flyToPosition(latLng)
             },
             () => setGeoDenied(true),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
@@ -261,7 +329,13 @@ const BidmapPage = () => {
 
     useEffect(() => {
         if (!mapInstance || !myPosition || hasAutoCenteredOnUserRef.current) return
-        mapInstance.flyTo(myPosition, Math.max(mapInstance.getZoom(), 14), { duration: 0.6 })
+        mapInstance.flyTo({
+            center: toMapCenter(myPosition),
+            zoom: Math.max(mapInstance.getZoom(), 14),
+            pitch: DEFAULT_MAP_PITCH,
+            bearing: DEFAULT_MAP_BEARING,
+            duration: 600,
+        })
         hasAutoCenteredOnUserRef.current = true
     }, [mapInstance, myPosition])
 
@@ -282,10 +356,10 @@ const BidmapPage = () => {
         (urgentOnly ? 1 : 0) +
         (areaBounds ? 1 : 0)
 
-    const mapCenter = selectedRequirement?.coordinates ?? myPosition ?? DEFAULT_CENTER
+    const mapCenter = toMapCenter(selectedRequirement?.coordinates ?? myPosition ?? DEFAULT_CENTER)
 
     return (
-        <div className="w-full p-4 md:p-6">
+        <div className="w-full p-4 max-w-7xl mx-auto">
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-100">
                 <header className="border-b border-slate-100 px-4 py-4 md:px-6">
                     <div className="flex flex-wrap items-center gap-4">
@@ -293,13 +367,6 @@ const BidmapPage = () => {
                             <h1 className="text-xl font-bold text-slate-900">MarketLink</h1>
                             <p className="text-xs text-slate-500">Browse Requirements</p>
                         </div>
-                        <nav className="flex items-center gap-4 text-sm text-slate-500">
-                            <button type="button" className="font-semibold text-[#0b4a74]">
-                                Browse Requirements
-                            </button>
-                            <button type="button" className="hover:text-slate-700">My Proposals</button>
-                            <button type="button" className="hover:text-slate-700">Dashboard</button>
-                        </nav>
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -560,60 +627,71 @@ const BidmapPage = () => {
                     </aside>
 
                     <section className="relative min-h-[600px] overflow-hidden bg-slate-50">
-                        <MapContainer
+                        <Map
+                            theme="light"
                             center={mapCenter}
                             zoom={10}
+                            pitch={DEFAULT_MAP_PITCH}
+                            bearing={DEFAULT_MAP_BEARING}
+                            projection={MAP_PROJECTION}
+                            styles={MAP_STYLES}
                             minZoom={4}
                             maxZoom={18}
-                            scrollWheelZoom
+                            maxPitch={85}
                             className="h-full min-h-[600px] w-full"
-                            whenReady={(event) => setMapInstance(event.target)}
                         >
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
+                            <MapInstanceCapture onReady={handleMapReady} />
 
                             {selectedRequirement && (
                                 <SelectedRequirementFlyTo selectedRequirement={selectedRequirement} />
                             )}
 
                             {filteredRequirements.map((item) => {
+                                const [lat, lng] = item.coordinates
                                 const isSelected = item.id === selectedId
                                 return (
-                                    <Marker
+                                    <MapMarker
                                         key={item.id}
-                                        position={item.coordinates}
-                                        icon={createPriceIcon(item.budgetLabel, isSelected)}
-                                        eventHandlers={{
-                                            click: () => setSelectedId(item.id),
-                                        }}
-                                    />
+                                        longitude={lng}
+                                        latitude={lat}
+                                        onClick={() => setSelectedId(item.id)}
+                                        anchor="center"
+                                    >
+                                        <MarkerContent>
+                                            <div
+                                                className={`rounded-full border px-2.5 py-1.5 text-[11px] font-bold leading-none whitespace-nowrap shadow-sm transition-transform ${
+                                                    isSelected
+                                                        ? "scale-105 border-[#0b4a74]/25 bg-[#0b4a74] text-white"
+                                                        : "border-slate-300/45 bg-white text-slate-600"
+                                                }`}
+                                            >
+                                                {item.budgetLabel}
+                                            </div>
+                                        </MarkerContent>
+                                    </MapMarker>
                                 )
                             })}
 
                             {myPosition && myAccuracyM != null && myAccuracyM < 5000 && (
-                                <Circle
-                                    center={myPosition}
-                                    radius={myAccuracyM}
-                                    pathOptions={{
-                                        color: "#2563eb",
-                                        weight: 1,
-                                        fillColor: "#2563eb",
-                                        fillOpacity: 0.12,
-                                    }}
+                                <UserAccuracyCircle
+                                    latitude={myPosition[0]}
+                                    longitude={myPosition[1]}
+                                    radiusM={myAccuracyM}
                                 />
                             )}
 
                             {myPosition && (
-                                <Marker
-                                    position={myPosition}
-                                    icon={userLocationIcon}
-                                    zIndexOffset={2000}
-                                    interactive={false}
-                                />
+                                <MapMarker
+                                    longitude={myPosition[1]}
+                                    latitude={myPosition[0]}
+                                    anchor="center"
+                                >
+                                    <MarkerContent className="pointer-events-none cursor-default">
+                                        <div className="h-4 w-4 rounded-full border-[3px] border-white bg-blue-600 shadow-[0_0_0_2px_rgba(37,99,235,0.35),0_2px_8px_rgba(15,23,42,0.25)]" />
+                                    </MarkerContent>
+                                </MapMarker>
                             )}
-                        </MapContainer>
+                        </Map>
 
                         <div className="absolute left-1/2 top-5 z-10 -translate-x-1/2">
                             <button
