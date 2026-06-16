@@ -5,7 +5,8 @@ import {
   MessageSquare,
   Package,
   Star,
-  Home
+  Home,
+  Search,
 } from "lucide-react"
 import { ROLES } from "@/core/constants/roles"
 import { normalizeRole } from "@/core/constants/roles"
@@ -52,13 +53,18 @@ const ROLE_NAV_ITEMS = Object.freeze({
   [ROLES.SELLER]: [
     {
       to: "/seller/dashboard",
-      label: "Dashboard",
+      label: "Home",
       icon: Home,
     },
     {
       to: "/seller/sell-requirement",
-      label: "Sell Requirement",
+      label: "Post Listing",
       icon: Package,
+    },
+    {
+      to: "/seller/requirements",
+      label: "Browse",
+      icon: Search,
     },
     {
       to: "/seller/my-posts",

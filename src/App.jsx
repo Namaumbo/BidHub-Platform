@@ -14,6 +14,7 @@ import SellPage from "./pages/bidder/sell/SellPage"
 import MessagesPage from "./pages/bidder/messages/MessagesPage"
 import BidderDashboardPage from "./pages/bidder/dashboard/DashboardPage"
 import SellerMyPostsPage from "./pages/bidder/posts/MyPostsPage"
+import RequirementsPage from "./pages/bidder/request/RequestsPage"
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/seller/dashboard" element={<BidderDashboardPage />} />
             <Route path="/seller/my-posts" element={<SellerMyPostsPage />} />
             <Route path="/seller/sell-requirement" element={<SellPage />} />
+            <Route path="/seller/requirements" element={<RequirementsPage />} />
             <Route path="/seller/messages" element={<MessagesPage />} />
           </Route>
 
