@@ -218,16 +218,16 @@ const BuyerDashboardPage = () => {
     const SlideIcon = slide.icon
 
     return (
-        <div className="max-w-7xl mx-auto m-5 mt-8">
+        <div className="max-w-7xl mx-auto m-5 mt-8 p-5 md:p-0">
 
             {/* ── Hero Banner carousel ── */}
-            <div className="relative -mx-4 mb-6 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl md:p-8">
+            <div className="relative -mx-4 mb-6 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl ml-px mr-px rounded-2xl ">
                 {/* Decorative circles */}
                 <div className="pointer-events-none absolute -right-14 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-[#ebf9e5]" />
                 <div className="pointer-events-none absolute right-16 top-8 h-24 w-24 rounded-full bg-[#f1fbe8]" />
                 <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#f3fee8]" />
 
-                <div className="relative flex items-center justify-between gap-4">
+                <div className="relative flex items-center justify-between gap-4 ">
                     <div className="flex-1 min-h-[168px] sm:min-h-[152px]" aria-live="polite" aria-atomic="true">
                         <div key={slide.id} className="animate-in fade-in duration-500">
                             <span className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">

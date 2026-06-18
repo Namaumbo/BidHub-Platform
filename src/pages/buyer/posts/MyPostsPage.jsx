@@ -63,13 +63,13 @@ const MyPostsPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl m-5 mt-8">
+    <div className="md:mx-auto max-w-7xl  mt-3 p-5 md:p-0 md:m-5 md:mt-8">
 
       {/* Page header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-[20px] font-medium text-slate-900">My Posted Requirements</h1>
-          <p className="mt-1 text-[13px] text-slate-500">
+          <p className="mt-1 text-[13px] text-slate-500 hidden md:block">
             Professional overview of all requirements you have posted so far.
           </p>
         </div>
@@ -124,7 +124,7 @@ const MyPostsPage = () => {
                         <div className="min-w-0">
                           <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{post.id}</p>
                           <h3 className="mt-0.5 text-[14px] font-semibold text-slate-900 leading-snug line-clamp-2">{post.title}</h3>
-                          <p className="mt-0.5 text-[12px] text-slate-500 line-clamp-1">{post.description}</p>
+                          <p className="mt-0.5 text-[12px] text-slate-500 line-clamp-1 hidden md:block">{post.description}</p>
                         </div>
                         <button
                           type="button"
@@ -136,11 +136,11 @@ const MyPostsPage = () => {
 
                       {/* Meta chips */}
                       <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
+                        <span className="hidden md:inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
                           <MapPin className="h-3 w-3 text-[#0EA432]" />
                           {post.location}
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
+                        <span className="hidden md:inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
                           <Truck className="h-3 w-3 text-[#0EA432]" />
                           {post.expectedDelivery}
                         </span>
@@ -160,31 +160,32 @@ const MyPostsPage = () => {
                   {/* BidHub */}
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0EA432]/10 px-2.5 py-1 text-[11px] font-semibold text-[#0EA432]">
                     <svg className="h-3 w-3" viewBox="0 0 16 16" fill="currentColor">
-                      <circle cx="8" cy="8" r="7" opacity=".2"/><path d="M5 8.5h6M8 5.5v6" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round"/>
+                      <circle cx="8" cy="8" r="7" opacity=".2" /><path d="M5 8.5h6M8 5.5v6" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" />
                     </svg>
-                    BidHub · {post.bidSources.bidhub}
+                    <span className="hidden md:inline">BidHub · </span> {post.bidSources.bidhub}
                   </span>
 
                   {/* WhatsApp */}
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366]/10 px-2.5 py-1 text-[11px] font-semibold text-[#128C7E]">
                     <MessageCircle className="h-3 w-3" />
-                    WhatsApp · {post.bidSources.whatsapp}
+                    <span className="hidden md:inline">WhatsApp</span>{post.bidSources.whatsapp}
                   </span>
 
                   {/* Facebook */}
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1877F2]/10 px-2.5 py-1 text-[11px] font-semibold text-[#1877F2]">
                     <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.269h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+                      <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.269h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" />
                     </svg>
-                    Facebook · {post.bidSources.facebook}
+                    <span className="hidden md:inline">Facebook · </span> {post.bidSources.facebook}
                   </span>
 
-                  {post.offersCount > 0 && (
-                    <Badge>
-                      {post.offersCount} offers
-                    </Badge>
-                  )}
-
+                  <span className="hidden md:inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">
+                    {post.offersCount > 0 && (
+                      <Badge>
+                        {post.offersCount} offers
+                      </Badge>
+                    )}
+                  </span>
                   {/* Actions */}
                   <div className="ml-auto flex items-center gap-2">
                     <Link
@@ -196,7 +197,7 @@ const MyPostsPage = () => {
                     </Link>
                     <Link
                       to="/buyer/post-requirement"
-                      className="inline-flex items-center gap-1 rounded-lg bg-[#0EA432] px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-[#0b8f2b] transition-colors"
+                      className="hidden md:inline-flex items-center gap-1 rounded-lg bg-[#0EA432] px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-[#0b8f2b] transition-colors"
                     >
                       Repost
                     </Link>

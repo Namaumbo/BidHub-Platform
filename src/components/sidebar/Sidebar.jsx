@@ -22,7 +22,6 @@ const Sidebar = () => {
     const { role, username, logout } = useAuth()
     const currentRole = normalizeRole(role)
     const navItems = getNavItemsByRole(currentRole)
-    const dashboardPath = getDashboardPathByRole(currentRole)
     const roleLabel = `${currentRole.charAt(0).toUpperCase()}${currentRole.slice(1)} Account`
     const initials = getInitials(username)
 
@@ -33,20 +32,9 @@ const Sidebar = () => {
 
     return (
         <aside
-            className="hidden h-screen w-60 flex-col bg-[#0f6e56] md:flex sticky top-0"
+            className="sticky top-16 z-30 hidden h-[calc(100vh-4rem)] w-60 shrink-0 flex-col self-start border-r border-[#0d5c47] bg-[#0f6e56] md:flex"
             data-purpose="sidebar-navigation"
         >
-            {/* Logo */}
-            <div className="px-5 py-5 border-b border-white/10">
-                <NavLink to={dashboardPath} className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                        <span className="font-extrabold text-white text-sm">B</span>
-                    </div>
-                    <span className="text-[17px] font-extrabold tracking-tight text-white">BidHub</span>
-                </NavLink>
-            </div>
-
-            {/* Nav items */}
             <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
                 {navItems.map((item) => {
                     const Icon = item.icon
@@ -63,7 +51,7 @@ const Sidebar = () => {
                             <Icon className="h-[18px] w-[18px] shrink-0" />
                             <span className="flex-1">{item.label}</span>
                             {item.badgeCount ? (
-                                <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">
+                                <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
                                     {item.badgeCount}
                                 </span>
                             ) : null}
@@ -72,10 +60,9 @@ const Sidebar = () => {
                 })}
             </nav>
 
-            {/* User footer */}
             <div className="border-t border-white/10 px-4 py-4" data-purpose="user-footer-card">
-                <div className="flex items-center gap-3 mb-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 text-white text-[13px] font-bold">
+                <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 text-[13px] font-bold text-white">
                         {initials}
                     </div>
                     <div className="overflow-hidden">
