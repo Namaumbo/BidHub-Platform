@@ -1,4 +1,3 @@
-import { Fragment } from "react"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import {
@@ -10,161 +9,265 @@ import {
     Zap,
     HeartPulse,
     Monitor,
-    ChevronRight,
-    Package,
-    Scale,
-    ShieldCheck,
     MapPin,
     Clock,
     Send,
     Plus,
-    TrendingUp,
+    Users,
+    Star,
+    BadgeCheck,
+    ChevronRight,
+    Flame,
+    Bell,
+    CircleCheck,
+    Phone,
+    AlertCircle,
 } from "lucide-react"
-import useAuthCarousel from "@/features/auth/hooks/useAuthCarousel"
 
-// ── Data ──────────────────────────────────────────────────────────────────────
+// ── Buyer Requests (what buyers in Malawi need) ───────────────────────────────
 
-const categories = [
-    { label: "Building", icon: Building2, bg: "bg-orange-50", color: "text-orange-500", to: "/seller/sell-requirement" },
-    { label: "Transport", icon: Truck, bg: "bg-blue-50", color: "text-blue-500", to: "/seller/sell-requirement" },
-    { label: "Groceries", icon: ShoppingBasket, bg: "bg-green-50", color: "text-green-500", to: "/seller/sell-requirement" },
-    { label: "Office", icon: Briefcase, bg: "bg-purple-50", color: "text-purple-500", to: "/seller/sell-requirement" },
-    { label: "Agriculture", icon: Sprout, bg: "bg-emerald-50", color: "text-emerald-500", to: "/seller/sell-requirement" },
-    { label: "Energy", icon: Zap, bg: "bg-yellow-50", color: "text-yellow-500", to: "/seller/sell-requirement" },
-    { label: "Medical", icon: HeartPulse, bg: "bg-red-50", color: "text-red-500", to: "/seller/sell-requirement" },
-    { label: "IT & Tech", icon: Monitor, bg: "bg-slate-100", color: "text-slate-500", to: "/seller/sell-requirement" },
-]
-
-const latestRequirements = [
+const buyerRequests = [
     {
-        id: 1,
-        title: "Portland Cement OPC 42.5 — 200 Bags",
+        id: "REQ-001",
+        what: "Portland Cement OPC 42.5",
+        quantity: "200 Bags",
         buyer: "Dzuka Constructions",
-        location: "Lilongwe",
+        town: "Lilongwe",
         budget: 3_500_000,
         daysLeft: 5,
         isUrgent: false,
+        otherSellers: 7,
+        buyerVerified: true,
+        buyerRating: 4.7,
+        category: "Building",
         Icon: Building2,
-        gradient: "from-orange-100 to-orange-200",
-        iconColor: "text-orange-400",
-        bidsCount: 7,
+        iconBg: "bg-orange-100",
+        iconColor: "text-orange-600",
+        borderColor: "border-orange-200",
     },
     {
-        id: 2,
-        title: "Mesh Office Chairs × 10 Units",
+        id: "REQ-002",
+        what: "Mesh Office Chairs",
+        quantity: "10 Chairs",
         buyer: "Capital Bank Ltd",
-        location: "Lilongwe",
+        town: "Lilongwe",
         budget: 450_000,
-        daysLeft: 3,
+        daysLeft: 2,
         isUrgent: true,
+        otherSellers: 3,
+        buyerVerified: true,
+        buyerRating: 4.9,
+        category: "Office",
         Icon: Briefcase,
-        gradient: "from-purple-100 to-purple-200",
-        iconColor: "text-purple-400",
-        bidsCount: 3,
+        iconBg: "bg-purple-100",
+        iconColor: "text-purple-600",
+        borderColor: "border-purple-200",
     },
     {
-        id: 3,
-        title: "Yellow Maize 50kg Bags × 100",
+        id: "REQ-003",
+        what: "Yellow Maize — 50kg Bags",
+        quantity: "100 Bags",
         buyer: "Chikondi Supermarket",
-        location: "Blantyre",
+        town: "Blantyre",
         budget: 130_000,
         daysLeft: 7,
         isUrgent: false,
+        otherSellers: 12,
+        buyerVerified: false,
+        buyerRating: 4.2,
+        category: "Groceries",
         Icon: ShoppingBasket,
-        gradient: "from-green-100 to-green-200",
-        iconColor: "text-green-400",
-        bidsCount: 12,
+        iconBg: "bg-green-100",
+        iconColor: "text-green-600",
+        borderColor: "border-green-200",
     },
     {
-        id: 4,
-        title: "Solar Panels 300W × 20 Units",
+        id: "REQ-004",
+        what: "Solar Panels 300W",
+        quantity: "20 Panels",
         buyer: "Zikomo Farm Ltd",
-        location: "Kasungu",
+        town: "Kasungu",
         budget: 780_000,
         daysLeft: 10,
         isUrgent: false,
+        otherSellers: 5,
+        buyerVerified: true,
+        buyerRating: 4.5,
+        category: "Energy",
         Icon: Zap,
-        gradient: "from-yellow-100 to-yellow-200",
-        iconColor: "text-yellow-500",
-        bidsCount: 5,
+        iconBg: "bg-yellow-100",
+        iconColor: "text-yellow-600",
+        borderColor: "border-yellow-200",
     },
+    {
+        id: "REQ-005",
+        what: "Iron Sheets (28 Gauge)",
+        quantity: "500 Sheets",
+        buyer: "Mwai Hardware",
+        town: "Mzuzu",
+        budget: 2_200_000,
+        daysLeft: 4,
+        isUrgent: true,
+        otherSellers: 2,
+        buyerVerified: true,
+        buyerRating: 4.6,
+        category: "Building",
+        Icon: Building2,
+        iconBg: "bg-orange-100",
+        iconColor: "text-orange-600",
+        borderColor: "border-orange-200",
+    },
+    {
+        id: "REQ-006",
+        what: "Fertilizer (CAN 23%N)",
+        quantity: "200 × 50kg Bags",
+        buyer: "Tikondwe Farmers Co-op",
+        town: "Dedza",
+        budget: 960_000,
+        daysLeft: 12,
+        isUrgent: false,
+        otherSellers: 8,
+        buyerVerified: true,
+        buyerRating: 4.3,
+        category: "Agriculture",
+        Icon: Sprout,
+        iconBg: "bg-emerald-100",
+        iconColor: "text-emerald-600",
+        borderColor: "border-emerald-200",
+    },
+]
+
+const categories = [
+    { label: "Building", icon: Building2, bg: "bg-orange-100", color: "text-orange-600", count: 14 },
+    { label: "Transport", icon: Truck, bg: "bg-blue-100", color: "text-blue-600", count: 6 },
+    { label: "Groceries", icon: ShoppingBasket, bg: "bg-green-100", color: "text-green-600", count: 9 },
+    { label: "Office", icon: Briefcase, bg: "bg-purple-100", color: "text-purple-600", count: 5 },
+    { label: "Agriculture", icon: Sprout, bg: "bg-emerald-100", color: "text-emerald-600", count: 11 },
+    { label: "Energy", icon: Zap, bg: "bg-yellow-100", color: "text-yellow-600", count: 4 },
+    { label: "Medical", icon: HeartPulse, bg: "bg-red-100", color: "text-red-600", count: 3 },
+    { label: "IT & Tech", icon: Monitor, bg: "bg-slate-100", color: "text-slate-600", count: 7 },
 ]
 
 const myListings = [
-    { id: 1, title: "Cement Bags (50kg × 500)", inquiries: 8, status: "active", category: "Building" },
-    { id: 2, title: "Office Desks × 20", inquiries: 3, status: "active", category: "Office" },
-    { id: 3, title: "5-Ton Delivery Truck", inquiries: 5, status: "negotiating", category: "Transport" },
+    { id: 1, title: "Cement Bags (50kg × 500)", inquiries: 8, status: "active" },
+    { id: 2, title: "Office Desks × 20", inquiries: 3, status: "active" },
+    { id: 3, title: "5-Ton Delivery Truck", inquiries: 5, status: "negotiating" },
 ]
 
-const heroSlides = [
-    {
-        id: "post",
-        badge: "Free listing",
-        titleLines: ["List What You Sell", "Reach More Buyers"],
-        description: "Post your products and services — buyers come directly to you.",
-        cta: "Post a Listing",
-        ctaTo: "/seller/sell-requirement",
-        icon: Package,
-        image: "/cement.jpg",
-    },
-    {
-        id: "respond",
-        badge: "Live tenders",
-        titleLines: ["Browse Open", "Requirements Now"],
-        description: "See what buyers need and submit your most competitive bid.",
-        cta: "Browse Requirements",
-        ctaTo: "/seller/my-posts",
-        icon: Scale,
-        image: "/hand.webp",
-    },
-    {
-        id: "verified",
-        badge: "Trusted platform",
-        titleLines: ["Get Verified,", "Close More Deals"],
-        description: "Verified sellers get 3× more inquiries from buyers on BidHub.",
-        cta: "Learn More",
-        ctaTo: "/seller/sell-requirement",
-        icon: ShieldCheck,
-        image: "/car.png",
-    },
+const recentActivity = [
+    { icon: Bell, bg: "bg-[#0EA432]/10", color: "text-[#0EA432]", text: "A buyer in Lilongwe needs building materials — matches your listing", time: "2 hours ago" },
+    { icon: CircleCheck, bg: "bg-emerald-50", color: "text-emerald-600", text: "Capital Bank confirmed your deal on office chairs", time: "Yesterday" },
+    { icon: Star, bg: "bg-amber-50", color: "text-amber-500", text: "Dzuka Constructions gave you 5 stars", time: "2 days ago" },
 ]
 
-// ── Requirement Card ──────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
-const RequirementCard = ({ req }) => {
+function competitionLabel(count) {
+    if (count <= 3) return { text: "Few sellers — good chance!", color: "text-emerald-600", bg: "bg-emerald-50" }
+    if (count <= 8) return { text: "Some competition", color: "text-amber-600", bg: "bg-amber-50" }
+    return { text: "Many sellers applied", color: "text-red-600", bg: "bg-red-50" }
+}
+
+// ── Request Card ──────────────────────────────────────────────────────────────
+
+function RequestCard({ req }) {
+    const comp = competitionLabel(req.otherSellers)
     const Icon = req.Icon
-    return (
-        <article className="bg-white rounded-2xl overflow-hidden ring-1 ring-slate-200 transition-all hover:ring-[#0EA432] hover:ring-2 active:scale-[0.98]">
-            <div className={`relative h-32 bg-gradient-to-br ${req.gradient} flex items-center justify-center`}>
-                <Icon className={`h-12 w-12 ${req.iconColor}`} strokeWidth={1.25} />
-                {req.isUrgent && (
-                    <span className="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500 text-white">
-                        Urgent
-                    </span>
-                )}
-                <span className="absolute top-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/80 text-slate-600">
-                    {req.bidsCount} bids
-                </span>
-            </div>
+    const closing = req.daysLeft <= 3
 
-            <div className="p-3">
-                <p className="text-[14px] font-semibold text-slate-800 leading-snug line-clamp-2 min-h-[40px]">
-                    {req.title}
-                </p>
-                <p className="text-[17px] font-bold text-[#0EA432] mt-1.5 leading-none">
-                    MWK {req.budget.toLocaleString()}
-                </p>
-                <div className="mt-1.5 flex items-center gap-1 text-[12px] text-slate-400">
-                    <MapPin className="h-3 w-3 shrink-0" />
-                    <span>{req.location}</span>
-                    <span className="mx-1 text-slate-300">·</span>
-                    <Clock className="h-3 w-3 shrink-0" />
-                    <span>{req.daysLeft}d left</span>
+    return (
+        <article className={cn(
+            "bg-white rounded-2xl border-2 overflow-hidden transition-shadow hover:shadow-md",
+            closing ? "border-red-200" : req.borderColor
+        )}>
+
+            {/* Urgent ribbon */}
+            {req.isUrgent && (
+                <div className="flex items-center gap-2 bg-red-500 px-4 py-2">
+                    <Flame className="h-3.5 w-3.5 text-white shrink-0" />
+                    <p className="text-white text-[12px] font-bold">Closing soon — only {req.daysLeft} day{req.daysLeft !== 1 ? "s" : ""} left!</p>
                 </div>
-                <button className="mt-2.5 w-full flex items-center justify-center gap-1.5 rounded-xl bg-[#0EA432]/10 text-[#0EA432] text-[12px] font-bold py-2 hover:bg-[#0EA432] hover:text-white transition-colors">
-                    <Send className="h-3 w-3" />
-                    Submit Bid
-                </button>
+            )}
+
+            <div className="p-4">
+
+                {/* Category icon + what they need */}
+                <div className="flex items-start gap-3 mb-3">
+                    <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0", req.iconBg)}>
+                        <Icon className={cn("h-6 w-6", req.iconColor)} />
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">{req.category}</p>
+                        <h3 className="text-[15px] font-bold text-slate-900 leading-snug">{req.what}</h3>
+                        <p className="text-[13px] text-slate-500 mt-0.5">Needs: <span className="font-semibold text-slate-700">{req.quantity}</span></p>
+                    </div>
+                </div>
+
+                {/* Budget — the most important number, make it BIG */}
+                <div className="bg-[#f0fdf4] border border-[#d1fae5] rounded-xl px-4 py-3 mb-3">
+                    <p className="text-[11px] font-semibold text-[#166534] uppercase tracking-wide mb-0.5">They will pay up to</p>
+                    <p className="text-[24px] font-extrabold text-[#0EA432] leading-none tabular-nums">
+                        MWK {req.budget.toLocaleString()}
+                    </p>
+                </div>
+
+                {/* Key facts — simple rows */}
+                <div className="space-y-2 mb-3">
+
+                    {/* Location */}
+                    <div className="flex items-center gap-2.5">
+                        <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
+                        <span className="text-[13px] text-slate-700">
+                            Located in <span className="font-semibold">{req.town}</span>
+                        </span>
+                    </div>
+
+                    {/* Deadline */}
+                    <div className="flex items-center gap-2.5">
+                        <Clock className={cn("h-4 w-4 shrink-0", closing ? "text-red-500" : "text-slate-400")} />
+                        <span className={cn("text-[13px] font-semibold", closing ? "text-red-600" : "text-slate-700")}>
+                            {closing
+                                ? `Closes in ${req.daysLeft} day${req.daysLeft !== 1 ? "s" : ""} — send your price now`
+                                : `You have ${req.daysLeft} days to send your price`}
+                        </span>
+                    </div>
+
+                    {/* Buyer */}
+                    <div className="flex items-center gap-2.5">
+                        {req.buyerVerified
+                            ? <BadgeCheck className="h-4 w-4 text-[#0EA432] shrink-0" />
+                            : <AlertCircle className="h-4 w-4 text-amber-400 shrink-0" />
+                        }
+                        <span className="text-[13px] text-slate-700">
+                            Buyer: <span className="font-semibold">{req.buyer}</span>
+                            {req.buyerVerified && <span className="ml-1 text-[#0EA432] text-[11px] font-bold">(Verified ✓)</span>}
+                        </span>
+                    </div>
+
+                    {/* Competition */}
+                    <div className="flex items-center gap-2.5">
+                        <Users className="h-4 w-4 text-slate-400 shrink-0" />
+                        <span className="text-[13px] text-slate-700">
+                            <span className="font-semibold">{req.otherSellers} other seller{req.otherSellers !== 1 ? "s" : ""}</span> have applied
+                        </span>
+                        <span className={cn("ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0", comp.bg, comp.color)}>
+                            {comp.text}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Action button — big and obvious */}
+                <Link to="/seller/requests">
+                    <button className={cn(
+                        "w-full flex items-center justify-center gap-2 rounded-xl py-3 text-[14px] font-bold transition-all active:scale-[0.98]",
+                        closing
+                            ? "bg-red-500 hover:bg-red-600 text-white"
+                            : "bg-[#0EA432] hover:bg-[#0b8f2b] text-white"
+                    )}>
+                        <Send className="h-4 w-4" />
+                        Send Your Price
+                    </button>
+                </Link>
             </div>
         </article>
     )
@@ -173,291 +276,221 @@ const RequirementCard = ({ req }) => {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 const BidderDashboardPage = () => {
-    const { activeSlide, setActiveSlide } = useAuthCarousel(heroSlides.length, 6000)
-    const slide = heroSlides[activeSlide]
-    const SlideIcon = slide.icon
+    const urgentCount = buyerRequests.filter((r) => r.isUrgent).length
+    const totalOpen = buyerRequests.length
 
     return (
-        <div className="max-w-7xl mx-auto m-5 mt-8">
+        <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
 
-            {/* ── Hero Banner carousel ── */}
-            <div className="relative -mx-4 mb-6 overflow-hidden border border-[#e5f2dd] bg-[#f9fff6] px-5 py-7 md:mx-0 md:rounded-2xl md:p-8">
-                <div className="pointer-events-none absolute -right-14 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-[#ebf9e5]" />
-                <div className="pointer-events-none absolute right-16 top-8 h-24 w-24 rounded-full bg-[#f1fbe8]" />
-                <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-[#f3fee8]" />
+            {/* ── Greeting ── */}
+            <div className="bg-[#f0fdf4] border border-[#d1fae5] rounded-2xl px-5 py-5">
+                <h1 className="text-[22px] font-extrabold text-[#0EA432] leading-snug">
+                    Moni! Here is what buyers need today
+                </h1>
+                <p className="text-[14px] text-slate-600 mt-1">
+                    There are <span className="font-bold text-slate-900">{totalOpen} buyer requests</span> open right now.
+                    Send your price and win the job.
+                </p>
 
-                <div className="relative flex items-center justify-between gap-4">
-                    <div className="flex-1 min-h-[168px] sm:min-h-[152px]" aria-live="polite" aria-atomic="true">
-                        <div key={slide.id} className="animate-in fade-in duration-500">
-                            <span className="mb-2 inline-block rounded-full bg-[#e7f8dd] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#149330]">
-                                {slide.badge}
-                            </span>
-                            <h2 className="text-xl font-extrabold leading-snug text-[#129a2f] md:text-2xl">
-                                {slide.titleLines.map((line, index) => (
-                                    <Fragment key={line}>
-                                        {index > 0 && <br />}
-                                        {line}
-                                    </Fragment>
-                                ))}
-                            </h2>
-                            <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-slate-700">
-                                {slide.description}
-                            </p>
-                            <Link to={slide.ctaTo}>
-                                <button className="mt-4 rounded-full bg-[#0EA432] px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#0b8f2b] active:scale-95">
-                                    {slide.cta}
-                                </button>
-                            </Link>
-                        </div>
+                {/* At-a-glance strip */}
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                    <div className="bg-white rounded-xl p-3 text-center border border-[#d1fae5]">
+                        <p className="text-[22px] font-extrabold text-[#0EA432] tabular-nums">{totalOpen}</p>
+                        <p className="text-[11px] font-semibold text-slate-500 mt-0.5 leading-tight">Open Jobs</p>
                     </div>
-
-                    <div className="hidden shrink-0 sm:flex">
-                        <div key={slide.id} className="relative flex h-44 w-[220px] items-center justify-center animate-in fade-in duration-500">
-                            {slide.image ? (
-                                <img
-                                    src={slide.image}
-                                    alt={slide.titleLines.join(" ")}
-                                    className="relative z-10 h-full w-full object-contain"
-                                />
-                            ) : (
-                                <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-[#ddf3d1]">
-                                    <SlideIcon className="h-12 w-12 text-[#149330]" />
-                                </div>
-                            )}
-                        </div>
+                    <div className="bg-white rounded-xl p-3 text-center border border-red-100">
+                        <p className="text-[22px] font-extrabold text-red-500 tabular-nums">{urgentCount}</p>
+                        <p className="text-[11px] font-semibold text-slate-500 mt-0.5 leading-tight">Closing Soon</p>
                     </div>
-                </div>
-
-                <div className="mt-4 flex gap-1.5" role="tablist" aria-label="Hero carousel">
-                    {heroSlides.map((item, index) => (
-                        <button
-                            key={item.id}
-                            type="button"
-                            role="tab"
-                            aria-selected={activeSlide === index}
-                            aria-label={`Slide ${index + 1}: ${item.titleLines.join(" ")}`}
-                            onClick={() => setActiveSlide(index)}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${
-                                activeSlide === index ? "w-6 bg-[#129a2f]" : "w-2 bg-[#cfd8cb] hover:bg-[#b8c5b2]"
-                            }`}
-                        />
-                    ))}
+                    <div className="bg-white rounded-xl p-3 text-center border border-slate-100">
+                        <p className="text-[22px] font-extrabold text-slate-800 tabular-nums">16</p>
+                        <p className="text-[11px] font-semibold text-slate-500 mt-0.5 leading-tight">Buyers Viewed You</p>
+                    </div>
                 </div>
             </div>
 
-            {/* ── Main layout ── */}
-            <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6 xl:grid-cols-[1fr_320px]">
+            {/* ── Urgent alert ── */}
+            {urgentCount > 0 && (
+                <div className="flex items-start gap-3 bg-red-50 border-2 border-red-200 rounded-2xl px-4 py-3.5">
+                    <Flame className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-bold text-red-700">
+                            {urgentCount} request{urgentCount > 1 ? "s are" : " is"} closing very soon!
+                        </p>
+                        <p className="text-[12px] text-red-600 mt-0.5">
+                            Send your price before time runs out — these are marked in red below.
+                        </p>
+                    </div>
+                </div>
+            )}
 
-                {/* ── LEFT ── */}
-                <div>
-
-                    {/* ── Categories ── */}
-                    <section className="mb-6">
-                        <div className="flex items-center justify-between mb-3">
-                            <h2 className="text-[20px] font-medium text-slate-900">Browse by Category</h2>
-                            <Link to="/seller/sell-requirement" className="flex items-center gap-0.5 text-[13px] font-semibold text-[#0EA432] hover:underline">
-                                See All <ChevronRight className="h-3.5 w-3.5" />
-                            </Link>
-                        </div>
-                        <div className="grid grid-cols-4 gap-2.5 md:grid-cols-8">
-                            {categories.map((cat) => {
-                                const Icon = cat.icon
-                                return (
-                                    <Link key={cat.label} to={cat.to}>
-                                        <div className="flex flex-col items-center gap-1.5 group">
-                                            <div className={`h-14 w-14 rounded-2xl ${cat.bg} flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm`}>
-                                                <Icon className={`h-6 w-6 ${cat.color}`} />
-                                            </div>
-                                            <span className="text-[11px] font-semibold text-slate-600 text-center leading-tight">
-                                                {cat.label}
-                                            </span>
-                                        </div>
-                                    </Link>
-                                )
-                            })}
-                        </div>
-                    </section>
-
-                    {/* ── Open Requirements ── */}
-                    <section className="mb-6">
-                        <div className="flex items-center justify-between mb-3">
-                            <div>
-                                <h2 className="text-[20px] font-medium text-slate-900">Open Requirements For You</h2>
-                                <p className="text-[13px] text-slate-500 mt-0.5">
-                                    Buyers in Malawi waiting for your offer
-                                </p>
-                            </div>
-                            <Link
-                                to="/seller/my-posts"
-                                className="flex items-center gap-0.5 text-[13px] font-semibold text-[#0EA432] hover:underline shrink-0"
-                            >
-                                See All <ChevronRight className="h-3.5 w-3.5" />
-                            </Link>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-                            {latestRequirements.map((req) => (
-                                <RequirementCard key={req.id} req={req} />
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* ── My Active Listings — mobile only ── */}
-                    <section className="mb-6 lg:hidden">
-                        <div className="flex items-center justify-between mb-3">
-                            <h2 className="text-[20px] font-medium text-slate-900">My Active Listings</h2>
-                            <Link to="/seller/my-posts" className="text-[13px] font-semibold text-[#0EA432] hover:underline">
-                                See All
-                            </Link>
-                        </div>
-                        <div className="space-y-2.5">
-                            {myListings.map((listing) => (
-                                <div
-                                    key={listing.id}
-                                    className="bg-white rounded-2xl p-4 ring-1 ring-slate-200 flex items-center justify-between gap-3"
-                                >
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-[15px] font-medium text-slate-800 truncate">{listing.title}</p>
-                                        <p className="text-[12px] text-slate-400 mt-0.5">
-                                            <span className="font-semibold text-[#0EA432]">{listing.inquiries}</span> inquiries · {listing.category}
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center gap-2 shrink-0">
-                                        <span
-                                            className={cn(
-                                                "text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide",
-                                                listing.status === "active"
-                                                    ? "bg-emerald-100 text-emerald-700"
-                                                    : "bg-blue-100 text-blue-700"
-                                            )}
-                                        >
-                                            {listing.status === "negotiating" ? "Negotiating" : listing.status}
+            {/* ── What type of goods do you sell? ── */}
+            <section>
+                <div className="flex items-center justify-between mb-3">
+                    <div>
+                        <h2 className="text-[17px] font-bold text-slate-900">What do you sell?</h2>
+                        <p className="text-[12px] text-slate-500 mt-0.5">Tap a type to see matching buyer requests</p>
+                    </div>
+                </div>
+                <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-8">
+                    {categories.map((cat) => {
+                        const Icon = cat.icon
+                        return (
+                            <Link key={cat.label} to="/seller/requests">
+                                <div className="flex flex-col items-center gap-1.5 group">
+                                    <div className={cn(
+                                        "relative h-14 w-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-105 shadow-sm",
+                                        cat.bg
+                                    )}>
+                                        <Icon className={cn("h-6 w-6", cat.color)} />
+                                        {/* request count badge */}
+                                        <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 rounded-full bg-[#0EA432] text-white text-[9px] font-bold flex items-center justify-center leading-none">
+                                            {cat.count}
                                         </span>
-                                        <Link to="/seller/my-posts">
-                                            <ChevronRight className="h-4 w-4 text-slate-400" />
-                                        </Link>
                                     </div>
+                                    <span className="text-[11px] font-semibold text-slate-600 text-center leading-tight">
+                                        {cat.label}
+                                    </span>
                                 </div>
-                            ))}
-                        </div>
-                    </section>
+                            </Link>
+                        )
+                    })}
+                </div>
+            </section>
 
-                    {/* ── Engagement tip strip ── */}
-                    <section className="mb-6 mt-2">
-                        <div className="mb-3">
-                            <h2 className="text-[20px] font-medium text-slate-900">Boost Your Visibility</h2>
-                            <p className="mt-0.5 text-[13px] text-slate-500">
-                                Tips to get more inquiries from serious buyers
+            {/* ── Main layout ── */}
+            <div className="lg:grid lg:grid-cols-[1fr_290px] lg:gap-6">
+
+                {/* ── LEFT: buyer requests ── */}
+                <div>
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 className="text-[17px] font-bold text-slate-900">Buyers Looking for Sellers</h2>
+                            <p className="text-[12px] text-slate-500 mt-0.5">
+                                These buyers posted what they need — you can send your price
                             </p>
                         </div>
-                        <div className={cn(
-                            "flex gap-4 overflow-x-auto pb-2",
-                            "snap-x snap-mandatory scroll-smooth",
-                            "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                        )}>
-                            {[
-                                { icon: TrendingUp, color: "text-emerald-500", bg: "bg-emerald-50", tip: "Add clear photos to your listings — posts with images get 4× more views." },
-                                { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-50", tip: "Complete your profile and get verified to build buyer trust instantly." },
-                                { icon: Clock, color: "text-amber-500", bg: "bg-amber-50", tip: "Respond to inquiries within 1 hour to increase your acceptance rate." },
-                            ].map((item, i) => {
-                                const Icon = item.icon
-                                return (
-                                    <div key={i} className="w-[220px] shrink-0 snap-start rounded-2xl bg-white ring-1 ring-slate-200 p-4">
-                                        <div className={`h-10 w-10 rounded-xl ${item.bg} flex items-center justify-center mb-3`}>
-                                            <Icon className={`h-5 w-5 ${item.color}`} />
-                                        </div>
-                                        <p className="text-[13px] font-medium text-slate-700 leading-relaxed">{item.tip}</p>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </section>
+                        <Link
+                            to="/seller/requests"
+                            className="flex items-center gap-1 text-[12px] font-bold text-[#0EA432] border border-[#0EA432]/30 bg-[#0EA432]/5 px-3 py-1.5 rounded-full hover:bg-[#0EA432]/10 transition-colors shrink-0"
+                        >
+                            See All <ChevronRight className="h-3.5 w-3.5" />
+                        </Link>
+                    </div>
+
+                    <div className="space-y-4">
+                        {buyerRequests.map((req) => (
+                            <RequestCard key={req.id} req={req} />
+                        ))}
+                    </div>
                 </div>
 
-                {/* ── RIGHT: desktop sidebar ── */}
-                <aside className="hidden lg:flex flex-col gap-4 self-start lg:sticky lg:top-4">
+                {/* ── RIGHT sidebar ── */}
+                <aside className="mt-6 lg:mt-0 flex flex-col gap-4 self-start lg:sticky lg:top-4">
 
-                    {/* My Active Listings */}
-                    <div className="bg-white rounded-2xl ring-1 ring-slate-200 overflow-hidden">
+                    {/* My Listings */}
+                    <div className="bg-white rounded-2xl border-2 border-slate-100 overflow-hidden">
                         <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-                            <h3 className="text-[15px] font-medium text-slate-900">My Active Listings</h3>
-                            <Link to="/seller/my-posts" className="text-[12px] font-semibold text-[#0EA432] hover:underline">
+                            <h3 className="text-[15px] font-bold text-slate-900">My Listings</h3>
+                            <Link to="/seller/my-posts" className="text-[11px] font-bold text-[#0EA432] hover:underline">
                                 See All
                             </Link>
                         </div>
+
                         <div className="divide-y divide-slate-50">
                             {myListings.map((listing) => (
-                                <div key={listing.id} className="flex items-center gap-3 px-4 py-3">
+                                <div key={listing.id} className="flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 transition-colors">
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[13px] font-medium text-slate-800 leading-snug truncate">
+                                        <p className="text-[13px] font-semibold text-slate-800 truncate leading-snug">
                                             {listing.title}
                                         </p>
-                                        <p className="text-[12px] text-slate-400 mt-0.5">
-                                            <span className="font-semibold text-[#0EA432]">{listing.inquiries}</span> inquiries received
+                                        <p className="text-[12px] text-slate-500 mt-0.5">
+                                            <span className="font-bold text-[#0EA432]">{listing.inquiries} buyers</span> enquired
                                         </p>
                                     </div>
-                                    <span
-                                        className={cn(
-                                            "shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide",
-                                            listing.status === "active"
-                                                ? "bg-emerald-100 text-emerald-700"
-                                                : "bg-blue-100 text-blue-700"
-                                        )}
-                                    >
-                                        {listing.status === "negotiating" ? "Negotiating" : listing.status}
+                                    <span className={cn(
+                                        "shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide",
+                                        listing.status === "active"
+                                            ? "bg-emerald-100 text-emerald-700"
+                                            : "bg-blue-100 text-blue-700"
+                                    )}>
+                                        {listing.status === "negotiating" ? "In talks" : "Active"}
                                     </span>
                                 </div>
                             ))}
                         </div>
+
                         <div className="px-4 py-3 border-t border-slate-100">
                             <Link to="/seller/sell-requirement">
-                                <button className="w-full flex items-center justify-center gap-1.5 bg-[#0EA432] text-white text-[13px] font-bold py-2.5 rounded-xl hover:bg-[#0b8f2b] transition-colors">
+                                <button className="w-full flex items-center justify-center gap-2 bg-[#0EA432] text-white text-[13px] font-bold py-3 rounded-xl hover:bg-[#0b8f2b] transition-colors">
                                     <Plus className="h-4 w-4" />
-                                    Post New Listing
+                                    Add a New Listing
                                 </button>
                             </Link>
                         </div>
                     </div>
 
-                    {/* Quick stats */}
-                    <div className="grid grid-cols-3 gap-2">
-                        {[
-                            { label: "Listings", value: "3" },
-                            { label: "Inquiries", value: "16" },
-                            { label: "MWK Earned", value: "2.4M" },
-                        ].map((s) => (
-                            <div key={s.label} className="bg-white rounded-xl p-3 text-center ring-1 ring-slate-200">
-                                <p className="text-[15px] font-bold text-[#0EA432]">{s.value}</p>
-                                <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">{s.label}</p>
-                            </div>
-                        ))}
+                    {/* What happened recently */}
+                    <div className="bg-white rounded-2xl border-2 border-slate-100 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                            <h3 className="text-[15px] font-bold text-slate-900">Recent Updates</h3>
+                            <span className="h-2 w-2 rounded-full bg-[#0EA432] animate-pulse" />
+                        </div>
+                        <div className="divide-y divide-slate-50">
+                            {recentActivity.map((item, i) => {
+                                const Icon = item.icon
+                                return (
+                                    <div key={i} className="flex gap-3 px-4 py-3.5">
+                                        <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5", item.bg)}>
+                                            <Icon className={cn("h-4 w-4", item.color)} />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[12px] text-slate-700 leading-snug">{item.text}</p>
+                                            <p className="text-[11px] text-slate-400 mt-0.5">{item.time}</p>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
 
-                    {/* How BidHub Works for Sellers */}
-                    <div className="bg-white rounded-2xl p-4 ring-1 ring-slate-200">
-                        <h3 className="text-[15px] font-medium text-slate-900 mb-4">How BidHub Works</h3>
-                        <div>
+                    {/* New to BidHub? */}
+                    <div className="bg-[#f0fdf4] border-2 border-[#d1fae5] rounded-2xl p-4">
+                        <h3 className="text-[15px] font-bold text-[#166534] mb-3">How does it work?</h3>
+                        <div className="space-y-3">
                             {[
-                                { n: "1", t: "Post your product", d: "List what you sell — buyers searching for it will find you." },
-                                { n: "2", t: "Buyers contact you", d: "Receive inquiries and quote requests directly from buyers." },
-                                { n: "3", t: "Close the deal", d: "Negotiate and finalise with verified buyers on the platform." },
-                            ].map((s, i, arr) => (
-                                <div key={s.n} className="flex gap-3">
+                                { n: "1", title: "List what you sell", body: "Tell buyers what you have — add photos and your price." },
+                                { n: "2", title: "Buyer posts a request", body: "When a buyer needs something, they post it here for sellers to see." },
+                                { n: "3", title: "You send your price", body: "If you can supply it, tap Send Your Price and the buyer will reply." },
+                                { n: "4", title: "Close the deal", body: "Agree on price and delivery, then complete the order." },
+                            ].map((step, i, arr) => (
+                                <div key={step.n} className="flex gap-3">
                                     <div className="flex flex-col items-center">
-                                        <div className="shrink-0 h-7 w-7 rounded-full bg-[#0EA432] flex items-center justify-center">
-                                            <span className="text-white text-[11px] font-bold">{s.n}</span>
+                                        <div className="h-7 w-7 rounded-full bg-[#0EA432] flex items-center justify-center shrink-0">
+                                            <span className="text-white text-[11px] font-bold">{step.n}</span>
                                         </div>
                                         {i < arr.length - 1 && (
-                                            <div className="w-px flex-1 border-l-2 border-dashed border-[#0EA432]/25 my-1" style={{ minHeight: "28px" }} />
+                                            <div className="w-px flex-1 border-l-2 border-dashed border-[#0EA432]/30 my-1" style={{ minHeight: "20px" }} />
                                         )}
                                     </div>
-                                    <div className={i < arr.length - 1 ? "pb-4" : ""}>
-                                        <p className="text-[13px] font-medium text-slate-800">{s.t}</p>
-                                        <p className="text-[12px] text-slate-500 mt-0.5 leading-relaxed">{s.d}</p>
+                                    <div className={i < arr.length - 1 ? "pb-3" : ""}>
+                                        <p className="text-[12px] font-bold text-[#166534]">{step.title}</p>
+                                        <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">{step.body}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
+
+                        {/* Support contact */}
+                        <div className="mt-4 flex items-center gap-2.5 bg-white rounded-xl px-3 py-2.5 border border-[#d1fae5]">
+                            <Phone className="h-4 w-4 text-[#0EA432] shrink-0" />
+                            <div>
+                                <p className="text-[11px] font-bold text-slate-800">Need help?</p>
+                                <p className="text-[11px] text-slate-500">Call us: <span className="font-semibold">+265 999 000 000</span></p>
+                            </div>
+                        </div>
                     </div>
+
                 </aside>
             </div>
         </div>
