@@ -14,10 +14,10 @@ const buyerNav = [
 
 const sellerNav = [
     { to: "/seller/dashboard", label: "Home", icon: Home },
-    { to: "/seller/my-posts", label: "My Posts", icon: Search },
+    { to: "/seller/requirements", label: "Browse", icon: Search },
     { to: "/seller/sell-requirement", label: "Sell", icon: Plus, highlight: true },
     { to: "/seller/messages", label: "Messages", icon: Bell, badge: 3 },
-    { to: "/seller/dashboard", label: "Profile", icon: User },
+    { to: "/seller/my-posts", label: "My Posts", icon: User },
 ]
 
 const MobileBottomNav = () => {
