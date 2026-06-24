@@ -1,304 +1,555 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Building2, ShieldCheck } from "lucide-react"
+import { cn } from "@/lib/utils"
+import {
+    ArrowLeft,
+    Building2,
+    ShieldCheck,
+    MapPin,
+    Clock,
+    CalendarDays,
+    Package,
+    ChevronRight,
+    CheckCircle2,
+    XCircle,
+    HelpCircle,
+    MessageSquare,
+    X,
+    Star,
+    Truck,
+} from "lucide-react"
+
+// ── Data ──────────────────────────────────────────────────────────────────────
 
 const bids = [
     {
         id: "1",
-        name: "Sony PlayStation 5 Pro",
-        specs: ["Game console", "2 TB", "Gray"],
-        price: 499.99,
-        qty: 1,
+        name: "Portland Cement OPC 42.5",
+        specs: ["Building", "50 kg bags", "Grade OPC 42.5"],
+        price: 3_500_000,
+        qty: 200,
+        unit: "bags",
         status: "awaiting",
         deliveryTime: "3–5 business days",
         location: "Lilongwe, Malawi",
         submittedOn: "2 Jun 2026",
-        thumbnail:
-            "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=120&h=120&fit=crop",
-        supplier: {
-            businessName: "TechVault Supplies Ltd",
-            verified: true,
-        },
+        note: "We can deliver all 200 bags in one trip to your site. Price includes loading and offloading.",
+        thumbnail: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=120&h=120&fit=crop",
+        supplier: { businessName: "Dzuka Building Supplies", verified: true, rating: 4.7, reviewCount: 83 },
         images: [
-            "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&h=560&fit=crop",
-            "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=560&fit=crop",
-            "https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=800&h=560&fit=crop",
-            "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=900&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=900&h=560&fit=crop",
         ],
     },
     {
         id: "2",
-        name: "Sony PlayStation Portal Remote Player",
-        specs: ["Handheld", "1080p", "Black"],
-        price: 199.99,
-        qty: 1,
+        name: "Mesh Office Chairs × 10",
+        specs: ["Office", "Ergonomic", "With armrests"],
+        price: 450_000,
+        qty: 10,
+        unit: "chairs",
         status: "accepted",
         deliveryTime: "5–7 business days",
         location: "Blantyre, Malawi",
         submittedOn: "1 Jun 2026",
-        thumbnail:
-            "https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=120&h=120&fit=crop",
-        supplier: {
-            businessName: "GameLink Distributors",
-            verified: true,
-        },
+        note: "Chairs are in stock and ready. We will deliver within Blantyre CBD free of charge.",
+        thumbnail: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=120&h=120&fit=crop",
+        supplier: { businessName: "Capital Office Interiors", verified: true, rating: 4.9, reviewCount: 127 },
         images: [
-            "https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=800&h=560&fit=crop",
-            "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=560&fit=crop",
-            "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=900&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&h=560&fit=crop",
         ],
     },
     {
         id: "3",
-        name: "Maize Flour (Ufa) — 50kg Bags × 100",
-        specs: ["Agriculture", "50 kg", "Grade A"],
-        price: 420000,
+        name: "Yellow Maize — 50kg Bags × 100",
+        specs: ["Agriculture", "Grade No.1", "50 kg bags"],
+        price: 130_000,
         qty: 100,
+        unit: "bags",
         status: "rejected",
         deliveryTime: "2–3 business days",
         location: "Kasungu, Malawi",
         submittedOn: "30 May 2026",
-        thumbnail:
-            "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=120&h=120&fit=crop",
-        supplier: {
-            businessName: "Kasungu Millers Ltd",
-            verified: false,
-        },
+        note: "Maize sourced directly from our farm in Kasungu. All bags are quality tested.",
+        thumbnail: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=120&h=120&fit=crop",
+        supplier: { businessName: "Chikondi Agro Ltd", verified: false, rating: 4.1, reviewCount: 22 },
         images: [
-            "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&h=560&fit=crop",
-            "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=800&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=900&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=900&h=560&fit=crop",
+        ],
+    },
+    {
+        id: "4",
+        name: "Solar Panels 300W × 20 Units",
+        specs: ["Energy", "Monocrystalline", "300W"],
+        price: 780_000,
+        qty: 20,
+        unit: "panels",
+        status: "awaiting",
+        deliveryTime: "7–10 business days",
+        location: "Lilongwe, Malawi",
+        submittedOn: "4 Jun 2026",
+        note: "Panels come with 25-year performance warranty. Mounting kits included at no extra cost.",
+        thumbnail: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=120&h=120&fit=crop",
+        supplier: { businessName: "SunPower Malawi", verified: true, rating: 4.8, reviewCount: 56 },
+        images: [
+            "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=900&h=560&fit=crop",
+            "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=900&h=560&fit=crop",
         ],
     },
 ]
 
-const statusConfig = {
-    awaiting: { label: "Awaiting Review", cls: "bg-amber-100 text-amber-700" },
-    accepted: { label: "Accepted", cls: "bg-emerald-100 text-emerald-700" },
-    rejected: { label: "Rejected", cls: "bg-red-100 text-red-600" },
+// ── Config ────────────────────────────────────────────────────────────────────
+
+const STATUS = {
+    awaiting: {
+        label: "Awaiting Review",
+        short: "Awaiting",
+        icon: HelpCircle,
+        pill: "bg-slate-100 text-slate-600 border border-slate-200",
+        banner: "bg-slate-50 border-slate-200 text-slate-700",
+        bannerIcon: "text-slate-400",
+        dot: "bg-slate-300",
+    },
+    accepted: {
+        label: "Accepted",
+        short: "Accepted",
+        icon: CheckCircle2,
+        pill: "bg-[#0EA432]/10 text-[#0EA432] border border-[#0EA432]/20",
+        banner: "bg-[#f0fdf4] border-[#bbf7d0] text-[#166534]",
+        bannerIcon: "text-[#0EA432]",
+        dot: "bg-[#0EA432]",
+    },
+    rejected: {
+        label: "Rejected",
+        short: "Rejected",
+        icon: XCircle,
+        pill: "bg-red-50 text-red-400 border border-red-200",
+        banner: "bg-red-50 border-red-200 text-red-500",
+        bannerIcon: "text-red-400",
+        dot: "bg-red-300",
+    },
 }
 
-const detailRows = (bid) => [
-    { label: "Total Price", value: `MWK ${bid.price.toLocaleString()}`, highlight: true },
-    { label: "Quantity", value: `${bid.qty} unit${bid.qty !== 1 ? "s" : ""}` },
-    { label: "Delivery Time", value: bid.deliveryTime },
-    { label: "Location", value: bid.location },
-    { label: "Submitted On", value: bid.submittedOn },
+const TABS = [
+    { value: "all", label: "All" },
+    { value: "awaiting", label: "Awaiting" },
+    { value: "accepted", label: "Accepted" },
+    { value: "rejected", label: "Rejected" },
 ]
 
-export default function BidsPage() {
-    const [selectedId, setSelectedId] = useState(bids[0]?.id ?? null)
-    const [activeImg, setActiveImg] = useState(0)
+// ── Bid List Card ─────────────────────────────────────────────────────────────
 
-    const selected = bids.find((b) => b.id === selectedId)
-    const images = selected?.images ?? []
-    const mainImage = images[activeImg] ?? images[0]
-
-    const handleSelect = (id) => {
-        setSelectedId(id)
-        setActiveImg(0)
-    }
+function BidListCard({ bid, isSelected, onClick }) {
+    const s = STATUS[bid.status]
+    const StatusIcon = s.icon
 
     return (
-        <div className="flex h-screen overflow-hidden">
+        <button
+            type="button"
+            onClick={onClick}
+            className={cn(
+                "w-full text-left rounded-2xl border-2 transition-all overflow-hidden",
+                isSelected
+                    ? "border-[#0EA432] shadow-md shadow-[#0EA432]/10"
+                    : bid.status === "rejected"
+                        ? "border-red-200 hover:border-red-300 hover:shadow-sm"
+                        : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
+            )}
+        >
+            {/* Status top stripe */}
+            <div className={cn("h-1 w-full", s.dot)} />
 
-            {/* ════ LEFT — Bids list ════ */}
-            <div className="flex w-full shrink-0 flex-col border-r border-slate-200 bg-white lg:w-[400px] xl:w-[440px]">
+            <div className="flex gap-3 p-3.5 bg-white">
+                {/* Thumbnail */}
+                <img
+                    src={bid.thumbnail}
+                    alt={bid.name}
+                    className="h-[72px] w-[72px] shrink-0 rounded-xl object-cover"
+                />
 
-                {/* Header */}
-                <div className="border-b border-slate-100 px-5 pt-6 pb-4">
-                    <nav className="mb-3 flex items-center gap-1 text-[12px] text-slate-400">
-                        <Link to="/buyer/dashboard" className="transition-colors hover:text-[#0f6e56]">
-                            Dashboard
-                        </Link>
-                        <span className="mx-0.5">›</span>
-                        <span className="text-slate-600 font-medium">Bids</span>
-                    </nav>
-                    <div className="flex items-center gap-2.5">
-                        <h1 className="text-[22px] font-medium text-slate-900">My Bids</h1>
-                        <span className="rounded-full bg-[#e1f5ee] px-2.5 py-0.5 text-[12px] font-semibold text-[#0f6e56]">
-                            {bids.length} bids
+                <div className="min-w-0 flex-1">
+                    {/* Name */}
+                    <p className="text-[14px] font-bold text-slate-900 leading-snug line-clamp-2">
+                        {bid.name}
+                    </p>
+
+                    {/* Supplier */}
+                    <div className="mt-1 flex items-center gap-1.5 text-[11px] text-slate-500">
+                        <Building2 className="h-3 w-3 shrink-0" />
+                        <span className="truncate">{bid.supplier.businessName}</span>
+                        {bid.supplier.verified && (
+                            <ShieldCheck className="h-3 w-3 text-[#0EA432] shrink-0" />
+                        )}
+                    </div>
+
+                    {/* Bottom: price + status */}
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                        <p className="text-[16px] font-extrabold text-[#0EA432] tabular-nums">
+                            MWK {bid.price.toLocaleString()}
+                        </p>
+                        <span className={cn(
+                            "flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shrink-0",
+                            s.pill
+                        )}>
+                            <StatusIcon className="h-3 w-3" />
+                            {s.short}
                         </span>
                     </div>
                 </div>
+            </div>
+        </button>
+    )
+}
 
-                {/* Cards */}
-                <div className="flex-1 overflow-y-auto px-4 py-4">
-                    <div className="space-y-2">
-                        {bids.map((bid) => {
-                            const isSelected = bid.id === selectedId
-                            const status = statusConfig[bid.status]
-                            return (
-                                <button
-                                    key={bid.id}
-                                    type="button"
-                                    onClick={() => handleSelect(bid.id)}
-                                    className={[
-                                        "w-full rounded-xl border border-slate-200 border-l-[3px] p-3 text-left transition-colors",
-                                        "hover:bg-[#f0faf6]",
-                                        isSelected
-                                            ? "border-l-[#0f6e56] bg-[#f0faf6]"
-                                            : "border-l-slate-200",
-                                    ].join(" ")}
-                                >
-                                    <div className="flex gap-3">
-                                        {/* Thumbnail */}
-                                        <img
-                                            src={bid.thumbnail}
-                                            alt={bid.name}
-                                            className="h-14 w-14 shrink-0 rounded-md object-cover"
-                                        />
+// ── Bid Detail Panel ──────────────────────────────────────────────────────────
 
-                                        <div className="min-w-0 flex-1">
-                                            {/* Name */}
-                                            <p className="truncate text-[15px] font-medium text-slate-900 leading-snug">
-                                                {bid.name}
-                                            </p>
+function BidDetail({ bid, onBack }) {
+    const [activeImg, setActiveImg] = useState(0)
+    const s = STATUS[bid.status]
+    const StatusIcon = s.icon
+    const initials = bid.supplier.businessName.split(" ").slice(0, 2).map((w) => w[0]).join("")
 
-                                            {/* Spec tags */}
-                                            <div className="mt-1.5 flex flex-wrap gap-1">
-                                                {bid.specs.map((s) => (
-                                                    <span
-                                                        key={s}
-                                                        className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-600"
-                                                    >
-                                                        {s}
-                                                    </span>
-                                                ))}
-                                            </div>
+    return (
+        <div className="flex flex-col h-full bg-slate-50">
 
-                                            {/* Supplier */}
-                                            <div className="mt-1.5 flex items-center gap-1 text-[12px] text-slate-400">
-                                                <Building2 className="h-3 w-3 shrink-0" />
-                                                <span className="truncate">{bid.supplier.businessName}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+            {/* ── Top bar ── */}
+            <div className="bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-3 shrink-0">
+                {/* Back button — mobile only */}
+                <button
+                    type="button"
+                    onClick={onBack}
+                    className="lg:hidden h-9 w-9 flex items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 shrink-0"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                </button>
 
-                                    {/* Bottom row: price + status */}
-                                    <div className="mt-2.5 flex items-center justify-between border-t border-slate-100 pt-2.5">
-                                        <span className="text-[17px] font-bold text-[#0f6e56]">
-                                            MWK {bid.price.toLocaleString()}
-                                        </span>
-                                        <span
-                                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${status.cls}`}
-                                        >
-                                            {status.label}
-                                        </span>
-                                    </div>
-                                </button>
-                            )
-                        })}
+                <div className="min-w-0 flex-1">
+                    <h2 className="text-[16px] font-bold text-slate-900 leading-snug truncate">{bid.name}</h2>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                        <Building2 className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                        <span className="text-[12px] text-slate-500 truncate">{bid.supplier.businessName}</span>
+                        {bid.supplier.verified && (
+                            <span className="flex items-center gap-0.5 text-[10px] font-bold text-[#0EA432] bg-[#0EA432]/10 px-2 py-0.5 rounded-full shrink-0">
+                                <ShieldCheck className="h-3 w-3" />
+                                Verified
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
 
-            {/* ════ RIGHT — Bid detail ════ */}
-            <div className="hidden flex-1 flex-col bg-slate-50 lg:flex overflow-hidden">
-                {selected ? (
-                    <>
-                        {/* Detail header */}
-                        <div className="border-b border-slate-200 bg-white px-6 py-5 shrink-0">
-                            <h2 className="text-[20px] font-medium text-slate-900 leading-snug">
-                                {selected.name}
-                            </h2>
-                            <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                                <Building2 className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                                <span className="text-[14px] text-slate-500">
-                                    {selected.supplier.businessName}
-                                </span>
-                                {selected.supplier.verified && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#e1f5ee] px-2 py-0.5 text-[10px] font-semibold text-[#0f6e56]">
+            {/* ── Scrollable body ── */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+
+                {/* Status banner */}
+                <div className={cn(
+                    "flex items-center gap-3 rounded-2xl border-2 px-4 py-3",
+                    s.banner
+                )}>
+                    <StatusIcon className={cn("h-5 w-5 shrink-0", s.bannerIcon)} />
+                    <div>
+                        <p className="text-[13px] font-bold">{s.label}</p>
+                        <p className="text-[12px] mt-0.5 opacity-80">
+                            {bid.status === "awaiting" && "This bid is waiting for your decision."}
+                            {bid.status === "accepted" && "You accepted this bid. The supplier has been notified."}
+                            {bid.status === "rejected" && "You rejected this bid."}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Image gallery */}
+                <div className="rounded-2xl overflow-hidden border border-slate-200 bg-slate-100">
+                    {/* Main image — taller on desktop to use the panel space */}
+                    <div className="relative w-full h-[220px] md:h-[300px] lg:h-[380px] bg-slate-100">
+                        <img
+                            key={activeImg}
+                            src={bid.images[activeImg]}
+                            alt={bid.name}
+                            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-200"
+                        />
+                    </div>
+
+                    {/* Thumbnail strip */}
+                    {bid.images.length > 1 && (
+                        <div className="flex gap-2.5 p-3 bg-white border-t border-slate-100">
+                            {bid.images.map((src, i) => (
+                                <button
+                                    key={i}
+                                    type="button"
+                                    onClick={() => setActiveImg(i)}
+                                    className={cn(
+                                        "h-16 w-16 lg:h-20 lg:w-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all",
+                                        i === activeImg
+                                            ? "border-[#0EA432] shadow-sm ring-2 ring-[#0EA432]/20"
+                                            : "border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100"
+                                    )}
+                                >
+                                    <img src={src} alt="" className="h-full w-full object-cover" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Price highlight */}
+                <div className="bg-[#0EA432] rounded-2xl px-5 py-4 text-white">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1">Total Bid Price</p>
+                    <p className="text-[32px] font-extrabold tabular-nums leading-none">
+                        MWK {bid.price.toLocaleString()}
+                    </p>
+                    <p className="text-[12px] text-white/70 mt-1">
+                        {bid.qty} {bid.unit} × included
+                    </p>
+                </div>
+
+                {/* Details grid */}
+                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                    {[
+                        { icon: Package, label: "Quantity", value: `${bid.qty} ${bid.unit}` },
+                        { icon: Truck, label: "Delivery Time", value: bid.deliveryTime },
+                        { icon: MapPin, label: "Supplier Location", value: bid.location },
+                        { icon: CalendarDays, label: "Submitted On", value: bid.submittedOn },
+                    ].map((row, i, arr) => {
+                        const Icon = row.icon
+                        return (
+                            <div
+                                key={row.label}
+                                className={cn(
+                                    "flex items-center gap-3 px-4 py-3.5",
+                                    i < arr.length - 1 ? "border-b border-slate-100" : ""
+                                )}
+                            >
+                                <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                                    <Icon className="h-4 w-4 text-slate-500" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{row.label}</p>
+                                    <p className="text-[13px] font-semibold text-slate-800 mt-0.5">{row.value}</p>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* Supplier card */}
+                <div className="bg-white rounded-2xl border border-slate-200 px-4 py-4">
+                    <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-3">About the Supplier</p>
+                    <div className="flex items-center gap-3">
+                        <div className="h-11 w-11 rounded-full bg-[#0EA432] flex items-center justify-center shrink-0">
+                            <span className="text-white text-[13px] font-extrabold">{initials}</span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-[14px] font-bold text-slate-900">{bid.supplier.businessName}</p>
+                                {bid.supplier.verified && (
+                                    <span className="flex items-center gap-0.5 text-[10px] font-bold text-[#0EA432] bg-[#0EA432]/10 px-2 py-0.5 rounded-full">
                                         <ShieldCheck className="h-3 w-3" />
-                                        Verified Supplier
+                                        Verified
                                     </span>
                                 )}
                             </div>
-                        </div>
-
-                        {/* Scrollable body */}
-                        <div className="flex-1 overflow-y-auto px-6 py-5">
-
-                            {/* Main image */}
-                            <div className="mb-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                                <img
-                                    key={mainImage}
-                                    src={mainImage}
-                                    alt={selected.name}
-                                    className="h-[280px] w-full object-cover"
-                                />
-                            </div>
-
-                            {/* Thumbnail strip */}
-                            <div className="mb-6 flex gap-2">
-                                {images.slice(0, 4).map((src, i) => (
-                                    <button
-                                        key={i}
-                                        type="button"
-                                        onClick={() => setActiveImg(i)}
-                                        className={[
-                                            "h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition-colors",
-                                            i === activeImg
-                                                ? "border-[#0f6e56]"
-                                                : "border-transparent hover:border-slate-300",
-                                        ].join(" ")}
-                                        aria-label={`View image ${i + 1}`}
-                                    >
-                                        <img
-                                            src={src}
-                                            alt={`${selected.name} view ${i + 1}`}
-                                            className="h-full w-full object-cover"
-                                        />
-                                    </button>
+                            <div className="flex items-center gap-1.5 mt-1">
+                                {[1, 2, 3, 4, 5].map((n) => (
+                                    <Star
+                                        key={n}
+                                        className={cn(
+                                            "h-3.5 w-3.5",
+                                            n <= Math.round(bid.supplier.rating)
+                                                ? "fill-amber-400 text-amber-400"
+                                                : "text-slate-200 fill-slate-200"
+                                        )}
+                                    />
                                 ))}
-                            </div>
-
-                            {/* Details grid */}
-                            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                                {detailRows(selected).map((row, i, arr) => (
-                                    <div
-                                        key={row.label}
-                                        className={[
-                                            "flex items-center justify-between px-4 py-3",
-                                            i < arr.length - 1 ? "border-b border-slate-100" : "",
-                                        ].join(" ")}
-                                    >
-                                        <span className="text-[12px] font-medium uppercase tracking-wide text-slate-400">
-                                            {row.label}
-                                        </span>
-                                        <span
-                                            className={[
-                                                "text-[14px] font-medium",
-                                                row.highlight
-                                                    ? "font-bold text-[#0f6e56]"
-                                                    : "text-slate-800",
-                                            ].join(" ")}
-                                        >
-                                            {row.value}
-                                        </span>
-                                    </div>
-                                ))}
+                                <span className="text-[12px] font-semibold text-slate-700">{bid.supplier.rating}</span>
+                                <span className="text-[11px] text-slate-400">({bid.supplier.reviewCount} reviews)</span>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Sticky action row */}
-                        <div className="shrink-0 border-t border-slate-200 bg-white px-6 py-4">
-                            <button
-                                type="button"
-                                className="flex h-12 w-full items-center justify-center rounded-lg bg-[#0f6e56] text-[15px] font-medium text-white transition-colors hover:bg-[#085041]"
-                            >
-                                Accept Bid
-                            </button>
-                            <button
-                                type="button"
-                                className="mt-2 flex h-12 w-full items-center justify-center rounded-lg border border-[#0f6e56] bg-white text-[15px] font-medium text-[#0f6e56] transition-colors hover:bg-[#e1f5ee]"
-                            >
-                                Request Changes
-                            </button>
+                    {/* Supplier note */}
+                    {bid.note && (
+                        <div className="mt-3 bg-slate-50 rounded-xl px-3.5 py-3 border border-slate-100">
+                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1">Message from Supplier</p>
+                            <p className="text-[13px] text-slate-700 leading-relaxed">{bid.note}</p>
                         </div>
-                    </>
+                    )}
+                </div>
+            </div>
+
+            {/* ── Sticky actions ── */}
+            {bid.status === "awaiting" && (
+                <div className="shrink-0 bg-white border-t border-slate-200 px-4 py-4 space-y-2.5">
+                    <button
+                        type="button"
+                        className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#0EA432] py-4 text-[15px] font-bold text-white hover:bg-[#0b8f2b] active:scale-[0.98] transition-all shadow-sm shadow-[#0b4a74]/20"
+                    >
+                        <CheckCircle2 className="h-5 w-5" />
+                        Accept This Bid
+                    </button>
+                    <div className="grid grid-cols-2 gap-2">
+                        <button
+                            type="button"
+                            className="flex items-center justify-center gap-1.5 rounded-2xl border-2 border-slate-200 py-3 text-[13px] font-semibold text-slate-700 hover:bg-slate-50 active:scale-[0.98] transition-all"
+                        >
+                            <MessageSquare className="h-4 w-4" />
+                            Message
+                        </button>
+                        <button
+                            type="button"
+                            className="flex items-center justify-center gap-1.5 rounded-2xl border-2 border-red-200 py-3 text-[13px] font-semibold text-red-600 hover:bg-red-50 active:scale-[0.98] transition-all"
+                        >
+                            <X className="h-4 w-4" />
+                            Reject
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {bid.status === "accepted" && (
+                <div className="shrink-0 bg-white border-t border-slate-200 px-4 py-4">
+                    <button
+                        type="button"
+                        className="w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-[#0b4a74] py-4 text-[14px] font-bold text-[#0EA432] hover:bg-[#f0fdf4] active:scale-[0.98] transition-all"
+                    >
+                        <MessageSquare className="h-4 w-4" />
+                        Message Supplier
+                    </button>
+                </div>
+            )}
+        </div>
+    )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+export default function BidsPage() {
+    const [selectedId, setSelectedId] = useState(null)
+    const [activeTab, setActiveTab] = useState("all")
+
+    const filtered = activeTab === "all" ? bids : bids.filter((b) => b.status === activeTab)
+    const selected = bids.find((b) => b.id === selectedId)
+    const showDetail = !!selected
+
+    const countFor = (tab) => (tab === "all" ? bids.length : bids.filter((b) => b.status === tab).length)
+
+    const handleSelect = (id) => setSelectedId(id)
+    const handleBack = () => setSelectedId(null)
+
+    return (
+        // Fills the main content area below TopHeader; pb-20 for mobile bottom nav
+        <div className="flex h-[calc(100dvh-56px)] overflow-hidden max-w-7xl mx-auto">
+
+            {/* ════ LEFT PANEL — list ════ */}
+            <div className={cn(
+                "flex flex-col bg-white border-r border-slate-200",
+                // Mobile: full width unless detail is open
+                "w-full lg:w-[380px] xl:w-[420px] shrink-0",
+                showDetail ? "hidden lg:flex" : "flex"
+            )}>
+
+                {/* Header */}
+                <div className="border-b border-slate-100 px-4 pt-5 pb-4 shrink-0">
+                    <nav className="mb-2.5 flex items-center gap-1 text-[12px] text-slate-400">
+                        <Link to="/buyer/dashboard" className="hover:text-[#0EA432] transition-colors">
+                            Home
+                        </Link>
+                        <ChevronRight className="h-3 w-3" />
+                        <span className="text-slate-600 font-medium">Bids</span>
+                    </nav>
+
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-[22px] font-extrabold text-slate-900">My Bids</h1>
+                        <span className="rounded-full bg-[#0EA432]/10 px-3 py-1 text-[12px] font-bold text-[#0EA432]">
+                            {bids.length} total
+                        </span>
+                    </div>
+
+                    {/* Summary stat row */}
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                        {[
+                            { label: "Awaiting", count: countFor("awaiting"), color: "text-slate-700", bg: "bg-slate-50 border-slate-200" },
+                            { label: "Accepted", count: countFor("accepted"), color: "text-[#0EA432]", bg: "bg-[#f0fdf4] border-[#bbf7d0]" },
+                            { label: "Rejected", count: countFor("rejected"), color: "text-red-400", bg: "bg-red-50 border-red-200" },
+                        ].map((s) => (
+                            <div key={s.label} className={cn("rounded-xl border px-2 py-2 text-center", s.bg)}>
+                                <p className={cn("text-[18px] font-extrabold tabular-nums leading-none", s.color)}>{s.count}</p>
+                                <p className="text-[10px] font-semibold text-slate-500 mt-0.5">{s.label}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Filter tabs */}
+                <div className="flex gap-0.5 px-4 pt-3 pb-1 shrink-0 overflow-x-auto [scrollbar-width:none]">
+                    {TABS.map((tab) => (
+                        <button
+                            key={tab.value}
+                            type="button"
+                            onClick={() => setActiveTab(tab.value)}
+                            className={cn(
+                                "whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-bold transition-all shrink-0",
+                                activeTab === tab.value
+                                    ? "bg-[#0EA432] text-white shadow-sm"
+                                    : "text-slate-500 hover:bg-slate-100"
+                            )}
+                        >
+                            {tab.label}
+                            {tab.value !== "all" && (
+                                <span className={cn(
+                                    "ml-1.5 text-[10px]",
+                                    activeTab === tab.value ? "text-white/70" : "text-slate-400"
+                                )}>
+                                    {countFor(tab.value)}
+                                </span>
+                            )}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Scrollable list */}
+                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5 pb-24 lg:pb-4">
+                    {filtered.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-center">
+                            <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                                <Package className="h-8 w-8 text-slate-300" />
+                            </div>
+                            <p className="text-[15px] font-semibold text-slate-600">No bids here</p>
+                            <p className="text-[13px] text-slate-400 mt-1">Try a different filter above</p>
+                        </div>
+                    ) : (
+                        filtered.map((bid) => (
+                            <BidListCard
+                                key={bid.id}
+                                bid={bid}
+                                isSelected={bid.id === selectedId}
+                                onClick={() => handleSelect(bid.id)}
+                            />
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* ════ RIGHT PANEL — detail ════ */}
+            <div className={cn(
+                "flex-1 overflow-hidden",
+                // Mobile: show when a bid is selected, full screen
+                showDetail ? "flex flex-col" : "hidden lg:flex lg:flex-col"
+            )}>
+                {selected ? (
+                    <BidDetail bid={selected} onBack={handleBack} />
                 ) : (
-                    <div className="flex flex-1 items-center justify-center">
-                        <p className="text-[14px] text-slate-400">Select a bid to view details</p>
+                    // Desktop empty state
+                    <div className="flex flex-1 flex-col items-center justify-center bg-slate-50 text-center px-6">
+                        <div className="h-20 w-20 rounded-full bg-[#0EA432]/10 flex items-center justify-center mb-4">
+                            <Clock className="h-9 w-9 text-[#0EA432]/40" />
+                        </div>
+                        <p className="text-[16px] font-bold text-slate-700">Select a bid to review</p>
+                        <p className="text-[13px] text-slate-400 mt-1 max-w-xs">
+                            Tap any bid on the left to see the full details, supplier info, and take action.
+                        </p>
                     </div>
                 )}
             </div>
