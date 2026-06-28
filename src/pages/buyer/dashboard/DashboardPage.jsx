@@ -20,19 +20,13 @@ import {
 import useAuthCarousel from "@/features/auth/hooks/useAuthCarousel"
 import StarRating from "@/features/dashboards/components/StarRating"
 import OfferCard from "@/features/dashboards/components/OfferCard"
+import { useAuth } from "@/context/AuthContext"
+import { useCategories } from "@/core/hooks/useCategories"
+import { useMyInquiries } from "@/core/hooks/useInquiries"
+import { mapInquiryToPostCard } from "@/core/mappers/inquiryMapper"
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
-const categories = [
-    { label: "Building", icon: Building2, bg: "bg-orange-50", color: "text-orange-500", to: "/buyer/bids" },
-    { label: "Transport", icon: Truck, bg: "bg-blue-50", color: "text-blue-500", to: "/buyer/bids" },
-    { label: "Groceries", icon: ShoppingBasket, bg: "bg-green-50", color: "text-green-500", to: "/buyer/bids" },
-    { label: "Office", icon: Briefcase, bg: "bg-purple-50", color: "text-purple-500", to: "/buyer/bids" },
-    { label: "Agriculture", icon: Sprout, bg: "bg-emerald-50", color: "text-emerald-500", to: "/buyer/bids" },
-    { label: "Energy", icon: Zap, bg: "bg-yellow-50", color: "text-yellow-500", to: "/buyer/bids" },
-    { label: "Medical", icon: HeartPulse, bg: "bg-red-50", color: "text-red-500", to: "/buyer/bids" },
-    { label: "IT & Tech", icon: Monitor, bg: "bg-slate-100", color: "text-slate-500", to: "/buyer/bids" },
-]
 
 
 
@@ -99,11 +93,6 @@ const latestOffers = [
     },
 ]
 
-const myPosts = [
-    { id: 1, title: "Cement Bags (50kg × 200)", offers: 5, status: "open", category: "Building" },
-    { id: 2, title: "Office Chairs × 10", offers: 3, status: "open", category: "Office" },
-    { id: 3, title: "Transport — LLW to BT", offers: 8, status: "reviewing", category: "Transport" },
-]
 
 const heroSlides = [
     {
@@ -213,6 +202,18 @@ const ProductListingCard = ({ product }) => {
 
 
 const BuyerDashboardPage = () => {
+    const { userId } = useAuth()
+    const { data: categories = [] } = useCategories()
+    const { data: inquiries = [] } = useMyInquiries(userId)
+    const categoryMap = Object.fromEntries(categories.map((category) => [category.id, category.name]))
+    const myPosts = inquiries.map((inquiry) =>
+        mapInquiryToPostCard(inquiry, categoryMap[inquiry.category_id] || ""),
+    )
+    const dashboardStats = {
+        posts: myPosts.length,
+        offers: myPosts.reduce((sum, post) => sum + post.offersCount, 0),
+    }
+
     const { activeSlide, setActiveSlide } = useAuthCarousel(heroSlides.length, 6000)
     const slide = heroSlides[activeSlide]
     const SlideIcon = slide.icon
@@ -306,16 +307,16 @@ const BuyerDashboardPage = () => {
                         {/* Mobile: 4-col icon grid */}
                         <div className="grid grid-cols-4 gap-2.5 md:grid-cols-8">
                             {categories.map((cat) => {
-                                const Icon = cat.icon
+                                const Icon = cat?.icon
                                 return (
                                     <Link key={cat.label} to={cat.to}>
                                         <div className="flex flex-col items-center gap-1.5 group">
-                                            <div className={`h-14 w-14 rounded-2xl ${cat.bg} flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm`}>
-                                                <Icon className={`h-6 w-6 ${cat.color}`} />
+                                            <div className={`h-14 w-14 rounded-2xl ${cat?.bg} flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm`}>
+                                                {/* <Icon className={`h-6 w-6 ${cat?.color}`} /> */}
                                             </div>
                                             <span className="text-[11px] font-semibold text-slate-600 text-center leading-tight">
-                                                {cat.label}
-                                            </span>
+                                                {cat?.label}
+                                            </span> 
                                         </div>
                                     </Link>
                                 )
@@ -367,7 +368,7 @@ const BuyerDashboardPage = () => {
                                     <div className="flex-1 min-w-0">
                                         <p className="text-[15px] font-medium text-slate-800 truncate">{post.title}</p>
                                         <p className="text-[12px] text-slate-400 mt-0.5">
-                                            <span className="font-semibold text-[#0EA432]">{post.offers}</span> offers · {post.category}
+                                            {post.offersCount} offers · {post.category}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2 shrink-0">
@@ -430,7 +431,7 @@ const BuyerDashboardPage = () => {
                                             {post.title}
                                         </p>
                                         <p className="text-[12px] text-slate-400 mt-0.5">
-                                            <span className="font-semibold text-[#0EA432]">{post.offers}</span> offers received
+                                            <span className="font-semibold text-[#0EA432]">{post.offersCount}</span> offers received
                                         </p>
                                     </div>
                                     <span
@@ -456,9 +457,9 @@ const BuyerDashboardPage = () => {
                     {/* Quick stats */}
                     <div className="grid grid-cols-3 gap-2">
                         {[
-                            { label: "My Posts", value: "3" },
-                            { label: "Offers", value: "16" },
-                            { label: "MWK Saved", value: "1.2M" },
+                            { label: "My Posts", value: String(dashboardStats.posts) },
+                            { label: "Offers", value: String(dashboardStats.offers) },
+                            { label: "MWK Saved", value: "—" },
                         ].map((s) => (
                             <div key={s.label} className="bg-white rounded-xl p-3 text-center ring-1 ring-slate-200">
                                 <p className="text-[15px] font-bold text-[#0EA432]">{s.value}</p>

@@ -1,34 +1,50 @@
 import { createContext, useContext, useState } from "react"
 import { DEFAULT_ROLE, normalizeRole } from "@/core/constants/roles"
+import { clearAuthSession, persistAuthSession, readStoredAuth } from "@/core/auth/authStorage"
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-    // later to use the session storage
-    const [username, setUsername] = useState(() => localStorage.getItem("username") || "")
-    const [role, setRole] = useState(() => normalizeRole(localStorage.getItem("role")))
+    const stored = readStoredAuth()
+    const [username, setUsername] = useState(stored.username)
+    const [role, setRole] = useState(() => normalizeRole(stored.role))
+    const [userId, setUserId] = useState(stored.userId)
+    const [accessToken, setAccessToken] = useState(stored.accessToken)
 
-    /**
-     * Called after a successful sign-in.
-     * The role MUST come from the API response — never from user input.
-     */
-    const login = (name, apiRole) => {
+    const login = ({ username: name, role: apiRole, userId: id, accessToken: token }) => {
         const normalized = normalizeRole(apiRole)
         setUsername(name)
         setRole(normalized)
-        localStorage.setItem("username", name)
-        localStorage.setItem("role", normalized)
+        setUserId(id || "")
+        setAccessToken(token || "")
+        persistAuthSession({
+            username: name,
+            role: normalized,
+            userId: id,
+            accessToken: token,
+        })
     }
 
     const logout = () => {
         setUsername("")
         setRole(DEFAULT_ROLE)
-        localStorage.removeItem("username")
-        localStorage.removeItem("role")
+        setUserId("")
+        setAccessToken("")
+        clearAuthSession()
     }
 
     return (
-        <AuthContext.Provider value={{ username, role, login, logout, isAuthenticated: !!username }}>
+        <AuthContext.Provider
+            value={{
+                username,
+                role,
+                userId,
+                accessToken,
+                login,
+                logout,
+                isAuthenticated: !!accessToken,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     )

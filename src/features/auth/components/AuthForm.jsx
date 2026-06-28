@@ -4,8 +4,13 @@ import { Button } from "@/components/ui/button"
 
 const initialValues = {
     fullName: "",
+    email: "",
     username: "",
     password: "",
+    address: "",
+    physicalAddress: "",
+    phone: "",
+    phoneSecond: "",
 }
 
 export default function AuthForm({ mode, isSubmitting, errorMessage, onSubmit }) {
@@ -32,17 +37,76 @@ export default function AuthForm({ mode, isSubmitting, errorMessage, onSubmit })
         <>
             <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
                 {isSignup && (
-                    <div className="space-y-2">
-                        <label className="text-xs font-medium text-slate-600">Full Name</label>
-                        <input
-                            type="text"
-                            value={values.fullName}
-                            onChange={handleChange("fullName")}
-                            placeholder="Enter your full name"
-                            className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:border-teal-500"
-                            required
-                        />
-                    </div>
+                    <>
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-slate-600">Full Name</label>
+                            <input
+                                type="text"
+                                value={values.fullName}
+                                onChange={handleChange("fullName")}
+                                placeholder="Enter your full name"
+                                className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:border-teal-500"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-slate-600">Email</label>
+                            <input
+                                type="email"
+                                value={values.email}
+                                onChange={handleChange("email")}
+                                placeholder="Enter your email"
+                                className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:border-teal-500"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-slate-600">Address</label>
+                            <input
+                                type="text"
+                                value={values.address}
+                                onChange={handleChange("address")}
+                                placeholder="Enter your address"
+                                className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:border-teal-500"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-medium text-slate-600">Physical Address</label>
+                            <input
+                                type="text"
+                                value={values.physicalAddress}
+                                onChange={handleChange("physicalAddress")}
+                                placeholder="Enter your physical address"
+                                className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:border-teal-500"
+                                required
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-slate-600">Phone</label>
+                                <input
+                                    type="tel"
+                                    value={values.phone}
+                                    onChange={handleChange("phone")}
+                                    placeholder="Primary phone"
+                                    className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:border-teal-500"
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-slate-600">Alt. Phone</label>
+                                <input
+                                    type="tel"
+                                    value={values.phoneSecond}
+                                    onChange={handleChange("phoneSecond")}
+                                    placeholder="Secondary phone"
+                                    className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:border-teal-500"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </>
                 )}
 
                 <div className="space-y-2">

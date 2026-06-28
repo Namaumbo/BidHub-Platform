@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   ChevronDown,
   ImagePlus,
@@ -11,24 +12,27 @@ import {
   X,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
-
-const categories = [
-  "Grains & Cereals",
-  "Cooking Oil",
-  "Construction Materials",
-  "Electronics",
-  "Fertilizer",
-]
+import { useAuth } from "@/context/AuthContext"
+import { useCategories } from "@/core/hooks/useCategories"
+import { useCreateInquiry } from "@/core/hooks/useInquiries"
+import { mapInquiryFormToPayload } from "@/core/mappers/inquiryMapper"
+import UploadService from "@/core/services/uploads/UploadService"
 
 const MAX_IMAGES = 3
 
 const PostRequirementPage = () => {
+  const navigate = useNavigate()
+  const { userId } = useAuth()
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories()
+  const createInquiry = useCreateInquiry()
+
   const [itemName, setItemName] = useState("")
   const [description, setDescription] = useState("")
   const [budget, setBudget] = useState("")
   const [location, setLocation] = useState("")
-  const [category, setCategory] = useState("")
-  const [images, setImages] = useState([]) // [{ file, url }]
+  const [categoryId, setCategoryId] = useState("")
+  const [images, setImages] = useState([])
+  const [errorMessage, setErrorMessage] = useState("")
   const fileInputRef = useRef(null)
 
   const handleImagePick = (e) => {
@@ -51,13 +55,48 @@ const PostRequirementPage = () => {
     })
   }
 
-  const canSubmit = itemName.trim() && description.trim() && budget && location.trim() && category
+  const canSubmit =
+    itemName.trim() &&
+    description.trim() &&
+    budget &&
+    location.trim() &&
+    categoryId &&
+    !createInquiry.isPending
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return
+    setErrorMessage("")
+
+    try {
+      let imageUrls = null
+      if (images.length > 0) {
+        const uploaded = await UploadService.uploadFiles(images.map((img) => img.file))
+        imageUrls = JSON.stringify(uploaded.map((item) => item.url))
+      }
+
+      const payload = {
+        ...mapInquiryFormToPayload({
+          itemName,
+          description,
+          budget,
+          location,
+          categoryId: Number(categoryId),
+          userId,
+        }),
+        image_urls: imageUrls,
+      }
+
+      await createInquiry.mutateAsync(payload)
+      navigate("/buyer/my-posts")
+    } catch (error) {
+      setErrorMessage(error?.message || "Unable to post requirement. Please try again.")
+    }
+  }
 
   return (
     <div className="bg-linear-to-br from-[#f0fdf4] via-gray-50 to-gray-100 flex items-start justify-center px-4 py-10">
       <div className="w-full max-w-lg">
 
-        {/* Header */}
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#0EA432]/10 px-3 py-1 mb-3">
             <ShoppingBag className="h-3.5 w-3.5 text-[#0EA432]" />
@@ -69,7 +108,6 @@ const PostRequirementPage = () => {
 
         <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
 
-          {/* Image upload strip */}
           <div className="bg-gray-50 border-b border-gray-100 px-5 py-4">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
               <ImagePlus className="h-3.5 w-3.5" /> Photos
@@ -110,17 +148,13 @@ const PostRequirementPage = () => {
                 </>
               )}
 
-              {/* Empty placeholder slots */}
               {Array.from({ length: MAX_IMAGES - images.length - (images.length < MAX_IMAGES ? 1 : 0) }).map((_, i) => (
                 <div key={`placeholder-${i}`} className="h-20 w-20 shrink-0 rounded-xl border border-dashed border-gray-200 bg-gray-50" />
               ))}
             </div>
           </div>
 
-          {/* Form body */}
           <div className="px-5 py-5 space-y-4">
-
-            {/* What do you need */}
             <div>
               <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
                 <ShoppingBag className="h-3.5 w-3.5 text-[#0EA432]" />
@@ -134,7 +168,6 @@ const PostRequirementPage = () => {
               />
             </div>
 
-            {/* Describe requirement */}
             <div>
               <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
                 <MessageSquare className="h-3.5 w-3.5 text-[#0EA432]" />
@@ -149,7 +182,6 @@ const PostRequirementPage = () => {
               />
             </div>
 
-            {/* Budget + Location */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
@@ -162,20 +194,18 @@ const PostRequirementPage = () => {
                   pattern="[0-9]*"
                   value={budget}
                   onChange={(e) => {
-                    const raw = e.target.value.replace(/[^0-9]/g, '');
-                    setBudget(raw);
+                    const raw = e.target.value.replace(/[^0-9]/g, "")
+                    setBudget(raw)
                   }}
                   placeholder="0"
                 />
                 <div className="mt-1 h-5">
                   <p className="text-green-700 text-sm min-h-4">
-                    MWK {budget
-                      ? Number(budget).toLocaleString()
-                      : ""}
+                    MWK {budget ? Number(budget).toLocaleString() : ""}
                   </p>
                 </div>
               </div>
-       
+
               <div>
                 <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
                   <MapPin className="h-3.5 w-3.5 text-[#0EA432]" />
@@ -190,7 +220,6 @@ const PostRequirementPage = () => {
               </div>
             </div>
 
-            {/* Category */}
             <div>
               <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
                 <LayoutGrid className="h-3.5 w-3.5 text-[#0EA432]" />
@@ -198,13 +227,18 @@ const PostRequirementPage = () => {
               </label>
               <div className="relative">
                 <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full appearance-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 pr-10 text-sm text-gray-800 outline-none focus:border-[#0EA432] focus:bg-white focus:ring-2 focus:ring-[#0EA432]/10 transition-all"
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  disabled={categoriesLoading}
+                  className="w-full appearance-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 pr-10 text-sm text-gray-800 outline-none focus:border-[#0EA432] focus:bg-white focus:ring-2 focus:ring-[#0EA432]/10 transition-all disabled:opacity-60"
                 >
-                  <option value="" disabled>Select Category</option>
-                  {categories.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                  <option value="" disabled>
+                    {categoriesLoading ? "Loading categories..." : "Select Category"}
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
                   ))}
                 </select>
                 <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -212,15 +246,20 @@ const PostRequirementPage = () => {
             </div>
           </div>
 
-          {/* Footer / Submit */}
           <div className="border-t border-gray-100 bg-gray-50 px-5 py-4">
+            {errorMessage ? (
+              <p className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600">
+                {errorMessage}
+              </p>
+            ) : null}
             <button
               type="button"
               disabled={!canSubmit}
+              onClick={handleSubmit}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0EA432] py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0b8829] hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Send className="h-4 w-4" />
-              Post Request
+              {createInquiry.isPending ? "Posting..." : "Post Request"}
             </button>
             <p className="mt-2.5 text-center text-xs text-gray-400">
               All fields marked <span className="text-red-400">*</span> are required

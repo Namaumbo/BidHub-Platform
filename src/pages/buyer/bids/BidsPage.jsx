@@ -7,130 +7,8 @@ import {
     Truck, Check, SlidersHorizontal, ChevronDown, ChevronUp,
     ArrowLeft, Clock, Plus,
 } from "lucide-react"
-
-// ── Data ──────────────────────────────────────────────────────────────────────
-// Each requirement = one thing the buyer posted.
-// Each requirement.bids = multiple suppliers who responded with a price.
-
-const requirements = [
-    {
-        id: "req-1",
-        title: "Portland Cement OPC 42.5 — 200 Bags",
-        description: "Need 200 x 50 kg bags of OPC Grade 42.5 cement delivered to our construction site in Lilongwe.",
-        category: "Building Materials",
-        budget: 4_000_000,
-        postedOn: "28 May 2026",
-        deadline: "2026-07-01",
-        thumbnail: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=80&h=80&fit=crop",
-        bids: [
-            {
-                id: "b1",
-                price: 3_500_000,
-                qty: 200, unit: "bags",
-                deliveryTime: "3–5 business days",
-                location: "Lilongwe, Malawi",
-                submittedOn: "2 Jun 2026",
-                status: "awaiting",
-                note: "We can deliver all 200 bags in one trip to your site. Price includes loading and offloading at destination.",
-                thumbnail: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=400&fit=crop",
-                images: [
-                    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&h=560&fit=crop",
-                    "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=900&h=560&fit=crop",
-                ],
-                supplier: { businessName: "Dzuka Building Supplies", verified: true, rating: 4.7, reviewCount: 83 },
-            },
-            {
-                id: "b2",
-                price: 3_200_000,
-                qty: 200, unit: "bags",
-                deliveryTime: "2–3 business days",
-                location: "Lilongwe, Malawi",
-                submittedOn: "31 May 2026",
-                status: "accepted",
-                note: "Stock is available immediately. We offer free delivery within 20 km of Area 18, Lilongwe.",
-                thumbnail: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=400&fit=crop",
-                images: [
-                    "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=900&h=560&fit=crop",
-                    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=900&h=560&fit=crop",
-                ],
-                supplier: { businessName: "Mawimbi Cement Traders", verified: true, rating: 4.5, reviewCount: 210 },
-            },
-            {
-                id: "b3",
-                price: 3_800_000,
-                qty: 200, unit: "bags",
-                deliveryTime: "7–10 business days",
-                location: "Blantyre, Malawi",
-                submittedOn: "3 Jun 2026",
-                status: "awaiting",
-                note: "We source directly from Shayona Cement. Quality guaranteed. Delivery truck available on request.",
-                thumbnail: "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=400&h=400&fit=crop",
-                images: [
-                    "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=900&h=560&fit=crop",
-                ],
-                supplier: { businessName: "Lakeshore Hardware & Construction", verified: false, rating: 4.2, reviewCount: 37 },
-            },
-        ],
-    },
-    {
-        id: "req-2",
-        title: "Ergonomic Mesh Office Chairs × 10",
-        description: "10 ergonomic mesh chairs with lumbar support and adjustable armrests for our office in Blantyre CBD.",
-        category: "Office Furniture",
-        budget: 600_000,
-        postedOn: "1 Jun 2026",
-        deadline: "2026-06-30",
-        thumbnail: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=80&h=80&fit=crop",
-        bids: [
-            {
-                id: "b4",
-                price: 450_000,
-                qty: 10, unit: "chairs",
-                deliveryTime: "5–7 business days",
-                location: "Blantyre, Malawi",
-                submittedOn: "3 Jun 2026",
-                status: "awaiting",
-                note: "Chairs are in stock and ready. We will deliver within Blantyre CBD free of charge.",
-                thumbnail: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=400&fit=crop",
-                images: [
-                    "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=900&h=560&fit=crop",
-                    "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&h=560&fit=crop",
-                ],
-                supplier: { businessName: "Capital Office Interiors", verified: true, rating: 4.9, reviewCount: 127 },
-            },
-            {
-                id: "b5",
-                price: 390_000,
-                qty: 10, unit: "chairs",
-                deliveryTime: "3–5 business days",
-                location: "Blantyre, Malawi",
-                submittedOn: "2 Jun 2026",
-                status: "awaiting",
-                note: "We have a similar ergonomic chair that has passed ISO comfort standards. Happy to bring a sample.",
-                thumbnail: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&h=400&fit=crop",
-                images: [
-                    "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=900&h=560&fit=crop",
-                ],
-                supplier: { businessName: "Blantyre Furniture Depot", verified: true, rating: 4.6, reviewCount: 64 },
-            },
-            {
-                id: "b6",
-                price: 510_000,
-                qty: 10, unit: "chairs",
-                deliveryTime: "1–2 business days",
-                location: "Blantyre, Malawi",
-                submittedOn: "4 Jun 2026",
-                status: "rejected",
-                note: "Premium imported chairs with 3-year warranty included.",
-                thumbnail: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=400&fit=crop",
-                images: [
-                    "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=900&h=560&fit=crop",
-                ],
-                supplier: { businessName: "Office Mart Malawi", verified: false, rating: 4.3, reviewCount: 18 },
-            },
-        ],
-    },
-]
+import { useBuyerRequirements } from "@/core/hooks/useBuyerRequirements"
+import { useAcceptBid, useRejectBid } from "@/core/hooks/useBids"
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -268,7 +146,23 @@ function RequirementCard({ req, onClick }) {
 
 // ── Requirements List View ────────────────────────────────────────────────────
 
-function RequirementsView({ onSelect }) {
+function RequirementsView({ requirements, isLoading, error, onSelect }) {
+    if (isLoading) {
+        return (
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 text-center text-sm text-slate-500">
+                Loading your requirements...
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 text-center text-sm text-red-600">
+                {error.message || "Unable to load requirements."}
+            </div>
+        )
+    }
+
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
             {/* Header */}
@@ -306,7 +200,14 @@ function RequirementsView({ onSelect }) {
 
             {/* Requirement cards */}
             <div className="space-y-3">
-                {requirements.map((req) => (
+                {requirements.length === 0 ? (
+                    <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
+                        <p className="text-sm text-slate-600">No requirements posted yet.</p>
+                        <Link to="/buyer/post-requirement" className="mt-3 inline-block text-sm font-semibold text-[#0EA432]">
+                            Post a requirement
+                        </Link>
+                    </div>
+                ) : requirements.map((req) => (
                     <RequirementCard key={req.id} req={req} onClick={() => onSelect(req)} />
                 ))}
             </div>
@@ -587,7 +488,7 @@ function CompareBar({ items, onRemove, onCompare, onClear }) {
 
 // ── Bid Detail Modal ──────────────────────────────────────────────────────────
 
-function BidDetailModal({ bid, onClose }) {
+function BidDetailModal({ bid, onClose, onAccept, onReject, isUpdating }) {
     const [activeImg, setActiveImg] = useState(0)
     const s = STATUS[bid.status]
     const StatusIcon = s.icon
@@ -671,7 +572,12 @@ function BidDetailModal({ bid, onClose }) {
 
                     {bid.status === "awaiting" && (
                         <div className="space-y-2 pb-2">
-                            <button type="button" className="w-full flex items-center justify-center gap-2 bg-[#0EA432] hover:bg-[#0b8f2b] text-white py-3.5 rounded-2xl text-[15px] font-bold transition-colors">
+                            <button
+                                type="button"
+                                disabled={isUpdating}
+                                onClick={() => onAccept?.(bid.id)}
+                                className="w-full flex items-center justify-center gap-2 bg-[#0EA432] hover:bg-[#0b8f2b] text-white py-3.5 rounded-2xl text-[15px] font-bold transition-colors disabled:opacity-50"
+                            >
                                 <CheckCircle2 className="h-5 w-5" />
                                 Accept This Bid
                             </button>
@@ -680,7 +586,12 @@ function BidDetailModal({ bid, onClose }) {
                                     <MessageSquare className="h-4 w-4" />
                                     Counter Offer
                                 </button>
-                                <button type="button" className="flex items-center justify-center gap-1.5 border-2 border-red-200 text-red-400 py-3 rounded-2xl text-[13px] font-bold hover:bg-red-50 transition-colors">
+                                <button
+                                    type="button"
+                                    disabled={isUpdating}
+                                    onClick={() => onReject?.(bid.id)}
+                                    className="flex items-center justify-center gap-1.5 border-2 border-red-200 text-red-400 py-3 rounded-2xl text-[13px] font-bold hover:bg-red-50 transition-colors disabled:opacity-50"
+                                >
                                     <X className="h-4 w-4" />
                                     Reject
                                 </button>
@@ -852,7 +763,7 @@ function MobileFilterSheet({ open, bids, onClose, filters, onChange }) {
 
 // ── Bids Grid View (for a selected requirement) ───────────────────────────────
 
-function BidsView({ req, onBack }) {
+function BidsView({ req, onBack, onAcceptBid, onRejectBid, isUpdating }) {
     const [filters, setFilters] = useState(DEFAULT_FILTERS)
     const [sortBy, setSortBy] = useState("price-asc")
     const [compareIds, setCompareIds] = useState(new Set())
@@ -1026,7 +937,15 @@ function BidsView({ req, onBack }) {
                 onChange={setFilters}
             />
 
-            {detailBid && <BidDetailModal bid={detailBid} onClose={() => setDetailBid(null)} />}
+            {detailBid && (
+                <BidDetailModal
+                    bid={detailBid}
+                    onClose={() => setDetailBid(null)}
+                    onAccept={onAcceptBid}
+                    onReject={onRejectBid}
+                    isUpdating={isUpdating}
+                />
+            )}
 
             {showCompare && compareItems.length >= 2 && (
                 <CompareModal items={compareItems} onClose={() => setShowCompare(false)} />
@@ -1039,14 +958,74 @@ function BidsView({ req, onBack }) {
 
 export default function BidsPage() {
     const [selectedReq, setSelectedReq] = useState(null)
+    const { requirements, isLoading, error, refetch } = useBuyerRequirements()
+    const acceptBid = useAcceptBid()
+    const rejectBid = useRejectBid()
+
+    const isUpdating = acceptBid.isPending || rejectBid.isPending
+
+    const handleAcceptBid = async (bidId) => {
+        try {
+            await acceptBid.mutateAsync(bidId)
+            await refetch()
+            setSelectedReq((current) =>
+                current
+                    ? {
+                        ...current,
+                        bids: current.bids.map((bid) =>
+                            bid.id === bidId
+                                ? { ...bid, status: "accepted" }
+                                : bid.status === "awaiting"
+                                    ? { ...bid, status: "rejected" }
+                                    : bid,
+                        ),
+                    }
+                    : current,
+            )
+        } catch (err) {
+            window.alert(err?.message || "Unable to accept bid.")
+        }
+    }
+
+    const handleRejectBid = async (bidId) => {
+        try {
+            await rejectBid.mutateAsync(bidId)
+            await refetch()
+            setSelectedReq((current) =>
+                current
+                    ? {
+                        ...current,
+                        bids: current.bids.map((bid) =>
+                            bid.id === bidId ? { ...bid, status: "rejected" } : bid,
+                        ),
+                    }
+                    : current,
+            )
+        } catch (err) {
+            window.alert(err?.message || "Unable to reject bid.")
+        }
+    }
 
     if (selectedReq) {
-        return <BidsView req={selectedReq} onBack={() => setSelectedReq(null)} />
+        return (
+            <BidsView
+                req={selectedReq}
+                onBack={() => setSelectedReq(null)}
+                onAcceptBid={handleAcceptBid}
+                onRejectBid={handleRejectBid}
+                isUpdating={isUpdating}
+            />
+        )
     }
 
     return (
         <div className="min-h-[calc(100dvh-56px)] bg-[#f4f5f4]">
-            <RequirementsView onSelect={setSelectedReq} />
+            <RequirementsView
+                requirements={requirements}
+                isLoading={isLoading}
+                error={error}
+                onSelect={setSelectedReq}
+            />
         </div>
     )
 }

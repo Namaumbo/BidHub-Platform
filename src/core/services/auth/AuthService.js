@@ -1,5 +1,6 @@
 import httpClient from "@/core/api/httpClient"
 import { normalizeApiError } from "@/core/api/apiErrors"
+import { unwrapApiResponse } from "@/core/utils/unwrapApiResponse"
 
 export async function signIn(credentials) {
     if (!credentials?.username || !credentials?.password) {
@@ -7,20 +8,20 @@ export async function signIn(credentials) {
     }
     try {
         const response = await httpClient.post("/auth/login", credentials)
-        return response.data
+        return unwrapApiResponse(response.data)
     } catch (error) {
         throw normalizeApiError(error, "Unable to sign in")
     }
 }
 
 export async function signUp(payload) {
-    if (!payload?.username || !payload?.password || !payload?.fullName) {
-        throw new Error("Full name, email, and password are required")
+    if (!payload?.username || !payload?.password || !payload?.full_name) {
+        throw new Error("Full name, username, and password are required")
     }
 
     try {
-        const response = await httpClient.post("/auth/register", payload)
-        return response.data
+        const response = await httpClient.post("/user/register", payload)
+        return unwrapApiResponse(response.data)
     } catch (error) {
         throw normalizeApiError(error, "Unable to create account")
     }

@@ -39,17 +39,24 @@ function LoginPage() {
                     username: data.username,
                     password: data.password,
                 })
-                const user_role = response?.data?.user?.role
-                login(data.username, user_role)
-
-                console.log(user_role)
-
-                navigate(getDashboardPathByRole(user_role), { replace: true })
+                const userRole = response?.user?.role
+                login({
+                    username: data.username,
+                    role: userRole,
+                    userId: response?.user?.id,
+                    accessToken: response?.access_token,
+                })
+                navigate(getDashboardPathByRole(userRole), { replace: true })
             } else {
                 await AuthService.signUp({
-                    fullName: data.fullName,
+                    full_name: data.fullName,
+                    email: data.email,
                     username: data.username,
                     password: data.password,
+                    address: data.address,
+                    physical_address: data.physicalAddress,
+                    phone: data.phone,
+                    phone_second: data.phoneSecond,
                 })
                 setSuccessMessage("Account created successfully.")
                 reset()
