@@ -182,3 +182,60 @@ export function FlashDealCard({ product, to = "/buyer/bids" }) {
         </Link>
     )
 }
+
+export function RequirementDealCard({ req, onClick, daysLeft }) {
+    const awaiting = req.bids.filter((b) => b.status === "awaiting").length
+    const accepted = req.bids.filter((b) => b.status === "accepted").length
+    const urgent = daysLeft != null && daysLeft <= 5
+
+    const badge = req.bids.length > 0
+        ? `${req.bids.length} Bid${req.bids.length === 1 ? "" : "s"}`
+        : "Open"
+
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className="group relative flex w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl bg-linear-to-br from-orange-50 to-red-50 text-left ring-1 ring-orange-200/60 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-[300px]"
+        >
+            <div className="flex flex-1 flex-col justify-between p-4">
+                <div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                        <Flame className="h-3 w-3" />
+                        {badge}
+                    </span>
+                    <h3 className="mt-2 line-clamp-2 text-sm font-bold leading-snug text-slate-900">
+                        {req.title}
+                    </h3>
+                    <p className="mt-1 text-[11px] text-slate-500">{req.category}</p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px]">
+                        {daysLeft != null ? (
+                            <span className={cn("font-semibold", urgent ? "text-amber-600" : "text-slate-400")}>
+                                {daysLeft}d left
+                            </span>
+                        ) : null}
+                        {awaiting > 0 ? (
+                            <span className="text-slate-400">{awaiting} awaiting</span>
+                        ) : null}
+                        {accepted > 0 ? (
+                            <span className="font-semibold text-[#0EA432]">{accepted} accepted</span>
+                        ) : null}
+                    </div>
+                </div>
+                <div className="mt-3">
+                    <p className="text-xl font-extrabold text-[#0EA432]">
+                        MWK {req.budget.toLocaleString()}
+                    </p>
+                    <p className="text-[11px] text-slate-400">Budget</p>
+                </div>
+            </div>
+            <div className="relative w-28 shrink-0 bg-white/50 sm:w-32">
+                <img
+                    src={req.thumbnail}
+                    alt={req.title}
+                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                />
+            </div>
+        </button>
+    )
+}

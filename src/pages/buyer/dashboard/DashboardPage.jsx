@@ -227,7 +227,7 @@ const BuyerDashboardPage = () => {
         <div className="max-w-7xl mx-auto m-5 mt-4 p-5 md:mt-6 md:p-0">
 
             {/* ── Market header strip ── */}
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-2">
                         <Store className="h-5 w-5 text-[#0EA432]" />
