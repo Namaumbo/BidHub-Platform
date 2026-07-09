@@ -9,6 +9,9 @@ import {
 } from "lucide-react"
 import { useBuyerRequirements } from "@/core/hooks/useBuyerRequirements"
 import { useAcceptBid, useRejectBid } from "@/core/hooks/useBids"
+import {Badge} from "@/components/ui/badge"
+import { GrView } from "react-icons/gr";
+
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -42,6 +45,7 @@ const SORT_OPTIONS = [
 
 const DEFAULT_FILTERS = { status: [], minRating: 0, maxPrice: null, delivery: null }
 
+const viewButtonClass = "px-2 py-1 flex items-center gap-1 mt-2 text-[12px] font-semibold text-[#0EA432] border border-transparent rounded transition-colors hover:text-white hover:bg-[#0EA432]"
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function minDeliveryDays(str) {
@@ -119,8 +123,6 @@ function TableHeaderCell({ children, align = "left" }) {
     )
 }
 
-// ── Requirement row (top-level list) ────────────────────────────────────────────
-
 function RequirementRow({ req, onClick }) {
     const awaiting = req.bids.filter((b) => b.status === "awaiting").length
     const remaining = daysLeft(req.deadline)
@@ -132,13 +134,11 @@ function RequirementRow({ req, onClick }) {
     return (
         <div
             role="button"
-            tabIndex={0}
             onClick={onClick}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick() }}
             className="group cursor-pointer border-b border-slate-100 px-5 py-5 transition-colors last:border-0 hover:bg-slate-50/60 md:grid md:items-center md:py-4"
             style={{ gridTemplateColumns: REQ_TABLE_COLS }}
         >
-            {/* Requirement info */}
             <div className="flex gap-4 md:col-span-1">
                 <div className="h-[72px] w-[72px] shrink-0 overflow-hidden rounded-md bg-[#f0efec]">
                     <img src={req.thumbnail} alt={req.title} className="h-full w-full object-cover" />
@@ -158,30 +158,30 @@ function RequirementRow({ req, onClick }) {
                     <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); onClick() }}
-                        className="mt-2 text-[12px] font-semibold text-[#0EA432] underline underline-offset-2 transition-colors hover:text-[#0b8f2b]"
+                        className={viewButtonClass}
                     >
-                        View bids
+                        <GrView className="h-4 w-4" />View bids
                     </button>
                 </div>
             </div>
 
-            {/* Mobile meta */}
             <div className="mt-3 flex flex-wrap items-center gap-4 pl-[88px] text-[13px] md:hidden">
                 <span className="font-semibold text-slate-900">MWK {req.budget.toLocaleString()}</span>
                 <span className="text-slate-600">{req.bids.length} bids</span>
                 <span className={cn(urgent && "font-semibold text-amber-600")}>{remaining}d left</span>
             </div>
 
-            {/* Desktop columns */}
-            <p className="hidden text-[14px] font-semibold tabular-nums text-slate-900 md:block">
+            <p className="hidden text-[12px] font-semibold tabular-nums text-slate-900 md:block">
                 MWK {req.budget.toLocaleString()}
             </p>
-            <p className="hidden text-center text-[14px] font-semibold md:block text-[#0EA432]">
-                {req.bids.length}
+            <div className="hidden flex-col items-center justify-center text-center md:flex">
+              
+              <Badge>{req.bids.length} Bids</Badge>
+               
                 {awaiting > 0 && (
                     <span className="mt-0.5 block text-[10px] font-normal text-amber-600">{awaiting} pending</span>
                 )}
-            </p>
+            </div>
             <p className={cn(
                 "hidden text-center text-[14px] font-medium md:block",
                 urgent ? "font-semibold text-amber-600" : "text-slate-700",
@@ -194,6 +194,8 @@ function RequirementRow({ req, onClick }) {
         </div>
     )
 }
+
+
 
 // ── Requirements List View ────────────────────────────────────────────────────
 
@@ -240,13 +242,12 @@ function RequirementsView({ requirements, isLoading, error, onSelect }) {
             {/* Header */}
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[#0EA432]/10 px-3 py-1 text-[11px] font-semibold text-[#0EA432]">
-                        <Scale className="h-3.5 w-3.5" />
-                        Compare & decide
+                    <div className="flex items-center gap-2">
+                        <Scale className="h-6 w-6 text-[#0EA432]" />
+                        <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                            Bids for Requirements
+                        </h1>
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900 sm:text-[28px] leading-tight">
-                        Bids for Requirements
-                    </h1>
                     <p className="mt-1.5 text-[13px] text-slate-500">
                         Review supplier offers, compare prices, and accept the best deal.
                     </p>
@@ -266,6 +267,11 @@ function RequirementsView({ requirements, isLoading, error, onSelect }) {
                 <StatCard icon={Inbox} label="Total Bids Received" value={totalBids} valueColor="text-[#0EA432]" accent="bg-[#0EA432]/10" />
                 <StatCard icon={Sparkles} label="Awaiting Your Decision" value={awaitingCount} valueColor="text-amber-600" accent="bg-amber-50" />
             </div>
+
+
+
+
+
 
             {/* Table */}
             {requirements.length === 0 ? (
@@ -351,6 +357,7 @@ function FilterSidebar({ bids, filters, onChange, className }) {
 
     const toggleStatus = (value) => {
         const next = filters.status.includes(value)
+
             ? filters.status.filter((s) => s !== value)
             : [...filters.status, value]
         onChange({ ...filters, status: next })
@@ -464,27 +471,25 @@ function BidRow({ bid, budget, inCompare, onToggleCompare, onView }) {
                         </p>
                         {bid.supplier.verified && <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-[#0EA432]" />}
                     </div>
-                    <p className="mt-1 text-[12px] text-slate-500">
-                        {bid.qty} {bid.unit} · {bid.location}
-                    </p>
                     <div className="mt-1 flex items-center gap-1.5">
                         <Stars rating={bid.supplier.rating} />
                         <span className="text-[11px] text-slate-400">{bid.supplier.rating} ({bid.supplier.reviewCount})</span>
                     </div>
-                    <div className="mt-2 flex items-center gap-3">
+                    <div className="flex items-center gap-3">
                         <button
                             type="button"
                             onClick={onView}
-                            className="text-[12px] font-medium text-slate-900 underline underline-offset-2 transition-colors hover:text-[#0EA432]"
+                            className={`${viewButtonClass} bg-blue-500 hover:bg-blue-200 text-white`}
+                       
                         >
-                            View details
+                            <GrView className="h-4 w-4" />
                         </button>
                         <button
                             type="button"
                             onClick={onToggleCompare}
                             className={cn(
-                                "text-[12px] font-medium underline underline-offset-2 transition-colors",
-                                inCompare ? "text-[#0EA432]" : "text-slate-400 hover:text-slate-700",
+                                "text-[12px] font-medium  transition-colors border border-[#0EA432] rounded px-2 py-1 mt-1.5",
+                                inCompare ? "text-[#0EA432] border-[#0EA432]" : "text-slate-400 border-red-400",
                             )}
                         >
                             {inCompare ? "Added to compare" : "Compare"}

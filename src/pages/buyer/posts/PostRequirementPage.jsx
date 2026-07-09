@@ -98,13 +98,15 @@ const PostRequirementPage = () => {
       <div className="w-full max-w-lg">
 
         <div className="mb-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#0EA432]/10 px-3 py-1 mb-3">
-            <ShoppingBag className="h-3.5 w-3.5 text-[#0EA432]" />
-            <span className="text-xs font-semibold text-[#0EA432] uppercase tracking-wide">New Request</span>
+
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="h-6 w-6 text-[#0EA432]" />
+            <h1 className="text-2xl font-bold text-gray-900 leading-tight">Post a Request</h1>
+
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight">Post a Request</h1>
           <p className="mt-1 text-sm text-gray-500">Fill in the details and suppliers will send you their best offers.</p>
         </div>
+
 
         <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
 
