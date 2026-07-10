@@ -9,8 +9,6 @@ import {
     Briefcase,
     Sprout,
     Zap,
-    HeartPulse,
-    Monitor,
     MapPin,
     Clock,
     Send,
@@ -29,10 +27,6 @@ import {
     SlidersHorizontal,
     X,
     BarChart3,
-    MessageSquare,
-    LayoutDashboard,
-    FileText,
-    Gavel,
     Sparkles,
     TrendingUp,
     ShieldCheck,
@@ -40,17 +34,9 @@ import {
     Award,
     PackageSearch,
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { GrView } from "react-icons/gr";
 
-// ── Seller navigation ─────────────────────────────────────────────────────────
-
-const SELLER_NAV = [
-    { to: "/seller/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
-    { to: "/seller/requirements", label: "Buyer Requests", icon: PackageSearch },
-    { to: "/seller/my-posts", label: "My Listings", icon: FileText },
-    { to: "/seller/requirements", label: "My Quotes", icon: Gavel },
-    { to: "/seller/dashboard", label: "Analytics", icon: BarChart3, hash: "analytics" },
-    { to: "/seller/messages", label: "Messages", icon: MessageSquare, badge: 2 },
-]
 
 const LOCATIONS = ["All Locations", "Lilongwe", "Blantyre", "Mzuzu", "Kasungu", "Dedza"]
 const BUDGET_FILTERS = [
@@ -87,6 +73,10 @@ const buyerRequests = [
         iconBg: "bg-orange-100",
         iconColor: "text-orange-600",
         borderColor: "border-orange-200",
+        images: [
+            "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=640&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=640&h=400&fit=crop",
+        ],
     },
     {
         id: "REQ-002",
@@ -111,6 +101,9 @@ const buyerRequests = [
         iconBg: "bg-purple-100",
         iconColor: "text-purple-600",
         borderColor: "border-purple-200",
+        images: [
+            "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=640&h=400&fit=crop",
+        ],
     },
     {
         id: "REQ-003",
@@ -135,6 +128,10 @@ const buyerRequests = [
         iconBg: "bg-green-100",
         iconColor: "text-green-600",
         borderColor: "border-green-200",
+        images: [
+            "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=640&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=640&h=400&fit=crop",
+        ],
     },
     {
         id: "REQ-004",
@@ -159,6 +156,9 @@ const buyerRequests = [
         iconBg: "bg-yellow-100",
         iconColor: "text-yellow-600",
         borderColor: "border-yellow-200",
+        images: [
+            "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=640&h=400&fit=crop",
+        ],
     },
     {
         id: "REQ-005",
@@ -183,6 +183,10 @@ const buyerRequests = [
         iconBg: "bg-orange-100",
         iconColor: "text-orange-600",
         borderColor: "border-orange-200",
+        images: [
+            "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?w=640&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=640&h=400&fit=crop",
+        ],
     },
     {
         id: "REQ-006",
@@ -207,18 +211,10 @@ const buyerRequests = [
         iconBg: "bg-emerald-100",
         iconColor: "text-emerald-600",
         borderColor: "border-emerald-200",
+        images: [
+            "https://images.unsplash.com/photo-1560493676-04071185765b?w=640&h=400&fit=crop",
+        ],
     },
-]
-
-const categories = [
-    { label: "Building", icon: Building2, bg: "bg-orange-100", color: "text-orange-600", count: 14 },
-    { label: "Transport", icon: Truck, bg: "bg-blue-100", color: "text-blue-600", count: 6 },
-    { label: "Groceries", icon: ShoppingBasket, bg: "bg-green-100", color: "text-green-600", count: 9 },
-    { label: "Office", icon: Briefcase, bg: "bg-purple-100", color: "text-purple-600", count: 5 },
-    { label: "Agriculture", icon: Sprout, bg: "bg-emerald-100", color: "text-emerald-600", count: 11 },
-    { label: "Energy", icon: Zap, bg: "bg-yellow-100", color: "text-yellow-600", count: 4 },
-    { label: "Medical", icon: HeartPulse, bg: "bg-red-100", color: "text-red-600", count: 3 },
-    { label: "IT & Tech", icon: Monitor, bg: "bg-slate-100", color: "text-slate-600", count: 7 },
 ]
 
 const myListings = [
@@ -306,33 +302,6 @@ function CountdownDisplay({ deadlineMs, size = "md" }) {
     )
 }
 
-// ── Trust Badges ──────────────────────────────────────────────────────────────
-
-function TrustBadges({ req }) {
-    const badges = []
-    if (req.buyerVerified) badges.push({ label: "Verified Buyer", icon: BadgeCheck, color: "text-[#0EA432] bg-[#0EA432]/10" })
-    if (req.topBuyer) badges.push({ label: "Top Buyer", icon: Award, color: "text-amber-700 bg-amber-50" })
-    if (req.fastPayment) badges.push({ label: "Fast Payment", icon: ZapIcon, color: "text-blue-700 bg-blue-50" })
-    if (req.fastResponse) badges.push({ label: "Fast Response", icon: TrendingUp, color: "text-purple-700 bg-purple-50" })
-    if (req.preferred) badges.push({ label: "Preferred Request", icon: Star, color: "text-orange-700 bg-orange-50" })
-
-    if (!badges.length) return null
-
-    return (
-        <div className="flex flex-wrap gap-1.5">
-            {badges.map((b) => {
-                const Icon = b.icon
-                return (
-                    <span key={b.label} className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold", b.color)}>
-                        <Icon className="h-3 w-3" />
-                        {b.label}
-                    </span>
-                )
-            })}
-        </div>
-    )
-}
-
 // ── Recommended Card ──────────────────────────────────────────────────────────
 
 function RecommendedCard({ req }) {
@@ -378,13 +347,63 @@ function RequestCard({ req, saved, onToggleSave }) {
     const Icon = req.Icon
     const remaining = useCountdown(req.deadlineMs)
     const closing = remaining.isUrgent
+    const images = req.images ?? []
+    const hasImages = images.length > 0
+    const [activeImage, setActiveImage] = useState(0)
+    const coverImage = hasImages ? images[activeImage] : null
 
     return (
         <article className={cn(
             "bg-white rounded-2xl border-2 overflow-hidden transition-shadow hover:shadow-md",
             closing ? "border-red-200" : req.borderColor,
         )}>
-            {req.isUrgent && (
+            {hasImages ? (
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+                    <img
+                        src={coverImage}
+                        alt={req.what}
+                        className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none" />
+
+                    {req.isUrgent && (
+                        <div className="absolute top-0 inset-x-0 flex items-center justify-between gap-2 bg-red-500/95 px-4 py-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <Flame className="h-3.5 w-3.5 text-white shrink-0" />
+                                <p className="text-white text-[12px] font-bold truncate">Closing soon!</p>
+                            </div>
+                            <span className="text-white text-[12px] font-bold tabular-nums shrink-0 bg-red-600/50 px-2 py-0.5 rounded-full">
+                                {formatCountdown(remaining)}
+                            </span>
+                        </div>
+                    )}
+
+                    {req.matchScore >= 85 && (
+                        <span className="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-[#0EA432] px-2 py-1 rounded-full shadow-sm">
+                            Best Match
+                        </span>
+                    )}
+
+                    {images.length > 1 && (
+                        <div className="absolute bottom-2 right-2 flex gap-1">
+                            {images.map((src, i) => (
+                                <button
+                                    key={src}
+                                    type="button"
+                                    onClick={() => setActiveImage(i)}
+                                    className={cn(
+                                        "h-8 w-8 rounded-md overflow-hidden ring-2 transition-all",
+                                        i === activeImage ? "ring-white scale-105" : "ring-white/40 opacity-80 hover:opacity-100",
+                                    )}
+                                    aria-label={`View photo ${i + 1}`}
+                                >
+                                    <img src={src} alt="" className="h-full w-full object-cover" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : req.isUrgent ? (
                 <div className="flex items-center justify-between gap-2 bg-red-500 px-4 py-2">
                     <div className="flex items-center gap-2 min-w-0">
                         <Flame className="h-3.5 w-3.5 text-white shrink-0" />
@@ -394,33 +413,27 @@ function RequestCard({ req, saved, onToggleSave }) {
                         {formatCountdown(remaining)}
                     </span>
                 </div>
-            )}
+            ) : null}
 
             <div className="p-4">
                 <div className="flex items-start gap-3 mb-3">
-                    <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0", req.iconBg)}>
-                        <Icon className={cn("h-6 w-6", req.iconColor)} />
-                    </div>
+                    {!hasImages && (
+                        <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0", req.iconBg)}>
+                            <Icon className={cn("h-6 w-6", req.iconColor)} />
+                        </div>
+                    )}
                     <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
-                                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-0.5">{req.category}</p>
                                 <h3 className="text-[15px] font-bold text-slate-900 leading-snug">{req.what}</h3>
-                                <p className="text-[13px] text-slate-500 mt-0.5">
-                                    Needs: <span className="font-semibold text-slate-700">{req.quantity}</span>
-                                </p>
                             </div>
-                            {req.matchScore >= 85 && (
+                            {req.matchScore >= 85 && !hasImages && (
                                 <span className="shrink-0 text-[10px] font-bold text-[#0EA432] bg-[#0EA432]/10 px-2 py-1 rounded-full">
                                     Best Match
                                 </span>
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className="mb-3">
-                    <TrustBadges req={req} />
                 </div>
 
                 <div className="bg-[#f0fdf4] border border-[#d1fae5] rounded-xl px-4 py-3 mb-3">
@@ -436,24 +449,11 @@ function RequestCard({ req, saved, onToggleSave }) {
                 </div>
 
                 <div className="space-y-2 mb-3">
-                    <div className="flex items-center gap-2.5">
-                        <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
-                        <span className="text-[13px] text-slate-700">
-                            Located in <span className="font-semibold">{req.town}</span>
-                        </span>
-                    </div>
-
-                    <div className="flex items-center gap-2.5">
-                        <CountdownDisplay deadlineMs={req.deadlineMs} size="lg" />
-                    </div>
 
                     <div className="flex items-center gap-2.5">
                         <ShieldCheck className="h-4 w-4 text-slate-400 shrink-0" />
                         <span className="text-[13px] text-slate-700">
                             Buyer: <span className="font-semibold">{req.buyer}</span>
-                            {req.buyerVerified && (
-                                <span className="ml-1 text-[#0EA432] text-[11px] font-bold">✓ Verified</span>
-                            )}
                         </span>
                     </div>
 
@@ -461,9 +461,6 @@ function RequestCard({ req, saved, onToggleSave }) {
                         <Users className="h-4 w-4 text-slate-400 shrink-0" />
                         <span className="text-[13px] text-slate-700">
                             <span className="font-semibold">{req.otherSellers} seller{req.otherSellers !== 1 ? "s" : ""}</span> have submitted quotes
-                        </span>
-                        <span className={cn("ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0", comp.bg, comp.color)}>
-                            {comp.text}
                         </span>
                     </div>
                 </div>
@@ -494,13 +491,6 @@ function RequestCard({ req, saved, onToggleSave }) {
                         {saved ? <BookmarkCheck className="h-5 w-5" /> : <Bookmark className="h-5 w-5" />}
                     </button>
                 </div>
-
-                <button
-                    type="button"
-                    className="mt-2 w-full text-center text-[12px] font-semibold text-slate-500 hover:text-[#0EA432] transition-colors py-1"
-                >
-                    View Similar Requests →
-                </button>
             </div>
         </article>
     )
@@ -522,7 +512,7 @@ function RequestSection({ icon: Icon, title, emoji, requests, savedIds, onToggle
                 <h3 className="text-[15px] font-bold text-slate-900">{title}</h3>
                 <span className="text-[12px] font-semibold text-slate-400">({requests.length})</span>
             </div>
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3">
                 {requests.map((req) => (
                     <RequestCard
                         key={req.id}
@@ -532,6 +522,7 @@ function RequestSection({ icon: Icon, title, emoji, requests, savedIds, onToggle
                     />
                 ))}
             </div>
+
         </section>
     )
 }
@@ -821,9 +812,8 @@ const BidderDashboardPage = () => {
     )
 
     return (
-        <div className="max-w-5xl mx-auto px-4 py-6 space-y-6 pb-24 md:pb-6">
+        <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 pb-24 md:pb-6">
 
-            <SellerNavBar />
 
             {/* ── Hero ── */}
             <div className="bg-linear-to-br from-[#f0fdf4] to-white border border-[#d1fae5] rounded-2xl px-5 py-5 shadow-sm">
@@ -917,78 +907,6 @@ const BidderDashboardPage = () => {
                 </div>
             </section>
 
-            {/* ── Categories ── */}
-            <section>
-                <div className="flex items-center justify-between mb-3">
-                    <div>
-                        <h2 className="text-[17px] font-bold text-slate-900">What do you sell?</h2>
-                        <p className="text-[12px] text-slate-500 mt-0.5">
-                            Tap a category to filter buyer requests below
-                        </p>
-                    </div>
-                    {activeCategory && (
-                        <button
-                            type="button"
-                            onClick={() => setActiveCategory(null)}
-                            className="text-[12px] font-bold text-red-500 hover:underline shrink-0"
-                        >
-                            Clear filter
-                        </button>
-                    )}
-                </div>
-                <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-8">
-                    {categories.map((cat) => {
-                        const Icon = cat.icon
-                        const isActive = activeCategory === cat.label
-                        return (
-                            <button
-                                key={cat.label}
-                                type="button"
-                                onClick={() => setActiveCategory(isActive ? null : cat.label)}
-                                className="flex flex-col items-center gap-1.5 group"
-                            >
-                                <div className={cn(
-                                    "relative h-14 w-14 rounded-2xl flex items-center justify-center transition-all shadow-sm",
-                                    cat.bg,
-                                    isActive
-                                        ? "ring-2 ring-[#0EA432] ring-offset-2 scale-105"
-                                        : "group-hover:scale-105",
-                                )}>
-                                    <Icon className={cn("h-6 w-6", cat.color)} />
-                                    <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 rounded-full bg-[#0EA432] text-white text-[9px] font-bold flex items-center justify-center leading-none">
-                                        {cat.count}
-                                    </span>
-                                </div>
-                                <span className={cn(
-                                    "text-[11px] font-semibold text-center leading-tight",
-                                    isActive ? "text-[#0EA432]" : "text-slate-600",
-                                )}>
-                                    {cat.label}
-                                </span>
-                            </button>
-                        )
-                    })}
-                </div>
-
-                <div className="mt-4">
-                    <FilterToolbar
-                        search={search}
-                        onSearchChange={setSearch}
-                        location={location}
-                        onLocationChange={setLocation}
-                        budgetIdx={budgetIdx}
-                        onBudgetChange={setBudgetIdx}
-                        closingSoon={closingSoon}
-                        onClosingSoonChange={setClosingSoon}
-                        verifiedOnly={verifiedOnly}
-                        onVerifiedChange={setVerifiedOnly}
-                        showMobileFilters={showMobileFilters}
-                        onToggleMobileFilters={() => setShowMobileFilters((v) => !v)}
-                        activeFiltersCount={activeFiltersCount}
-                        onClearFilters={clearFilters}
-                    />
-                </div>
-            </section>
 
             {/* ── Main layout ── */}
             <div className="lg:grid lg:grid-cols-[1fr_290px] lg:gap-6">
@@ -1016,20 +934,6 @@ const BidderDashboardPage = () => {
                     ) : (
                         <div className="space-y-6">
                             <RequestSection
-                                emoji="🔴"
-                                title="Closing Soon"
-                                requests={closingSoonRequests}
-                                savedIds={savedIds}
-                                onToggleSave={toggleSave}
-                            />
-                            <RequestSection
-                                emoji="⭐"
-                                title="Best Matches"
-                                requests={bestMatches}
-                                savedIds={savedIds}
-                                onToggleSave={toggleSave}
-                            />
-                            <RequestSection
                                 emoji="📦"
                                 title="More Opportunities"
                                 requests={moreOpportunities}
@@ -1044,45 +948,6 @@ const BidderDashboardPage = () => {
                 <aside className="mt-6 lg:mt-0 flex flex-col gap-4 self-start lg:sticky lg:top-4">
 
                     <AnalyticsSnapshot />
-
-                    <div className="bg-white rounded-2xl border-2 border-slate-100 overflow-hidden">
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-                            <h3 className="text-[15px] font-bold text-slate-900">My Listings</h3>
-                            <Link to="/seller/my-posts" className="text-[11px] font-bold text-[#0EA432] hover:underline">
-                                See All
-                            </Link>
-                        </div>
-                        <div className="divide-y divide-slate-50">
-                            {myListings.map((listing) => (
-                                <div key={listing.id} className="flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 transition-colors">
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-[13px] font-semibold text-slate-800 truncate leading-snug">
-                                            {listing.title}
-                                        </p>
-                                        <p className="text-[12px] text-slate-500 mt-0.5">
-                                            <span className="font-bold text-[#0EA432]">{listing.inquiries} buyers</span> enquired
-                                        </p>
-                                    </div>
-                                    <span className={cn(
-                                        "shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide",
-                                        listing.status === "active"
-                                            ? "bg-emerald-100 text-emerald-700"
-                                            : "bg-blue-100 text-blue-700",
-                                    )}>
-                                        {listing.status === "negotiating" ? "In talks" : "Active"}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="px-4 py-3 border-t border-slate-100">
-                            <Link to="/seller/sell-requirement">
-                                <button className="w-full flex items-center justify-center gap-2 bg-[#0EA432] text-white text-[13px] font-bold py-3 rounded-xl hover:bg-[#0b8f2b] transition-colors shadow-sm">
-                                    <Plus className="h-4 w-4" />
-                                    Add a New Listing
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
 
                     <div className="bg-white rounded-2xl border-2 border-slate-100 overflow-hidden">
                         <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
@@ -1113,39 +978,6 @@ const BidderDashboardPage = () => {
                         </div>
                     </div>
 
-                    <div className="bg-[#f0fdf4] border-2 border-[#d1fae5] rounded-2xl p-4">
-                        <h3 className="text-[15px] font-bold text-[#166534] mb-3">How does it work?</h3>
-                        <div className="space-y-3">
-                            {[
-                                { n: "1", title: "List what you sell", body: "Tell buyers what you have — add photos and your price." },
-                                { n: "2", title: "Buyer posts a request", body: "When a buyer needs something, they post it here for sellers to see." },
-                                { n: "3", title: "You send your price", body: "If you can supply it, tap Send Your Price and the buyer will reply." },
-                                { n: "4", title: "Close the deal", body: "Agree on price and delivery, then complete the order." },
-                            ].map((step, i, arr) => (
-                                <div key={step.n} className="flex gap-3">
-                                    <div className="flex flex-col items-center">
-                                        <div className="h-7 w-7 rounded-full bg-[#0EA432] flex items-center justify-center shrink-0">
-                                            <span className="text-white text-[11px] font-bold">{step.n}</span>
-                                        </div>
-                                        {i < arr.length - 1 && (
-                                            <div className="w-px flex-1 border-l-2 border-dashed border-[#0EA432]/30 my-1" style={{ minHeight: "20px" }} />
-                                        )}
-                                    </div>
-                                    <div className={i < arr.length - 1 ? "pb-3" : ""}>
-                                        <p className="text-[12px] font-bold text-[#166534]">{step.title}</p>
-                                        <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">{step.body}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="mt-4 flex items-center gap-2.5 bg-white rounded-xl px-3 py-2.5 border border-[#d1fae5]">
-                            <Phone className="h-4 w-4 text-[#0EA432] shrink-0" />
-                            <div>
-                                <p className="text-[11px] font-bold text-slate-800">Need help?</p>
-                                <p className="text-[11px] text-slate-500">Call us: <span className="font-semibold">+265 999 000 000</span></p>
-                            </div>
-                        </div>
-                    </div>
                 </aside>
             </div>
         </div>
