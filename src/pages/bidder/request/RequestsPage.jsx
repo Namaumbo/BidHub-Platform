@@ -1,8 +1,11 @@
 import { useMemo, useState } from "react"
+import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import {
+    ArrowLeft,
     ChevronDown,
     ChevronRight,
+    Filter,
     Hammer,
     Laptop,
     Leaf,
@@ -160,7 +163,15 @@ const REQUIREMENTS = [
     },
 ]
 
-const CATEGORIES = ["All Categories", "Office Supplies", "Construction Materials", "ICT Equipment", "Printing", "Agriculture", "Transport"]
+const CATEGORIES = ["All", "Construction", "ICT", "Office Supplies", "Transport", "Others"]
+const CATEGORY_MAP = {
+    "All": null,
+    "Construction": "Construction Materials",
+    "ICT": "ICT Equipment",
+    "Office Supplies": "Office Supplies",
+    "Transport": "Transport",
+    "Others": ["Printing", "Agriculture"],
+}
 
 const LOCATIONS = ["All Locations", "Lilongwe", "Blantyre", "Zomba", "Mzuzu"]
 
@@ -191,6 +202,49 @@ function FilterSelect({ value, onChange, options }) {
                 ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+        </div>
+    )
+}
+
+function MobileRequirementCard({ req }) {
+    const Icon = req.Icon
+    return (
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-100">
+            <div className="flex items-start gap-3">
+                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", req.iconBg)}>
+                    <Icon className={cn("h-5 w-5", req.iconColor)} />
+                </div>
+                <div className="min-w-0 flex-1">
+                    <h3 className="text-[14px] font-bold text-slate-900 leading-tight">{req.title}</h3>
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
+                        <span>{req.location}</span>
+                        <span className="text-slate-300">|</span>
+                        <span>{req.category}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="mt-3 space-y-1.5 text-[12px]">
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Quantity:</span>
+                    <span className="font-semibold text-slate-700">{req.quotes} Units</span>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Deadline:</span>
+                    <span className="font-semibold text-red-600">{req.deadline}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Budget:</span>
+                    <span className="font-bold text-slate-900">{req.budgetLabel}</span>
+                </div>
+            </div>
+            
+            <button
+                type="button"
+                className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl bg-[#0EA432] py-2.5 text-[13px] font-bold text-white transition-all hover:bg-[#0b8f2b] active:scale-[0.98]"
+            >
+                View Details
+            </button>
         </div>
     )
 }
@@ -291,6 +345,7 @@ function Pagination({ page, pageCount, onChange }) {
 
 const RequirementsPage = () => {
     const [search, setSearch] = useState("")
+    const [mobileCategory, setMobileCategory] = useState("All")
     const [category, setCategory] = useState("All Categories")
     const [location, setLocation] = useState("All Locations")
     const [budget, setBudget] = useState("All Budgets")
@@ -310,7 +365,16 @@ const RequirementsPage = () => {
                     req.description.toLowerCase().includes(q)
                 if (!hit) return false
             }
-            if (category !== "All Categories" && req.category !== category) return false
+            
+            const catFilter = CATEGORY_MAP[mobileCategory]
+            if (catFilter !== null) {
+                if (Array.isArray(catFilter)) {
+                    if (!catFilter.includes(req.category)) return false
+                } else {
+                    if (req.category !== catFilter) return false
+                }
+            }
+            
             if (location !== "All Locations" && req.location !== location) return false
             if (req.budget < budgetRange.min || req.budget > budgetRange.max) return false
             return true
@@ -320,11 +384,11 @@ const RequirementsPage = () => {
             if (sortBy === "Budget (High to Low)") return b.budget - a.budget
             if (sortBy === "Most Quotes") return b.quotes - a.quotes
             if (sortBy === "Deadline (Soonest)") return new Date(a.deadline) - new Date(b.deadline)
-            return 0 // Newest First — keep mock order
+            return 0
         })
 
         return list
-    }, [search, category, location, budget, sortBy])
+    }, [search, mobileCategory, category, location, budget, sortBy])
 
     const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
     const currentPage = Math.min(page, pageCount)
@@ -336,16 +400,82 @@ const RequirementsPage = () => {
     }
 
     return (
-        <div className="mx-auto max-w-7xl space-y-5 px-4 py-6 pb-24 md:pb-8">
+        <div className="mx-auto max-w-7xl space-y-4 px-4 py-5 pb-24 md:space-y-5 md:py-6 md:pb-8">
 
-            {/* Header */}
-            <div>
+            {/* Mobile Header with back button */}
+            <div className="flex items-center gap-3 md:hidden">
+                <Link 
+                    to="/seller/dashboard" 
+                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200"
+                >
+                    <ArrowLeft className="h-5 w-5 text-slate-600" />
+                </Link>
+                <h1 className="text-lg font-bold text-slate-900">Browse Requirements</h1>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden md:block">
                 <h1 className="text-2xl font-bold text-slate-900 sm:text-[26px]">Browse Requirements</h1>
                 <p className="mt-1 text-[14px] text-slate-500">Find and bid on requirements that match your business.</p>
             </div>
 
-            {/* Main card */}
-            <section className="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
+            {/* Mobile Search + Filter */}
+            <div className="md:hidden flex items-center gap-2">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <input
+                        type="text"
+                        placeholder="Search requirements..."
+                        value={search}
+                        onChange={(e) => updateFilter(setSearch)(e.target.value)}
+                        className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-[13px] text-slate-700 placeholder-slate-400 outline-none focus:border-[#0EA432]/50 focus:ring-2 focus:ring-[#0EA432]/10"
+                    />
+                </div>
+                <button
+                    type="button"
+                    className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white"
+                >
+                    <Filter className="h-4 w-4 text-slate-600" />
+                </button>
+            </div>
+
+            {/* Mobile Category Tabs */}
+            <div className="md:hidden">
+                <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    {CATEGORIES.map((cat) => (
+                        <button
+                            key={cat}
+                            type="button"
+                            onClick={() => { setMobileCategory(cat); setPage(1) }}
+                            className={cn(
+                                "shrink-0 rounded-full px-4 py-2 text-[12px] font-semibold transition-colors",
+                                mobileCategory === cat
+                                    ? "bg-[#0EA432] text-white"
+                                    : "bg-white text-slate-600 ring-1 ring-slate-200",
+                            )}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Mobile Requirement Cards */}
+            <div className="space-y-3 md:hidden">
+                {filtered.map((req) => (
+                    <MobileRequirementCard key={req.id} req={req} />
+                ))}
+                {filtered.length === 0 && (
+                    <div className="rounded-2xl bg-white p-8 text-center ring-1 ring-slate-100">
+                        <Search className="mx-auto h-8 w-8 text-slate-300" />
+                        <p className="mt-3 text-[14px] font-semibold text-slate-700">No requirements found</p>
+                        <p className="mt-1 text-[12px] text-slate-400">Try adjusting your search or filters.</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Desktop Main card */}
+            <section className="hidden md:block overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
 
                 {/* Filter bar */}
                 <div className="flex flex-col gap-3 border-b border-slate-100 p-4 lg:flex-row lg:items-center">
@@ -360,7 +490,7 @@ const RequirementsPage = () => {
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:flex lg:shrink-0">
-                        <FilterSelect value={category} onChange={updateFilter(setCategory)} options={CATEGORIES} />
+                        <FilterSelect value={category} onChange={updateFilter(setCategory)} options={["All Categories", "Office Supplies", "Construction Materials", "ICT Equipment", "Printing", "Agriculture", "Transport"]} />
                         <FilterSelect value={location} onChange={updateFilter(setLocation)} options={LOCATIONS} />
                         <FilterSelect value={budget} onChange={updateFilter(setBudget)} options={BUDGETS.map((b) => b.label)} />
                         <button

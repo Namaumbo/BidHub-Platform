@@ -27,7 +27,6 @@ import {
     Target,
     TrendingUp,
     Truck,
-    User,
     Wallet,
     X,
 } from "lucide-react"
@@ -35,12 +34,18 @@ import {
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
 const KPI_STATS = [
-    { label: "Open Requirements", value: 24, icon: FileText, cardBg: "bg-emerald-50/60", cardRing: "ring-emerald-100", iconBg: "bg-emerald-600", link: "/seller/requirements" },
-    { label: "My Bids", value: 18, icon: ClipboardList, cardBg: "bg-blue-50/60", cardRing: "ring-blue-100", iconBg: "bg-blue-600", link: "/seller/requirements" },
-    { label: "Shortlisted", value: 6, icon: Star, cardBg: "bg-amber-50/60", cardRing: "ring-amber-100", iconBg: "bg-amber-400", link: "/seller/requirements" },
-    { label: "Won Orders", value: 4, icon: Briefcase, cardBg: "bg-violet-50/60", cardRing: "ring-violet-100", iconBg: "bg-violet-500", link: "/seller/requirements" },
-    { label: "Total Earnings", value: "MK 2,450,000", sub: "This month", icon: Wallet, cardBg: "bg-red-50/60", cardRing: "ring-red-100", iconBg: "bg-red-500", link: null },
+    { label: "Open Requirements", value: 24, icon: FileText, cardBg: "bg-white", iconBg: "bg-emerald-50", iconColor: "text-emerald-600", link: "/seller/requirements" },
+    { label: "My Bids", value: 18, icon: ClipboardList, cardBg: "bg-white", iconBg: "bg-blue-50", iconColor: "text-blue-600", link: "/seller/my-bids" },
+    { label: "Shortlisted", value: 6, icon: Star, cardBg: "bg-white", iconBg: "bg-amber-50", iconColor: "text-amber-500", link: "/seller/my-bids" },
+    { label: "Won Orders", value: 4, icon: Briefcase, cardBg: "bg-white", iconBg: "bg-emerald-50", iconColor: "text-emerald-600", link: "/seller/orders" },
 ]
+
+const TOTAL_EARNINGS = {
+    label: "Total Earnings",
+    value: "MK 2,450,000",
+    sub: "This month",
+    icon: Wallet,
+}
 
 const LATEST_REQUIREMENTS = [
     {
@@ -362,7 +367,7 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                             </div>
 
                             {/* Buyer Info */}
-                            <div className="rounded-xl bg-gradient-to-br from-slate-50 to-slate-100/50 p-4 ring-1 ring-slate-200">
+                            <div className="rounded-xl bg-linear-to-br from-slate-50 to-slate-100/50 p-4 ring-1 ring-slate-200">
                                 <h3 className="flex items-center gap-2 text-[14px] font-bold text-slate-900">
                                     <Building2 className="h-4 w-4 text-slate-400" />
                                     Buyer Information
@@ -575,20 +580,18 @@ function SectionCard({ title, actionTo, actionLabel = "View all", children, clas
 function KpiCard({ stat }) {
     const Icon = stat.icon
     const content = (
-        <div className={cn("rounded-2xl p-4 ring-1 transition-all hover:shadow-sm", stat.cardBg, stat.cardRing)}>
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-100 transition-all hover:shadow-sm">
             <div className="flex items-center gap-3">
-                <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-sm", stat.iconBg)}>
-                    <Icon className="h-5 w-5 text-white" />
+                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", stat.iconBg)}>
+                    <Icon className={cn("h-5 w-5", stat.iconColor)} />
                 </div>
-                <p className="text-[13px] font-medium text-slate-600">{stat.label}</p>
+                <div>
+                    <p className="text-[12px] font-medium text-slate-500">{stat.label}</p>
+                    <p className="text-[22px] font-extrabold leading-tight tabular-nums text-slate-900">
+                        {stat.value}
+                    </p>
+                </div>
             </div>
-            <p className="mt-2.5 text-[22px] font-extrabold leading-none tabular-nums text-slate-900">
-                {stat.value}
-            </p>
-            {stat.link ? (
-                <p className="mt-2 text-[12px] font-semibold text-[#0EA432]">View all</p>
-            ) : null}
-            {stat.sub ? <p className="mt-2 text-[12px] text-slate-500">{stat.sub}</p> : null}
         </div>
     )
 
@@ -598,7 +601,66 @@ function KpiCard({ stat }) {
     return content
 }
 
-function RequirementRow({ req }) {
+function EarningsCard() {
+    return (
+        <div className="rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-100">
+            <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600">
+                    <Wallet className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                    <p className="text-[12px] font-medium text-emerald-700">Total Earnings <span className="text-emerald-600/70">(This month)</span></p>
+                    <p className="text-[22px] font-extrabold leading-tight tabular-nums text-emerald-800">
+                        MK 2,450,000
+                    </p>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function MobileRequirementCard({ req, onViewBid }) {
+    const Icon = req.Icon
+    return (
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-100 transition-all hover:shadow-sm">
+            <div className="flex items-start gap-3">
+                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", req.iconBg)}>
+                    <Icon className={cn("h-5 w-5", req.iconColor)} />
+                </div>
+                <div className="min-w-0 flex-1">
+                    <h3 className="text-[14px] font-bold text-slate-900 leading-tight">{req.title}</h3>
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
+                        <span>{req.location}</span>
+                        <span className="text-slate-300">|</span>
+                        <span>{req.category}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="mt-3 space-y-1.5 text-[12px]">
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Quantity:</span>
+                    <span className="font-semibold text-slate-700">{req.quantity}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Deadline:</span>
+                    <span className={cn("font-semibold", req.urgent ? "text-red-600" : "text-slate-700")}>
+                        {req.deadline}
+                    </span>
+                </div>
+            </div>
+            
+            <button
+                onClick={() => onViewBid(req)}
+                className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl bg-[#0EA432] py-2.5 text-[13px] font-bold text-white transition-all hover:bg-[#0b8f2b] active:scale-[0.98]"
+            >
+                View & Bid
+            </button>
+        </div>
+    )
+}
+
+function RequirementRow({ req, onViewBid }) {
     const Icon = req.Icon
     return (
         <div className="group flex flex-col gap-3 border-b border-slate-100 px-5 py-4 transition-colors last:border-0 hover:bg-slate-50/60 sm:flex-row sm:items-center">
@@ -643,13 +705,13 @@ function RequirementRow({ req }) {
                 </div>
             </div>
             <div className="flex shrink-0 items-center justify-end">
-                <Link
-                    to="/seller/requirements"
+                <button
+                    onClick={() => onViewBid(req)}
                     className="inline-flex items-center gap-1 rounded-lg bg-[#0EA432] px-4 py-2 text-[12px] font-bold text-white shadow-sm transition-all hover:bg-[#0b8f2b] hover:shadow group-hover:translate-x-0.5"
                 >
                     View & Bid
                     <ChevronRight className="h-3.5 w-3.5" />
-                </Link>
+                </button>
             </div>
         </div>
     )
@@ -660,41 +722,89 @@ function RequirementRow({ req }) {
 const BidderDashboardPage = () => {
     const { username } = useAuth()
     const displayName = username || "Chikondi"
+    const [selectedRequirement, setSelectedRequirement] = useState(null)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+    const handleViewBid = (req) => {
+        setSelectedRequirement(req)
+        setIsDialogOpen(true)
+    }
+
+    const handleCloseDialog = () => {
+        setIsDialogOpen(false)
+        setTimeout(() => setSelectedRequirement(null), 200)
+    }
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 pb-24 md:pb-8">
+        <div className="mx-auto max-w-7xl space-y-5 px-4 py-5 pb-24 md:space-y-6 md:py-6 md:pb-8">
+            {/* View & Bid Dialog */}
+            <ViewBidDialog
+                requirement={selectedRequirement}
+                isOpen={isDialogOpen}
+                onClose={handleCloseDialog}
+            />
 
-            {/* Header */}
+            {/* Header - Mobile optimized */}
             <div>
-                <h1 className="text-2xl font-bold text-slate-900 sm:text-[28px]">
+                <h1 className="text-xl font-bold text-slate-900 sm:text-2xl md:text-[28px]">
                     {getGreeting()}, {displayName}! 👋
                 </h1>
-                <p className="mt-1 text-[14px] text-slate-500">
-                    Here&apos;s what&apos;s happening with your business today.
+                <p className="mt-0.5 text-[13px] text-slate-500 md:mt-1 md:text-[14px]">
+                    Here&apos;s what&apos;s happening today.
                 </p>
             </div>
 
-            {/* KPI row */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {/* Mobile KPI Grid - 2x2 layout matching design */}
+            <div className="grid grid-cols-2 gap-3 md:hidden">
                 {KPI_STATS.map((stat) => (
                     <KpiCard key={stat.label} stat={stat} />
                 ))}
             </div>
 
-            {/* Main layout */}
-            <div className="grid gap-6 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_340px]">
+            {/* Mobile Earnings Card */}
+            <div className="md:hidden">
+                <EarningsCard />
+            </div>
+
+            {/* Desktop KPI row */}
+            <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-3">
+                {KPI_STATS.map((stat) => (
+                    <KpiCard key={stat.label} stat={stat} />
+                ))}
+                <div className="md:col-span-3 lg:col-span-1">
+                    <EarningsCard />
+                </div>
+            </div>
+
+            {/* Mobile Latest Requirements - Card layout */}
+            <div className="md:hidden">
+                <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-[15px] font-bold text-slate-900">Latest Requirements</h2>
+                    <Link to="/seller/requirements" className="text-[13px] font-semibold text-[#0EA432]">
+                        View all
+                    </Link>
+                </div>
+                <div className="space-y-3">
+                    {LATEST_REQUIREMENTS.slice(0, 2).map((req) => (
+                        <MobileRequirementCard key={req.id} req={req} onViewBid={handleViewBid} />
+                    ))}
+                </div>
+            </div>
+
+            {/* Desktop Main layout */}
+            <div className="hidden md:grid gap-6 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_340px]">
 
                 {/* Left column */}
                 <div className="space-y-6">
                     <SectionCard title="Latest Requirements" actionTo="/seller/requirements">
                         <div>
                             {LATEST_REQUIREMENTS.map((req) => (
-                                <RequirementRow key={req.id} req={req} />
+                                <RequirementRow key={req.id} req={req} onViewBid={handleViewBid} />
                             ))}
                         </div>
                     </SectionCard>
 
-                    <SectionCard title="Active Orders" actionTo="/seller/requirements">
+                    <SectionCard title="Active Orders" actionTo="/seller/orders">
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[600px] text-left">
                                 <thead>
@@ -737,7 +847,7 @@ const BidderDashboardPage = () => {
 
                 {/* Right sidebar */}
                 <aside className="space-y-5">
-                    <SectionCard title="My Bid Status" actionTo="/seller/requirements">
+                    <SectionCard title="My Bid Status" actionTo="/seller/my-bids">
                         <div className="divide-y divide-slate-50 px-5">
                             {BID_STATUS.map((item) => (
                                 <div key={item.label} className="flex items-center justify-between py-3">
@@ -815,8 +925,8 @@ const BidderDashboardPage = () => {
                 </aside>
             </div>
 
-            {/* Footer */}
-            <footer className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-6 sm:flex-row">
+            {/* Footer - Hidden on mobile */}
+            <footer className="hidden md:flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-6 sm:flex-row">
                 <p className="text-[12px] text-slate-400">© 2025 BidHub Malawi. All rights reserved.</p>
                 <div className="flex items-center gap-4">
                     <button type="button" className="text-[12px] font-medium text-slate-500 hover:text-[#0EA432]">

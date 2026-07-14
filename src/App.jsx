@@ -15,6 +15,9 @@ import MessagesPage from "./pages/bidder/messages/MessagesPage"
 import BidderDashboardPage from "./pages/bidder/dashboard/DashboardPage"
 import SellerMyPostsPage from "./pages/bidder/posts/MyPostsPage"
 import RequirementsPage from "./pages/bidder/request/RequestsPage"
+import MyBidsPage from "./pages/bidder/bids/MyBidsPage"
+import OrdersPage from "./pages/bidder/orders/OrdersPage"
+import MenuPage from "./pages/bidder/menu/MenuPage"
 
 export default function App() {
   return (
@@ -47,6 +50,10 @@ export default function App() {
             <Route path="/seller/my-posts" element={<SellerMyPostsPage />} />
             <Route path="/seller/sell-requirement" element={<SellPage />} />
             <Route path="/seller/requirements" element={<RequirementsPage />} />
+            <Route path="/seller/requirements/:id" element={<RequirementsPage />} />
+            <Route path="/seller/my-bids" element={<MyBidsPage />} />
+            <Route path="/seller/orders" element={<OrdersPage />} />
+            <Route path="/seller/menu" element={<MenuPage />} />
             <Route path="/seller/messages" element={<MessagesPage />} />
           </Route>
 
