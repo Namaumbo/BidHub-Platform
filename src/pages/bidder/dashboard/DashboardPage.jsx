@@ -40,12 +40,7 @@ const KPI_STATS = [
     { label: "Won Orders", value: 4, icon: Briefcase, cardBg: "bg-white", iconBg: "bg-emerald-50", iconColor: "text-emerald-600", link: "/seller/orders" },
 ]
 
-const TOTAL_EARNINGS = {
-    label: "Total Earnings",
-    value: "MK 2,450,000",
-    sub: "This month",
-    icon: Wallet,
-}
+
 
 const LATEST_REQUIREMENTS = [
     {
@@ -214,46 +209,47 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
 
     return (
         <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm md:p-4 animate-in fade-in duration-200"
             onClick={handleBackdropClick}
         >
-            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl bg-white shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+            <div className="relative w-full md:max-w-4xl max-h-[95vh] md:max-h-[90vh] overflow-hidden rounded-t-2xl md:rounded-2xl bg-white shadow-2xl animate-in slide-in-from-bottom-4 md:zoom-in-95 duration-300">
                 {/* Header */}
-                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white px-6 py-4">
-                    <div className="flex items-center gap-3">
-                        <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", requirement.iconBg)}>
-                            <Icon className={cn("h-5 w-5", requirement.iconColor)} />
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3 md:px-6 md:py-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <div className={cn("flex h-9 w-9 md:h-10 md:w-10 shrink-0 items-center justify-center rounded-xl", requirement.iconBg)}>
+                            <Icon className={cn("h-4 w-4 md:h-5 md:w-5", requirement.iconColor)} />
                         </div>
-                        <div>
-                            <h2 className="text-[17px] font-bold text-slate-900">{requirement.title}</h2>
-                            <p className="text-[12px] text-slate-500">{requirement.id} • Posted {requirement.postedDate}</p>
+                        <div className="min-w-0">
+                            <h2 className="text-[15px] md:text-[17px] font-bold text-slate-900 truncate">{requirement.title}</h2>
+                            <p className="text-[11px] md:text-[12px] text-slate-500">{requirement.id} • Posted {requirement.postedDate}</p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700"
+                        className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-700"
                     >
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b border-slate-100 bg-slate-50/50 px-6">
+                <div className="flex border-b border-slate-100 bg-slate-50/50 px-4 md:px-6">
                     {[
-                        { id: "details", label: "Requirement Details" },
-                        { id: "bid", label: "Submit Bid" },
+                        { id: "details", label: "Details", fullLabel: "Requirement Details" },
+                        { id: "bid", label: "Place Bid", fullLabel: "Submit Bid" },
                     ].map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={cn(
-                                "relative px-4 py-3 text-[13px] font-semibold transition-colors",
+                                "relative px-3 md:px-4 py-3 text-[13px] font-semibold transition-colors",
                                 activeTab === tab.id 
                                     ? "text-[#0EA432]" 
                                     : "text-slate-500 hover:text-slate-700"
                             )}
                         >
-                            {tab.label}
+                            <span className="md:hidden">{tab.label}</span>
+                            <span className="hidden md:inline">{tab.fullLabel}</span>
                             {activeTab === tab.id && (
                                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0EA432] rounded-full" />
                             )}
@@ -262,69 +258,68 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                 </div>
 
                 {/* Content */}
-                <div className="overflow-y-auto max-h-[calc(90vh-140px)]">
+                <div className="overflow-y-auto max-h-[calc(95vh-120px)] md:max-h-[calc(90vh-140px)]">
                     {activeTab === "details" ? (
-                        <div className="p-6 space-y-6">
-                            {/* Image and Quick Info */}
-                            <div className="flex flex-col gap-5 sm:flex-row">
-                                {requirement.image ? (
-                                    <img
-                                        src={requirement.image}
-                                        alt={requirement.title}
-                                        className="h-48 w-full sm:w-64 shrink-0 rounded-xl object-cover ring-1 ring-slate-200"
-                                    />
-                                ) : (
-                                    <div className={cn("flex h-48 w-full sm:w-64 shrink-0 items-center justify-center rounded-xl ring-1 ring-slate-200", requirement.iconBg)}>
-                                        <Icon className={cn("h-16 w-16", requirement.iconColor)} />
-                                    </div>
+                        <div className="p-4 md:p-6 space-y-5 md:space-y-6">
+                            {/* Status badges - Mobile shows at top */}
+                            <div className="flex flex-wrap gap-2">
+                                <span className={cn("rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide", requirement.categoryStyle)}>
+                                    {requirement.category}
+                                </span>
+                                {requirement.urgent && (
+                                    <span className="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-red-600">
+                                        Urgent
+                                    </span>
                                 )}
-                                <div className="flex-1 space-y-4">
-                                    {/* Status badges */}
-                                    <div className="flex flex-wrap gap-2">
-                                        <span className={cn("rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide", requirement.categoryStyle)}>
-                                            {requirement.category}
-                                        </span>
-                                        {requirement.urgent && (
-                                            <span className="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-red-600">
-                                                Urgent
-                                            </span>
-                                        )}
-                                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
-                                            {requirement.bidsReceived} bids received
-                                        </span>
-                                    </div>
+                                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
+                                    {requirement.bidsReceived} bids received
+                                </span>
+                            </div>
 
-                                    {/* Quick info grid */}
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="rounded-lg bg-slate-50 p-3">
-                                            <div className="flex items-center gap-2 text-slate-500">
-                                                <MapPin className="h-4 w-4" />
-                                                <span className="text-[11px] font-medium uppercase tracking-wide">Location</span>
-                                            </div>
-                                            <p className="mt-1 text-[13px] font-semibold text-slate-800">{requirement.location}</p>
-                                        </div>
-                                        <div className="rounded-lg bg-slate-50 p-3">
-                                            <div className="flex items-center gap-2 text-slate-500">
-                                                <Package className="h-4 w-4" />
-                                                <span className="text-[11px] font-medium uppercase tracking-wide">Quantity</span>
-                                            </div>
-                                            <p className="mt-1 text-[13px] font-semibold text-slate-800">{requirement.quantity}</p>
-                                        </div>
-                                        <div className="rounded-lg bg-slate-50 p-3">
-                                            <div className="flex items-center gap-2 text-slate-500">
-                                                <CalendarDays className="h-4 w-4" />
-                                                <span className="text-[11px] font-medium uppercase tracking-wide">Deadline</span>
-                                            </div>
-                                            <p className="mt-1 text-[13px] font-semibold text-slate-800">{requirement.deadline}</p>
-                                        </div>
-                                        <div className="rounded-lg bg-slate-50 p-3">
-                                            <div className="flex items-center gap-2 text-slate-500">
-                                                <Tag className="h-4 w-4" />
-                                                <span className="text-[11px] font-medium uppercase tracking-wide">Budget</span>
-                                            </div>
-                                            <p className="mt-1 text-[13px] font-semibold text-slate-800">{requirement.budget}</p>
-                                        </div>
+                            {/* Image */}
+                            {requirement.image ? (
+                                <img
+                                    src={requirement.image}
+                                    alt={requirement.title}
+                                    className="h-40 w-full md:h-48 rounded-xl object-cover ring-1 ring-slate-200"
+                                />
+                            ) : (
+                                <div className={cn("flex h-40 w-full md:h-48 items-center justify-center rounded-xl ring-1 ring-slate-200", requirement.iconBg)}>
+                                    <Icon className={cn("h-14 w-14 md:h-16 md:w-16", requirement.iconColor)} />
+                                </div>
+                            )}
+
+                            {/* Quick info grid */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="rounded-lg bg-slate-50 p-3">
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <MapPin className="h-4 w-4" />
+                                        <span className="text-[11px] font-medium uppercase tracking-wide">Location</span>
                                     </div>
+                                    <p className="mt-1 text-[13px] font-semibold text-slate-800">{requirement.location}</p>
+                                </div>
+                                <div className="rounded-lg bg-slate-50 p-3">
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <Package className="h-4 w-4" />
+                                        <span className="text-[11px] font-medium uppercase tracking-wide">Quantity</span>
+                                    </div>
+                                    <p className="mt-1 text-[13px] font-semibold text-slate-800">{requirement.quantity}</p>
+                                </div>
+                                <div className="rounded-lg bg-slate-50 p-3">
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <CalendarDays className="h-4 w-4" />
+                                        <span className="text-[11px] font-medium uppercase tracking-wide">Deadline</span>
+                                    </div>
+                                    <p className={cn("mt-1 text-[13px] font-semibold", requirement.urgent ? "text-red-600" : "text-slate-800")}>
+                                        {requirement.deadline}
+                                    </p>
+                                </div>
+                                <div className="rounded-lg bg-slate-50 p-3">
+                                    <div className="flex items-center gap-2 text-slate-500">
+                                        <Tag className="h-4 w-4" />
+                                        <span className="text-[11px] font-medium uppercase tracking-wide">Budget</span>
+                                    </div>
+                                    <p className="mt-1 text-[13px] font-semibold text-slate-800">{requirement.budget}</p>
                                 </div>
                             </div>
 
@@ -339,8 +334,22 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                                 </p>
                             </div>
 
-                            {/* Specifications */}
-                            <div>
+                            {/* Attachments - Mobile specific section */}
+                            <div className="md:hidden rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white ring-1 ring-slate-200">
+                                        <Paperclip className="h-5 w-5 text-slate-500" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-[13px] font-semibold text-slate-700 truncate">specification.pdf</p>
+                                        <p className="text-[11px] text-slate-400">245 KB</p>
+                                    </div>
+                                    <button className="text-[12px] font-semibold text-[#0EA432]">Download</button>
+                                </div>
+                            </div>
+
+                            {/* Specifications - Hidden on mobile for cleaner view */}
+                            <div className="hidden md:block">
                                 <h3 className="flex items-center gap-2 text-[14px] font-bold text-slate-900">
                                     <ClipboardList className="h-4 w-4 text-slate-400" />
                                     Specifications & Requirements
@@ -355,8 +364,8 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                                 </ul>
                             </div>
 
-                            {/* Delivery Location */}
-                            <div>
+                            {/* Delivery Location - Desktop only */}
+                            <div className="hidden md:block">
                                 <h3 className="flex items-center gap-2 text-[14px] font-bold text-slate-900">
                                     <Truck className="h-4 w-4 text-slate-400" />
                                     Delivery Location
@@ -367,31 +376,50 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                             </div>
 
                             {/* Buyer Info */}
-                            <div className="rounded-xl bg-linear-to-br from-slate-50 to-slate-100/50 p-4 ring-1 ring-slate-200">
-                                <h3 className="flex items-center gap-2 text-[14px] font-bold text-slate-900">
+                            <div className="rounded-xl bg-slate-50 p-3 md:p-4 ring-1 ring-slate-200">
+                                <h3 className="hidden md:flex items-center gap-2 text-[14px] font-bold text-slate-900 mb-3">
                                     <Building2 className="h-4 w-4 text-slate-400" />
                                     Buyer Information
                                 </h3>
-                                <div className="mt-3 flex items-center gap-4">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0EA432] text-[14px] font-bold text-white">
+                                <div className="flex items-center gap-3 md:gap-4">
+                                    <div className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-[#0EA432] text-[12px] md:text-[14px] font-bold text-white">
                                         {requirement.buyer?.avatar}
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="text-[14px] font-semibold text-slate-900">{requirement.buyer?.name}</p>
-                                        <div className="mt-1 flex items-center gap-3 text-[12px] text-slate-500">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-[13px] md:text-[14px] font-semibold text-slate-900 truncate">{requirement.buyer?.name}</p>
+                                            <span className="shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">Verified Buyer</span>
+                                        </div>
+                                        <div className="mt-0.5 md:mt-1 flex items-center gap-2 md:gap-3 text-[11px] md:text-[12px] text-slate-500">
                                             <span className="flex items-center gap-1">
-                                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                                                {requirement.buyer?.rating} rating
+                                                <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-amber-400 text-amber-400" />
+                                                {requirement.buyer?.rating}
                                             </span>
-                                            <span>•</span>
-                                            <span>{requirement.buyer?.totalOrders} orders completed</span>
+                                            <span className="hidden md:inline">•</span>
+                                            <span className="hidden md:inline">{requirement.buyer?.totalOrders} orders</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* CTA to go to bid tab */}
-                            <div className="flex justify-center pt-2">
+                            {/* Mobile CTA - Fixed bottom buttons */}
+                            <div className="md:hidden flex gap-3 pt-2">
+                                <button
+                                    type="button"
+                                    className="flex-1 rounded-xl border border-slate-200 bg-white py-3 text-[14px] font-semibold text-slate-700"
+                                >
+                                    Ask a Question
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("bid")}
+                                    className="flex-1 rounded-xl bg-[#0EA432] py-3 text-[14px] font-bold text-white"
+                                >
+                                    Place a Bid
+                                </button>
+                            </div>
+
+                            {/* Desktop CTA */}
+                            <div className="hidden md:flex justify-center pt-2">
                                 <button
                                     onClick={() => setActiveTab("bid")}
                                     className="inline-flex items-center gap-2 rounded-xl bg-[#0EA432] px-8 py-3 text-[14px] font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-[#0b8f2b] hover:shadow-xl hover:shadow-emerald-500/30"
@@ -402,34 +430,34 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                             </div>
                         </div>
                     ) : (
-                        <div className="p-6">
+                        <div className="p-4 md:p-6">
                             {submitSuccess ? (
-                                <div className="flex flex-col items-center justify-center py-12">
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-                                        <CheckCircle2 className="h-10 w-10 text-[#0EA432]" />
+                                <div className="flex flex-col items-center justify-center py-10 md:py-12">
+                                    <div className="flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-emerald-100">
+                                        <CheckCircle2 className="h-8 w-8 md:h-10 md:w-10 text-[#0EA432]" />
                                     </div>
-                                    <h3 className="mt-4 text-[18px] font-bold text-slate-900">Bid Submitted Successfully!</h3>
-                                    <p className="mt-2 text-[14px] text-slate-500">Your bid has been sent to the buyer.</p>
+                                    <h3 className="mt-4 text-[16px] md:text-[18px] font-bold text-slate-900">Bid Submitted!</h3>
+                                    <p className="mt-2 text-[13px] md:text-[14px] text-slate-500">Your bid has been sent to the buyer.</p>
                                 </div>
                             ) : (
-                                <form onSubmit={handleSubmitBid} className="space-y-5">
+                                <form onSubmit={handleSubmitBid} className="space-y-4 md:space-y-5">
                                     {/* Requirement Summary */}
-                                    <div className="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+                                    <div className="rounded-xl bg-slate-50 p-3 md:p-4 ring-1 ring-slate-200">
                                         <div className="flex items-center gap-3">
                                             {requirement.image ? (
                                                 <img
                                                     src={requirement.image}
                                                     alt={requirement.title}
-                                                    className="h-14 w-14 shrink-0 rounded-lg object-cover"
+                                                    className="h-10 w-10 md:h-14 md:w-14 shrink-0 rounded-lg object-cover ring-1 ring-slate-200"
                                                 />
                                             ) : (
-                                                <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-lg", requirement.iconBg)}>
-                                                    <Icon className={cn("h-6 w-6", requirement.iconColor)} />
+                                                <div className={cn("flex h-10 w-10 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-lg", requirement.iconBg)}>
+                                                    <Icon className={cn("h-5 w-5 md:h-6 md:w-6", requirement.iconColor)} />
                                                 </div>
                                             )}
-                                            <div>
-                                                <p className="text-[14px] font-bold text-slate-900">{requirement.title}</p>
-                                                <p className="text-[12px] text-slate-500">Budget: {requirement.budget}</p>
+                                            <div className="min-w-0">
+                                                <p className="text-[13px] md:text-[14px] font-bold text-slate-900 truncate">{requirement.title}</p>
+                                                <p className="text-[11px] md:text-[12px] text-slate-500">Deadline: {requirement.deadline}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -437,79 +465,78 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                                     {/* Bid Amount */}
                                     <div>
                                         <label className="block text-[13px] font-semibold text-slate-700">
-                                            Your Bid Amount <span className="text-red-500">*</span>
+                                            Your Price (MWK)
                                         </label>
                                         <div className="relative mt-1.5">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[14px] font-semibold text-slate-400">MK</span>
                                             <input
                                                 type="text"
                                                 value={bidAmount}
                                                 onChange={(e) => setBidAmount(e.target.value)}
-                                                placeholder="0.00"
+                                                placeholder="550000"
                                                 required
-                                                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-[14px] font-semibold text-slate-900 placeholder:text-slate-400 focus:border-[#0EA432] focus:outline-none focus:ring-2 focus:ring-[#0EA432]/20 transition-all"
+                                                className="w-full rounded-xl border border-slate-200 bg-white py-3 px-4 text-[14px] font-semibold text-slate-900 placeholder:text-slate-400 focus:border-[#0EA432] focus:outline-none focus:ring-2 focus:ring-[#0EA432]/20 transition-all"
                                             />
                                         </div>
-                                        <p className="mt-1.5 flex items-center gap-1 text-[11px] text-slate-500">
-                                            <AlertCircle className="h-3 w-3" />
-                                            Enter your competitive price for this requirement
-                                        </p>
                                     </div>
 
-                                    {/* Delivery Days */}
+                                    {/* Delivery Time */}
                                     <div>
                                         <label className="block text-[13px] font-semibold text-slate-700">
-                                            Delivery Timeline <span className="text-red-500">*</span>
+                                            Delivery Time
                                         </label>
                                         <div className="relative mt-1.5">
-                                            <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                                             <input
-                                                type="number"
+                                                type="text"
                                                 value={deliveryDays}
                                                 onChange={(e) => setDeliveryDays(e.target.value)}
-                                                placeholder="Number of days"
-                                                min="1"
+                                                placeholder="7 - 10 days"
                                                 required
-                                                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-16 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-[#0EA432] focus:outline-none focus:ring-2 focus:ring-[#0EA432]/20 transition-all"
+                                                className="w-full rounded-xl border border-slate-200 bg-white py-3 px-4 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-[#0EA432] focus:outline-none focus:ring-2 focus:ring-[#0EA432]/20 transition-all"
                                             />
-                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-slate-500">days</span>
                                         </div>
                                     </div>
 
                                     {/* Notes */}
                                     <div>
                                         <label className="block text-[13px] font-semibold text-slate-700">
-                                            Additional Notes
+                                            Note to Buyer <span className="text-slate-400 font-normal">(Optional)</span>
                                         </label>
                                         <textarea
                                             value={notes}
                                             onChange={(e) => setNotes(e.target.value)}
-                                            placeholder="Add any additional information, terms, or clarifications for your bid..."
-                                            rows={4}
-                                            className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white p-4 text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-[#0EA432] focus:outline-none focus:ring-2 focus:ring-[#0EA432]/20 transition-all resize-none"
+                                            placeholder="We can deliver high quality chairs within the delivery time."
+                                            rows={3}
+                                            className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white p-3 md:p-4 text-[13px] md:text-[14px] text-slate-900 placeholder:text-slate-400 focus:border-[#0EA432] focus:outline-none focus:ring-2 focus:ring-[#0EA432]/20 transition-all resize-none"
                                         />
                                     </div>
 
                                     {/* Attachments */}
                                     <div>
                                         <label className="block text-[13px] font-semibold text-slate-700">
-                                            Attachments
+                                            Attach Quotation / Catalog <span className="text-slate-400 font-normal">(Optional)</span>
                                         </label>
-                                        <div className="mt-1.5 flex items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 transition-colors hover:border-[#0EA432]/50 hover:bg-emerald-50/30 cursor-pointer">
-                                            <div className="text-center">
-                                                <Paperclip className="mx-auto h-8 w-8 text-slate-400" />
-                                                <p className="mt-2 text-[13px] font-medium text-slate-600">
-                                                    Drop files here or <span className="text-[#0EA432]">browse</span>
-                                                </p>
-                                                <p className="mt-1 text-[11px] text-slate-400">
-                                                    PDF, Images, Documents (max 10MB)
-                                                </p>
+                                        <div className="mt-1.5 rounded-xl border border-slate-200 bg-slate-50/50 p-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white ring-1 ring-slate-200">
+                                                    <Paperclip className="h-5 w-5 text-slate-400" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-[12px] font-medium text-slate-600">quotation.pdf</p>
+                                                    <p className="text-[11px] text-slate-400">120 KB</p>
+                                                </div>
+                                                <button type="button" className="text-slate-400 hover:text-slate-600">
+                                                    <X className="h-4 w-4" />
+                                                </button>
                                             </div>
                                         </div>
+                                        <button type="button" className="mt-2 flex items-center gap-1.5 text-[12px] font-medium text-[#0EA432]">
+                                            <Paperclip className="h-3.5 w-3.5" />
+                                            Add another file
+                                        </button>
                                     </div>
 
-                                    {/* Terms */}
-                                    <div className="rounded-xl bg-amber-50 p-4 ring-1 ring-amber-200">
+                                    {/* Terms - Desktop only */}
+                                    <div className="hidden md:block rounded-xl bg-amber-50 p-4 ring-1 ring-amber-200">
                                         <div className="flex gap-3">
                                             <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" />
                                             <div className="text-[12px] text-amber-800">
@@ -523,18 +550,11 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                                     </div>
 
                                     {/* Submit */}
-                                    <div className="flex gap-3 pt-2">
-                                        <button
-                                            type="button"
-                                            onClick={onClose}
-                                            className="flex-1 rounded-xl border border-slate-200 bg-white py-3 text-[14px] font-semibold text-slate-700 transition-all hover:bg-slate-50"
-                                        >
-                                            Cancel
-                                        </button>
+                                    <div className="pt-2">
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#0EA432] py-3 text-[14px] font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-[#0b8f2b] hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed"
+                                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0EA432] py-3.5 text-[14px] font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-[#0b8f2b] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                                         >
                                             {isSubmitting ? (
                                                 <>
@@ -542,10 +562,7 @@ function ViewBidDialog({ requirement, isOpen, onClose }) {
                                                     Submitting...
                                                 </>
                                             ) : (
-                                                <>
-                                                    <Send className="h-4 w-4" />
-                                                    Submit Bid
-                                                </>
+                                                "Submit Bid"
                                             )}
                                         </button>
                                     </div>
@@ -609,7 +626,7 @@ function EarningsCard() {
                     <Wallet className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                    <p className="text-[12px] font-medium text-emerald-700">Total Earnings <span className="text-emerald-600/70">(This month)</span></p>
+                    <p className="text-[12px] font-medium text-emerald-700">Total Earnings</p>
                     <p className="text-[22px] font-extrabold leading-tight tabular-nums text-emerald-800">
                         MK 2,450,000
                     </p>
@@ -624,13 +641,31 @@ function MobileRequirementCard({ req, onViewBid }) {
     return (
         <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-100 transition-all hover:shadow-sm">
             <div className="flex items-start gap-3">
-                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", req.iconBg)}>
-                    <Icon className={cn("h-5 w-5", req.iconColor)} />
-                </div>
+                {req.image ? (
+                    <img
+                        src={req.image}
+                        alt={req.title}
+                        className="h-14 w-14 shrink-0 rounded-xl object-cover ring-1 ring-slate-200"
+                    />
+                ) : (
+                    <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ring-1 ring-slate-200/60", req.iconBg)}>
+                        <Icon className={cn("h-6 w-6", req.iconColor)} />
+                    </div>
+                )}
                 <div className="min-w-0 flex-1">
-                    <h3 className="text-[14px] font-bold text-slate-900 leading-tight">{req.title}</h3>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                        <h3 className="text-[14px] font-bold text-slate-900 leading-tight">{req.title}</h3>
+                        {req.urgent && (
+                            <span className="shrink-0 rounded-full bg-red-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-red-600">
+                                Urgent
+                            </span>
+                        )}
+                    </div>
                     <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
-                        <span>{req.location}</span>
+                        <span className="inline-flex items-center gap-1">
+                            <MapPin className="h-3 w-3 text-slate-400" />
+                            {req.location}
+                        </span>
                         <span className="text-slate-300">|</span>
                         <span>{req.category}</span>
                     </div>
@@ -656,6 +691,41 @@ function MobileRequirementCard({ req, onViewBid }) {
             >
                 View & Bid
             </button>
+        </div>
+    )
+}
+
+function MobileOrderCard({ order }) {
+    return (
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-100">
+            <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                    <p className="text-[13px] font-bold text-slate-900">{order.id}</p>
+                    <p className="mt-0.5 truncate text-[12px] text-slate-500">{order.buyer}</p>
+                </div>
+                <span className={cn(
+                    "shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
+                    ORDER_STATUS_STYLES[order.status],
+                )}>
+                    {order.status}
+                </span>
+            </div>
+            <div className="mt-3 space-y-1.5 text-[12px]">
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Item</span>
+                    <span className="font-semibold text-slate-700">{order.item}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Value</span>
+                    <span className="font-bold tabular-nums text-slate-900">
+                        MK {order.value.toLocaleString()}
+                    </span>
+                </div>
+                <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Delivery</span>
+                    <span className="font-semibold text-slate-700">{order.deliveryDate}</span>
+                </div>
+            </div>
         </div>
     )
 }
@@ -777,18 +847,110 @@ const BidderDashboardPage = () => {
             </div>
 
             {/* Mobile Latest Requirements - Card layout */}
-            <div className="md:hidden">
-                <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-[15px] font-bold text-slate-900">Latest Requirements</h2>
-                    <Link to="/seller/requirements" className="text-[13px] font-semibold text-[#0EA432]">
-                        View all
-                    </Link>
+            <div className="md:hidden space-y-5">
+                <div>
+                    <div className="flex items-center justify-between mb-3">
+                        <h2 className="text-[15px] font-bold text-slate-900">Latest Requirements</h2>
+                        <Link to="/seller/requirements" className="text-[13px] font-semibold text-[#0EA432]">
+                            View all
+                        </Link>
+                    </div>
+                    <div className="space-y-3">
+                        {LATEST_REQUIREMENTS.map((req) => (
+                            <MobileRequirementCard key={req.id} req={req} onViewBid={handleViewBid} />
+                        ))}
+                    </div>
                 </div>
-                <div className="space-y-3">
-                    {LATEST_REQUIREMENTS.slice(0, 2).map((req) => (
-                        <MobileRequirementCard key={req.id} req={req} onViewBid={handleViewBid} />
-                    ))}
+
+                <SectionCard title="My Bid Status" actionTo="/seller/my-bids">
+                    <div className="divide-y divide-slate-50 px-5">
+                        {BID_STATUS.map((item) => (
+                            <div key={item.label} className="flex items-center justify-between py-3">
+                                <div className="flex items-center gap-2.5">
+                                    <span className={cn("h-2.5 w-2.5 rounded-full", item.dot)} />
+                                    <span className="text-[13px] font-medium text-slate-700">{item.label}</span>
+                                </div>
+                                <span className="text-[14px] font-bold tabular-nums text-slate-900">{item.count}</span>
+                            </div>
+                        ))}
+                    </div>
+                </SectionCard>
+
+                <div>
+                    <div className="flex items-center justify-between mb-3">
+                        <h2 className="text-[15px] font-bold text-slate-900">Active Orders</h2>
+                        <Link to="/seller/orders" className="text-[13px] font-semibold text-[#0EA432]">
+                            View all
+                        </Link>
+                    </div>
+                    <div className="space-y-3">
+                        {ACTIVE_ORDERS.map((order) => (
+                            <MobileOrderCard key={order.id} order={order} />
+                        ))}
+                    </div>
                 </div>
+
+                <SectionCard title="Recent Messages" actionTo="/seller/messages">
+                    <div className="divide-y divide-slate-50">
+                        {RECENT_MESSAGES.map((msg) => (
+                            <div key={msg.name} className="flex gap-3 px-5 py-3.5">
+                                <div className={cn(
+                                    "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
+                                    msg.avatarBg,
+                                    msg.avatarText,
+                                )}>
+                                    {msg.initials}
+                                    {msg.unread > 0 && (
+                                        <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#0EA432] text-[9px] font-bold text-white">
+                                            {msg.unread}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <p className="truncate text-[13px] font-semibold text-slate-800">{msg.name}</p>
+                                        <span className="shrink-0 text-[11px] text-slate-400">{msg.time}</span>
+                                    </div>
+                                    <p className="mt-0.5 truncate text-[12px] text-slate-500">{msg.snippet}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="border-t border-slate-100 px-5 py-3">
+                        <Link
+                            to="/seller/messages"
+                            className="inline-flex items-center gap-1 text-[13px] font-semibold text-[#0EA432] hover:underline"
+                        >
+                            Go to Messages
+                            <ChevronRight className="h-3.5 w-3.5" />
+                        </Link>
+                    </div>
+                </SectionCard>
+
+                <section className="rounded-2xl bg-white p-5 ring-1 ring-slate-200">
+                    <h2 className="text-[15px] font-bold text-slate-900">
+                        Performance Summary{" "}
+                        <span className="text-[12px] font-semibold text-slate-500">(This Month)</span>
+                    </h2>
+                    <div className="mt-4 grid grid-cols-2 gap-2.5">
+                        {PERFORMANCE.map((item) => {
+                            const Icon = item.icon
+                            return (
+                                <div key={item.label} className="rounded-xl px-3 py-3 ring-1 ring-slate-200">
+                                    <div className="flex items-center gap-2">
+                                        <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg", item.iconBg)}>
+                                            <Icon className={cn("h-4 w-4", item.iconColor)} />
+                                        </div>
+                                        <p className="text-[16px] font-extrabold tabular-nums leading-none text-slate-900">
+                                            {item.value}
+                                        </p>
+                                    </div>
+                                    <p className="mt-1.5 text-[11px] font-medium text-slate-500">{item.label}</p>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </section>
             </div>
 
             {/* Desktop Main layout */}
