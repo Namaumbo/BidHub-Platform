@@ -25,7 +25,7 @@ const MobileBottomNav = () => {
     const navItems = normalizeRole(role) === ROLES.SELLER ? sellerNav : buyerNav
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 safe-area-bottom">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 dark:bg-slate-900 dark:border-slate-800 safe-area-bottom">
             <div className="flex items-center justify-around px-1 py-2">
                 {navItems.map((item) => {
                     const Icon = item.icon
@@ -39,14 +39,14 @@ const MobileBottomNav = () => {
                                 `flex flex-col items-center gap-0.5 min-w-[60px] py-1 ${
                                     isActive 
                                         ? "text-[#0EA432]" 
-                                        : "text-slate-400"
+                                        : "text-slate-400 dark:text-slate-500"
                                 }`
                             }
                         >
                             {({ isActive }) => (
                                 <>
                                     <div className={`p-1.5 rounded-xl transition-colors ${
-                                        isActive ? "bg-emerald-50" : ""
+                                        isActive ? "bg-emerald-50 dark:bg-emerald-900/30" : ""
                                     }`}>
                                         <Icon className="h-5 w-5" strokeWidth={isActive ? 2.5 : 2} />
                                     </div>
