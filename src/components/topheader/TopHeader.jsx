@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext"
 import { useTheme } from "@/context/ThemeContext"
 import { getDashboardPathByRole, normalizeRole } from "@/core/constants/roles"
 import logo from "/logo.png"
+import { Button } from "@/components/ui/button"
 
 const TopHeader = () => {
     const { role } = useAuth()
@@ -76,19 +77,20 @@ const TopHeader = () => {
                 </label>
 
                 <div className="flex shrink-0 items-center gap-3">
-                    <button
+                    <Button
                         type="button"
-                        className="hidden items-center gap-2 rounded-xl bg-[#0EA432] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#0b8f2b] lg:flex"
+                        variant="pill"
+                        size="pill"
                     >
                         + Post Requirement
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
                         onClick={toggleTheme}
-                        className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                        variant="pill"
                     >
                         {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                    </button>
+                    </Button>
                     <button
                         type="button"
                         className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
