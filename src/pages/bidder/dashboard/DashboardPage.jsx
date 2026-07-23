@@ -30,6 +30,7 @@ import {
     Wallet,
     X,
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -685,12 +686,16 @@ function MobileRequirementCard({ req, onViewBid }) {
                 </div>
             </div>
             
-            <button
+            <Button
+                type="button"
+                variant="pill"
+                size="pill"
                 onClick={() => onViewBid(req)}
-                className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl bg-[#0EA432] py-2.5 text-[13px] font-bold text-white transition-all hover:bg-[#0b8f2b] active:scale-[0.98]"
+                className="mt-3 w-full"
             >
+                <Send className="size-4" />
                 View & Bid
-            </button>
+            </Button>
         </div>
     )
 }
@@ -725,63 +730,6 @@ function MobileOrderCard({ order }) {
                     <span className="text-slate-500">Delivery</span>
                     <span className="font-semibold text-slate-700">{order.deliveryDate}</span>
                 </div>
-            </div>
-        </div>
-    )
-}
-
-function RequirementRow({ req, onViewBid }) {
-    const Icon = req.Icon
-    return (
-        <div className="group flex flex-col gap-3 border-b border-slate-100 px-5 py-4 transition-colors last:border-0 hover:bg-slate-50/60 sm:flex-row sm:items-center">
-            <div className="flex min-w-0 flex-1 items-center gap-3.5">
-                {req.image ? (
-                    <img
-                        src={req.image}
-                        alt={req.title}
-                        className="h-16 w-16 shrink-0 rounded-xl object-cover ring-1 ring-slate-200 transition-transform duration-200 group-hover:scale-[1.03]"
-                    />
-                ) : (
-                    <div className={cn("flex h-16 w-16 shrink-0 items-center justify-center rounded-xl ring-1 ring-slate-200/60", req.iconBg)}>
-                        <Icon className={cn("h-7 w-7", req.iconColor)} />
-                    </div>
-                )}
-                <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="truncate text-[14px] font-bold text-slate-900">{req.title}</h3>
-                        <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide", req.categoryStyle)}>
-                            {req.category}
-                        </span>
-                    </div>
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-slate-500">
-                        <span className="inline-flex items-center gap-1">
-                            <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                            {req.location}
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                            <Package className="h-3.5 w-3.5 text-slate-400" />
-                            {req.quantity}
-                        </span>
-                        <span
-                            className={cn(
-                                "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                                req.urgent ? "bg-red-50 text-red-600" : "bg-slate-100 text-slate-600",
-                            )}
-                        >
-                            <CalendarDays className="h-3 w-3" />
-                            Due {req.deadline}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div className="flex shrink-0 items-center justify-end">
-                <button
-                    onClick={() => onViewBid(req)}
-                    className="inline-flex items-center gap-1 rounded-lg bg-[#0EA432] px-4 py-2 text-[12px] font-bold text-white shadow-sm transition-all hover:bg-[#0b8f2b] hover:shadow group-hover:translate-x-0.5"
-                >
-                    View & Bid
-                    <ChevronRight className="h-3.5 w-3.5" />
-                </button>
             </div>
         </div>
     )
@@ -959,10 +907,73 @@ const BidderDashboardPage = () => {
                 {/* Left column */}
                 <div className="space-y-6">
                     <SectionCard title="Latest Requirements" actionTo="/seller/requirements">
-                        <div>
-                            {LATEST_REQUIREMENTS.map((req) => (
-                                <RequirementRow key={req.id} req={req} onViewBid={handleViewBid} />
-                            ))}
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[700px] text-left">
+                                <thead>
+                                    <tr className="border-b border-slate-100 bg-slate-50/80">
+                                        {["Requirement", "Location", "Quantity", "Deadline", "Action"].map((col) => (
+                                            <th
+                                                key={col}
+                                                className="px-5 py-3 text-[11px] font-bold uppercase tracking-wide text-slate-400"
+                                            >
+                                                {col}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {LATEST_REQUIREMENTS.map((req) => {
+                                        const Icon = req.Icon
+                                        return (
+                                            <tr key={req.id} className="hover:bg-slate-50/50">
+                                                <td className="px-5 py-3.5">
+                                                    <div className="flex items-center gap-3">
+                                                        {req.image ? (
+                                                            <img
+                                                                src={req.image}
+                                                                alt={req.title}
+                                                                className="h-14 w-14 shrink-0 rounded-xl object-cover ring-1 ring-slate-200"
+                                                            />
+                                                        ) : (
+                                                            <div className={cn(
+                                                                "flex h-15 w-15 shrink-0 items-center justify-center rounded-xl ring-1 ring-slate-200/60",
+                                                                req.iconBg,
+                                                            )}>
+                                                                <Icon className={cn("h-6 w-6", req.iconColor)} />
+                                                            </div>
+                                                        )}
+                                                        <span className="text-[13px] font-semibold text-slate-800">
+                                                            {req.title}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-5 py-3.5 text-[13px] text-slate-700">{req.location}</td>
+                                               
+                                                <td className="px-5 py-3.5 text-[13px] text-slate-700">{req.quantity}</td>
+                                                <td className="px-5 py-3.5">
+                                                    <span className={cn(
+                                                        "text-[13px] font-semibold",
+                                                        req.urgent ? "text-red-500" : "text-slate-700",
+                                                    )}>
+                                                        {req.deadline}
+                                                    </span>
+                                                </td>
+                                                <td className="px-5 py-3.5">
+                                                    <Button
+                                                        type="button"
+                                                        variant="pill"
+                                                        size="pill-sm"
+                                                        onClick={() => handleViewBid(req)}
+                                                    >
+                                                        <Send className="size-3.5" />
+                                                        View & Bid
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
                     </SectionCard>
 

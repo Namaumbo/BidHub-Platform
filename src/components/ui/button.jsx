@@ -18,6 +18,10 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        // YouTube-style pill, BidHub green
+        pill: "rounded-full border-transparent bg-[#0EA432] text-white hover:bg-[#0b8f2b] active:bg-[#0a7d26]",
+        "pill-soft":
+          "rounded-full border-transparent bg-emerald-50 text-[#0EA432] hover:bg-emerald-100 active:bg-emerald-100/80",
       },
       size: {
         default:
@@ -25,17 +29,20 @@ const buttonVariants = cva(
         xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        pill: "h-[38px] min-w-[38px] gap-2 rounded-full px-4 text-[13px] font-semibold [&_svg:not([class*='size-'])]:size-4",
+        "pill-sm": "h-[38px] min-w-[38px] gap-1.5 rounded-full px-3.5 text-[12px] font-semibold [&_svg:not([class*='size-'])]:size-3.5",
         icon: "size-8",
         "icon-xs":
           "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
+        "icon-pill": "h-[38px] w-[38px] rounded-full",
       },
     },
     defaultVariants: {
       variant: "default",
-      size: "default",
+      size: "default"
     },
   }
 )
