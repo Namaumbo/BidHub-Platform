@@ -7,6 +7,11 @@ import {
   Star,
   Home,
   Search,
+  LayoutDashboard,
+  ShoppingBag,
+  Wallet,
+  User,
+  Settings,
 } from "lucide-react"
 import { ROLES } from "@/core/constants/roles"
 import { normalizeRole } from "@/core/constants/roles"
@@ -53,29 +58,45 @@ const ROLE_NAV_ITEMS = Object.freeze({
   [ROLES.SELLER]: [
     {
       to: "/seller/dashboard",
-      label: "Home",
-      icon: Home,
-    },
-    {
-      to: "/seller/sell-requirement",
-      label: "Post Listing",
-      icon: Package,
+      label: "Dashboard",
+      icon: LayoutDashboard,
     },
     {
       to: "/seller/requirements",
-      label: "Browse",
+      label: "Buyer Requests",
       icon: Search,
     },
     {
-      to: "/seller/my-posts",
-      label: "My Posts",
-      icon: FileText,
+      to: "/seller/my-bids",
+      label: "My Bids",
+      icon: Gavel,
     },
     {
       to: "/seller/messages",
       label: "Messages",
       icon: MessageSquare,
       badgeCount: 3,
+      showDot: true,
+    },
+    {
+      to: "/seller/orders",
+      label: "Orders",
+      icon: ShoppingBag,
+    },
+    {
+      to: "/seller/my-posts",
+      label: "Payments",
+      icon: Wallet,
+    },
+    {
+      to: "/seller/menu",
+      label: "Profile",
+      icon: User,
+    },
+    {
+      to: "/seller/sell-requirement",
+      label: "Settings",
+      icon: Settings,
     },
   ],
   [ROLES.ADMIN]: [],

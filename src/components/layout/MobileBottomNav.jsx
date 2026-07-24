@@ -38,7 +38,7 @@ const MobileBottomNav = () => {
                             className={({ isActive }) =>
                                 `flex flex-col items-center gap-0.5 min-w-[60px] py-1 ${
                                     isActive 
-                                        ? "text-[#0EA432]" 
+                                        ? "text-[#0f6e56]" 
                                         : "text-slate-400 dark:text-slate-500"
                                 }`
                             }
