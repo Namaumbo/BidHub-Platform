@@ -32,7 +32,7 @@ const Sidebar = () => {
 
     return (
         <aside
-            className="sticky top-16 z-30 hidden h-[calc(100vh-4rem)] w-60 shrink-0 flex-col self-start border-r border-[#0d5c47] bg-[#0f6e56] dark:border-slate-800 dark:bg-slate-900 md:flex"
+            className="z-30 hidden h-full w-60 shrink-0 flex-col bg-[#0f6e56] dark:bg-slate-900 md:flex"
             data-purpose="sidebar-navigation"
         >
             <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
