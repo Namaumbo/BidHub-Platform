@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/context/AuthContext"
@@ -8,6 +8,7 @@ import {
     Building2,
     CalendarDays,
     CheckCircle2,
+    ChevronLeft,
     ChevronRight,
     Clock,
     ClipboardList,
@@ -637,6 +638,241 @@ function EarningsCard() {
     )
 }
 
+/** Spotlight carousel — full-bleed cinematic hero card */
+function FeaturedRequestsCarousel({ items, onViewBid }) {
+    const [index, setIndex] = useState(0)
+    const [paused, setPaused] = useState(false)
+    const [progress, setProgress] = useState(0)
+    const count = items.length
+    const INTERVAL = 5000
+
+    const goTo = useCallback(
+        (next) => {
+            if (count === 0) return
+            setIndex(((next % count) + count) % count)
+        },
+        [count],
+    )
+
+    useEffect(() => {
+        if (count <= 1 || paused) return
+        const id = setInterval(() => goTo(index + 1), INTERVAL)
+        return () => clearInterval(id)
+    }, [count, paused, index, goTo])
+
+    useEffect(() => {
+        if (count <= 1 || paused) { setProgress(0); return }
+        setProgress(0)
+        const startTime = Date.now()
+        const id = setInterval(() => {
+            setProgress(Math.min(((Date.now() - startTime) / INTERVAL) * 100, 100))
+        }, 60)
+        return () => clearInterval(id)
+    }, [index, paused, count])
+
+    if (count === 0) return null
+
+    const req = items[index]
+    const Icon = req.Icon
+
+    // Rich fallback gradient when there's no image
+    const fallbackGradients = {
+        "text-blue-600":    "from-blue-950 via-blue-800 to-blue-700",
+        "text-orange-600":  "from-orange-950 via-orange-800 to-orange-700",
+        "text-violet-600":  "from-violet-950 via-violet-800 to-violet-700",
+        "text-slate-600":   "from-slate-900 via-slate-700 to-slate-600",
+        "text-emerald-600": "from-emerald-950 via-emerald-800 to-emerald-700",
+    }
+    const bg = fallbackGradients[req.iconColor] ?? "from-slate-950 via-slate-800 to-slate-700"
+
+    return (
+        <section
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            aria-roledescription="carousel"
+            aria-label="Featured buyer requests"
+        >
+            {/* Row above card: label + browse link */}
+            <div className="mb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#0EA432]/10">
+                        <TrendingUp className="h-3.5 w-3.5 text-[#0EA432]" />
+                    </div>
+                    <h2 className="text-[14px] font-bold text-slate-900">Featured Requests</h2>
+                    <span className="rounded-full bg-[#0EA432] px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-white shadow-sm">
+                        HOT
+                    </span>
+                </div>
+                <Link
+                    to="/seller/requirements"
+                    className="flex items-center gap-0.5 text-[12px] font-semibold text-[#0EA432] hover:underline"
+                >
+                    Browse all <ChevronRight className="h-3.5 w-3.5" />
+                </Link>
+            </div>
+
+            {/* Hero card */}
+            <div className="relative overflow-hidden rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.18)]">
+                {/* Progress bar — white stripe on dark */}
+                <div className="absolute inset-x-0 top-0 z-30 h-0.75 bg-white/10">
+                    <div
+                        className="h-full bg-white/60 transition-none"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+
+                {/* Slide — keyed for fade on every change */}
+                <div
+                    key={index}
+                    className="relative h-[300px] sm:h-[340px] animate-in fade-in duration-300"
+                >
+                    {/* ── Background ── */}
+                    {req.image ? (
+                        <img
+                            src={req.image}
+                            alt={req.title}
+                            className="absolute inset-0 h-full w-full object-cover"
+                        />
+                    ) : (
+                        <div className={cn("absolute inset-0 bg-linear-to-br", bg)}>
+                            <Icon className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 text-white/[0.06]" />
+                        </div>
+                    )}
+
+                    {/* ── Gradient overlays for legible text ── */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/92 via-black/40 to-black/10" />
+                    <div className="absolute inset-0 bg-linear-to-r from-black/30 to-transparent" />
+
+                    {/* ── Top badges ── */}
+                    <div className="absolute left-4 right-4 top-5 z-10 flex items-start justify-between gap-2">
+                        <div className="flex flex-wrap gap-1.5">
+                            {req.urgent && (
+                                <span className="flex items-center gap-1.5 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-lg">
+                                    <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+                                    </span>
+                                    Urgent
+                                </span>
+                            )}
+                            <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-sm ring-1 ring-white/20">
+                                {req.category}
+                            </span>
+                        </div>
+                        <span className="flex shrink-0 items-center gap-1 rounded-full bg-[#0EA432]/90 px-2.5 py-1 text-[10px] font-bold text-white shadow-md backdrop-blur-sm">
+                            <CheckCircle2 className="h-3 w-3" />
+                            {req.bidsReceived} bids
+                        </span>
+                    </div>
+
+                    {/* Slide counter — subtle, top-right */}
+                    <div className="absolute right-4 top-14 z-10 tabular-nums text-[11px] font-semibold text-white/35">
+                        {index + 1} / {count}
+                    </div>
+
+                    {/* ── Bottom content stack ── */}
+                    <div className="absolute inset-x-0 bottom-0 z-10 space-y-2 p-4 sm:p-5">
+                        {/* Buyer micro-row */}
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-[9px] font-extrabold text-white backdrop-blur-sm ring-1 ring-white/20">
+                                {req.buyer?.avatar}
+                            </div>
+                            <span className="text-[11px] font-semibold text-white/75 truncate">{req.buyer?.name}</span>
+                            <span className="text-white/25">·</span>
+                            <span className="flex items-center gap-1 text-[11px] text-white/55">
+                                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                                {req.buyer?.rating}
+                            </span>
+                            <span className="ml-auto rounded bg-white/10 px-1.5 py-0.5 font-mono text-[9px] text-white/40">
+                                {req.id}
+                            </span>
+                        </div>
+
+                        {/* Title — big & bold */}
+                        <h3 className="text-[19px] sm:text-[22px] font-extrabold leading-tight tracking-tight text-white drop-shadow">
+                            {req.title}
+                        </h3>
+
+                        {/* Meta row */}
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                            <span className="inline-flex items-center gap-1 text-[11px] text-white/60">
+                                <MapPin className="h-3 w-3 text-white/40" />
+                                {req.location}
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-[11px] text-white/60">
+                                <Package className="h-3 w-3 text-white/40" />
+                                {req.quantity}
+                            </span>
+                            <span className={cn(
+                                "inline-flex items-center gap-1 text-[11px] font-semibold",
+                                req.urgent ? "text-red-400" : "text-white/60",
+                            )}>
+                                <Clock className="h-3 w-3" />
+                                {req.deadline}
+                            </span>
+                        </div>
+
+                        {/* Budget + CTA */}
+                        <div className="flex items-end justify-between gap-3 pt-1">
+                            {req.budget ? (
+                                <div>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-white/35">Budget</p>
+                                    <p className="text-[15px] sm:text-[17px] font-extrabold tabular-nums text-emerald-400 leading-tight">
+                                        {req.budget}
+                                    </p>
+                                </div>
+                            ) : <span />}
+                            <button
+                                type="button"
+                                onClick={() => onViewBid(req)}
+                                className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#0EA432] px-4 py-2 text-[13px] font-bold text-white shadow-lg shadow-black/30 transition-all hover:bg-[#0b8f2b] active:scale-[0.97]"
+                            >
+                                <Send className="h-3.5 w-3.5" />
+                                View &amp; Bid
+                            </button>
+                        </div>
+
+                        {/* Navigation dots */}
+                        <div className="flex items-center justify-center gap-2 pt-1">
+                            <button
+                                type="button"
+                                aria-label="Previous request"
+                                onClick={() => goTo(index - 1)}
+                                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white/60 backdrop-blur-sm transition hover:bg-white/20 active:scale-95"
+                            >
+                                <ChevronLeft className="h-3.5 w-3.5" />
+                            </button>
+                            <div className="flex items-center gap-1.5">
+                                {items.map((_, i) => (
+                                    <button
+                                        key={i}
+                                        type="button"
+                                        aria-label={`Go to request ${i + 1}`}
+                                        aria-current={i === index}
+                                        onClick={() => setIndex(i)}
+                                        className={cn(
+                                            "h-1.5 rounded-full transition-all duration-300",
+                                            i === index ? "w-8 bg-white" : "w-1.5 bg-white/30 hover:bg-white/50",
+                                        )}
+                                    />
+                                ))}
+                            </div>
+                            <button
+                                type="button"
+                                aria-label="Next request"
+                                onClick={() => goTo(index + 1)}
+                                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white/60 backdrop-blur-sm transition hover:bg-white/20 active:scale-95"
+                            >
+                                <ChevronRight className="h-3.5 w-3.5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
+
 function MobileRequirementCard({ req, onViewBid }) {
     const Icon = req.Icon
     return (
@@ -753,6 +989,12 @@ const BidderDashboardPage = () => {
         setTimeout(() => setSelectedRequirement(null), 200)
     }
 
+    // Spotlight urgent requests first, then fill with the rest (max 4)
+    const featuredRequests = [
+        ...LATEST_REQUIREMENTS.filter((r) => r.urgent),
+        ...LATEST_REQUIREMENTS.filter((r) => !r.urgent),
+    ].slice(0, 4)
+
     return (
         <div className="mx-auto max-w-7xl space-y-5 px-4 py-5 pb-24 md:space-y-6 md:py-6 md:pb-8">
             {/* View & Bid Dialog */}
@@ -793,6 +1035,9 @@ const BidderDashboardPage = () => {
                     <EarningsCard />
                 </div>
             </div>
+
+            {/* Featured buyer requests — under KPIs, above full lists */}
+            <FeaturedRequestsCarousel items={featuredRequests} onViewBid={handleViewBid} />
 
             {/* Mobile Latest Requirements - Card layout */}
             <div className="md:hidden space-y-5">
